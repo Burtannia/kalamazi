@@ -42,6 +42,8 @@ dependencies:
 - case-insensitive
 - wai
 - foreign-store
+- yesod-auth-oauth2
+- wai
 
 # The library contains all of our application code. The executable
 # defined below is just a thin wrapper.

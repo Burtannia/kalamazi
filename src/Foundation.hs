@@ -19,12 +19,17 @@ import Control.Monad.Logger (LogSource)
 -- Used only when in "auth-dummy-login" setting is enabled.
 import Yesod.Auth.Dummy
 
-import Yesod.Auth.OpenId    (authOpenId, IdentifierType (Claimed))
+import Yesod.Auth.OAuth2 (oauth2Url)
+import Yesod.Auth.OAuth2.Google (oauth2GoogleScoped)
+
 import Yesod.Default.Util   (addStaticContentExternal)
 import Yesod.Core.Types     (Logger)
 import qualified Yesod.Core.Unsafe as Unsafe
 import qualified Data.CaseInsensitive as CI
 import qualified Data.Text.Encoding as TE
+
+import qualified Data.Text as T (append)
+import qualified Network.Wai as Wai (requestHeaders)
 
 -- | The foundation datatype for your application. This can be a good place to
 -- keep settings and values requiring initialization before your application
@@ -80,6 +85,27 @@ instance Yesod App where
             Nothing -> getApprootText guessApproot app req
             Just root -> root
 
+    errorHandler :: ErrorResponse -> Handler TypedContent
+    errorHandler errorResponse = do
+        $(logWarn) (T.append "Error Response: "
+                            $ pack (show errorResponse))
+        req <- waiRequest
+        let reqwith = lookup "X-Requested-With" $ Wai.requestHeaders req
+            errorText NotFound = (404, "Not Found", "Sorry, not found")
+            errorText (InternalError msg) = (400, "Bad Request", msg)
+            errorText (InvalidArgs m) = (400, "Bad Request", unwords m)
+            errorText (PermissionDenied msg) = (403, "Forbidden", msg)
+            errorText (BadMethod _) = (405, "Method Not Allowed",
+                                            "Method not supported")
+            errorText NotAuthenticated = (401, "Unauthorized", "Unauthorized")
+        when (maybe False (== "XMLHttpRequest") reqwith) $ do
+            let (code, brief, full) = errorText errorResponse
+            sendResponseStatus
+                (mkStatus code brief)
+                $ RepPlain $ toContent $ T.append "Error: " full
+        defaultErrorHandler errorResponse
+        
+
     -- Store session data on the client in encrypted cookies,
     -- default session idle timeout is 120 minutes
     makeSessionBackend :: App -> IO (Maybe SessionBackend)
@@ -95,7 +121,7 @@ instance Yesod App where
     -- To add it, chain it together with the defaultMiddleware: yesodMiddleware = defaultYesodMiddleware . defaultCsrfMiddleware
     -- For details, see the CSRF documentation in the Yesod.Core.Handler module of the yesod-core package.
     yesodMiddleware :: ToTypedContent res => Handler res -> Handler res
-    yesodMiddleware = defaultYesodMiddleware
+    yesodMiddleware = defaultYesodMiddleware . defaultCsrfMiddleware
 
     defaultLayout :: Widget -> Handler Html
     defaultLayout widget = do
@@ -107,6 +133,10 @@ instance Yesod App where
 
         -- Get the breadcrumbs, as defined in the YesodBreadcrumbs instance.
         (title, parents) <- breadcrumbs
+
+        -- Add logout if logged in
+        -- Add admin if logged in and admin
+        -- Add login if on admin page and not logged in
 
         -- Define the menu items of the header.
         let menuItems =
@@ -153,7 +183,7 @@ instance Yesod App where
     authRoute
         :: App
         -> Maybe (Route App)
-    authRoute _ = Just $ AuthR LoginR
+    authRoute _ = Just $ AuthR $ oauth2Url "google"
 
     isAuthorized
         :: Route App  -- ^ The route the user is visiting.
@@ -162,7 +192,7 @@ instance Yesod App where
     -- Routes not requiring authentication.
     isAuthorized (AuthR _) _ = return Authorized
     isAuthorized CommentR _ = return Authorized
-    isAuthorized HomeR _ = return Authorized
+    isAuthorized HomeR _ = isAuthenticated
     isAuthorized FaviconR _ = return Authorized
     isAuthorized RobotsR _ = return Authorized
     isAuthorized (StaticR _) _ = return Authorized
@@ -248,27 +278,34 @@ instance YesodAuth App where
     authenticate :: (MonadHandler m, HandlerSite m ~ App)
                  => Creds App -> m (AuthenticationResult App)
     authenticate creds = liftHandler $ runDB $ do
-        x <- getBy $ UniqueUser $ credsIdent creds
+        x <- getBy $ UniqueIdent $ credsIdent creds
         case x of
             Just (Entity uid _) -> return $ Authenticated uid
             Nothing -> Authenticated <$> insert User
                 { userIdent = credsIdent creds
-                , userPassword = Nothing
+                , userIsAdmin = False
                 }
 
     -- You can add other plugins like Google Email, email or OAuth here
     authPlugins :: App -> [AuthPlugin App]
-    authPlugins app = [authOpenId Claimed []] ++ extraAuthPlugins
+    authPlugins app = [ oauth2GoogleScoped
+        ["email", "profile"]
+        "860727337620-lrju49gd97d4h0iap4k2cu2tj4489iio.apps.googleusercontent.com"
+        "IFOmV-s3KQrlWypnS4LjhygZ" ] ++ extraAuthPlugins
         -- Enable authDummy login if enabled.
         where extraAuthPlugins = [authDummy | appAuthDummyLogin $ appSettings app]
 
--- | Access function to determine if a user is logged in.
+-- | Access function to determine if a user is logged in and is an admin.
 isAuthenticated :: Handler AuthResult
 isAuthenticated = do
-    muid <- maybeAuthId
-    return $ case muid of
-        Nothing -> Unauthorized "You must login to access this page"
-        Just _ -> Authorized
+    -- (Entity _ user) <- requireAuth
+    -- return Authorized
+    muser <- maybeAuth
+    return $ case muser of
+        Nothing -> Unauthorized "You must be logged in to access this page"
+        Just (Entity _ user)
+            | userIsAdmin user -> Authorized
+            | otherwise -> Unauthorized "You are not authorized to access this page"
 
 instance YesodAuthPersist App
 
