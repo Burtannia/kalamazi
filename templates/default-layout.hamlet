@@ -1,24 +1,19 @@
 
 <!-- Static navbar -->
-<nav .navbar.navbar-default.navbar-static-top>
-    <div .container>
-        <div .navbar-header>
-            <button type="button" .navbar-toggle.collapsed data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                <span class="sr-only">Toggle navigation
-                <span class="icon-bar">
-                <span class="icon-bar">
-                <span class="icon-bar">
+<nav .navbar .navbar-expand-lg .navbar-dark .bg-dark>
+    <button type="button" .navbar-toggler data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar" aria-label="Toggle navigation">
+        <span .navbar-toggler-icon>
 
-        <div #navbar .collapse.navbar-collapse>
-            <ul .nav.navbar-nav>
-                $forall MenuItem label route _ <- navbarLeftFilteredMenuItems
-                    <li :Just route == mcurrentRoute:.active>
-                        <a href="@{route}">#{label}
+    <div #navbar .collapse .navbar-collapse>
+        <ul .navbar-nav .mr-auto>
+            $forall MenuItem label route _ <- navbarLeftFilteredMenuItems
+                <li .nav-item :Just route == mcurrentRoute:.active>
+                    <a .nav-link href="@{route}">#{label}
 
-            <ul .nav.navbar-nav.navbar-right>
-                $forall MenuItem label route _ <- navbarRightFilteredMenuItems
-                    <li :Just route == mcurrentRoute:.active>
-                        <a href="@{route}">#{label}
+        <ul .navbar-nav .mr-auto>
+            $forall MenuItem label route _ <- navbarRightFilteredMenuItems
+                <li .nav-item :Just route == mcurrentRoute:.active>
+                    <a .nav-link href="@{route}">#{label}
 
 <!-- Page Contents -->
 
