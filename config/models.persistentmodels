@@ -6,6 +6,13 @@ User
     isAdmin Bool
     UniqueIdent ident
     deriving Show
+-- Guide
+--     title Text
+--     author Text
+--     authorLink Text Maybe
+--     isPublished Bool
+--     sections [Section]
+--     UnqiueTitle title
 Email
     email Text
     userId UserId Maybe
