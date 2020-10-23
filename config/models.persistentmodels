@@ -13,6 +13,12 @@ User
 --     isPublished Bool
 --     sections [Section]
 --     UnqiueTitle title
+UploadImage
+    uuid Text
+    name Text
+    uploadedAt UTCTime
+    UniqueUploadImageUuid uuid
+    Primary uuid
 Email
     email Text
     userId UserId Maybe
