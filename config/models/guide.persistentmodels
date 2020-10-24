@@ -1,0 +1,15 @@
+Guide
+    title Text
+    url Text
+    isPublished Bool
+    created UTCTime
+    modified UTCTime
+    icon UploadImageId
+    sections [SectionId]
+    UnqiueGuideUrl url
+Section
+    title Text
+    url Text
+    guideId GuideId
+    components [Component]
+    UniqueGuideSection guideId url

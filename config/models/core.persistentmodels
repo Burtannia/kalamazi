@@ -2,23 +2,19 @@
 -- Syntax for this file here: https://github.com/yesodweb/persistent/blob/master/docs/Persistent-entity-syntax.md
 
 User
-    ident Text sqltype=varchar(320)
+    ident Text
     isAdmin Bool
     UniqueIdent ident
     deriving Show
--- Guide
---     title Text
---     author Text
---     authorLink Text Maybe
---     isPublished Bool
---     sections [Section]
---     UnqiueTitle title
 UploadImage
     uuid Text
     name Text
-    uploadedAt UTCTime
-    UniqueUploadImageUuid uuid
+    created UTCTime
+    UniqueUploadImageId uuid
     Primary uuid
+TextComponent
+    content Text
+    format TextType
 Email
     email Text
     userId UserId Maybe
