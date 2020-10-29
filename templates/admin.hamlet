@@ -1,0 +1,6 @@
+<form method=post enctype=#{enctype}>
+    ^{formWidget}
+    <input .btn type=submit value="Upload">
+
+<h1>Images:
+^{imagesWidget}

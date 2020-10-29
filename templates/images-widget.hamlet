@@ -1,0 +1,7 @@
+$forall imgs <- imageRows
+    <div .row>
+        $forall i <- imgs
+            <div .col-3>
+                <p>#{imageName $ entityVal i}
+                <img style="width: 100%;" src=#{mkImageUrl $ entityVal i}>
+                <i class="fas fa-trash-alt">

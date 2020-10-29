@@ -22,12 +22,15 @@ $newline never
     
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.0.3/js.cookie.min.js">
 
-    $# \<!-- Bootstrap 4 -->
+    \<!-- Bootstrap 4 -->
     <link rel="stylesheet" href=@{StaticR css_bootstrap_css}>
     <script type="text/javascript" src=@{StaticR js_bootstrap_bundle_js}>
 
-    $# \<!-- JQuery -->
+    \<!-- JQuery -->
     <script type="text/javascript" src=@{StaticR js_jquery_js}>
+
+    \<!-- Icons -->
+    <script src="https://kit.fontawesome.com/77917c95df.js" crossorigin="anonymous">
 
     <script>
       /* The `defaultCsrfMiddleware` Middleware added in Foundation.hs adds a CSRF token to the request cookies. */

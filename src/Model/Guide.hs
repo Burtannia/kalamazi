@@ -18,11 +18,11 @@ import Database.Persist.Quasi
 import Model.Core
 
 data Component
-    = Markup MarkupComponentId
-    | Image UploadImageId
-    | BackgroundImg UploadImageId
-    | Toggle ToggleGroup
-    | Grid GridOpts [Row]
+    = CMarkup MarkupComponentId
+    | CImage ImageId
+    | CBackgroundImg ImageId
+    | CToggle ToggleGroup
+    | CGrid GridOpts [Row]
     deriving (Show, Read)
 
 data SpaceChar = SpaceLine | SpaceChev
@@ -32,7 +32,7 @@ type ToggleOption selector = (selector, [Component])
 
 data ToggleGroup
     = ToggleTexts SpaceChar [ToggleOption Text]
-    | ToggleImages UploadImageId [ToggleOption UploadImageId]
+    | ToggleImages ImageId [ToggleOption ImageId]
     deriving (Show, Read)
 
 data GridOpts = GridOpts

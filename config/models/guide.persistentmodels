@@ -8,7 +8,7 @@ Guide
     isPublished Bool
     created UTCTime
     modified UTCTime
-    icon UploadImageId
+    icon ImageId
     sections [SectionId]
     UnqiueGuideUrl url
 Section

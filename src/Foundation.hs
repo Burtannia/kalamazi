@@ -190,7 +190,6 @@ instance Yesod App where
         :: Route App  -- ^ The route the user is visiting.
         -> Bool       -- ^ Whether or not this is a "write" request.
         -> Handler AuthResult
-    -- Routes not requiring authentication.
     isAuthorized (AuthR _) _ = return Authorized
     isAuthorized CommentR _ = return Authorized
     isAuthorized HomeR _ = isAuthenticated
@@ -198,9 +197,7 @@ instance Yesod App where
     isAuthorized RobotsR _ = return Authorized
     isAuthorized (StaticR _) _ = return Authorized
     isAuthorized (ImageR _) _ = return Authorized
-
-    -- the profile route requires that the user is authenticated, so we
-    -- delegate to that function
+    isAuthorized AdminR _  = isAuthenticated
     isAuthorized ProfileR _ = isAuthenticated
 
     -- This function creates static content files in the static folder

@@ -6,11 +6,12 @@ User
     isAdmin Bool
     UniqueIdent ident
     deriving Show
-UploadImage
+Image
     uuid Text
     name Text
+    ext ImageExt
     created UTCTime
-    UniqueUploadImageId uuid
+    UniqueImageId uuid
     Primary uuid
 MarkupComponent
     content Text
