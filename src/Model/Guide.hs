@@ -18,10 +18,10 @@ import Database.Persist.Quasi
 import Model.Core
 
 data Component
-    = TextComp TextComponentId
-    | ImageComp UploadImageId
-    | BackgroundComp UploadImageId
-    | ToggleComp ToggleGroup
+    = Markup MarkupComponentId
+    | Image UploadImageId
+    | BackgroundImg UploadImageId
+    | Toggle ToggleGroup
     | Grid GridOpts [Row]
     deriving (Show, Read)
 

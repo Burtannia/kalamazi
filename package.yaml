@@ -44,6 +44,7 @@ dependencies:
 - foreign-store
 - yesod-auth-oauth2
 - wai
+- xss-sanitize
 
 # The library contains all of our application code. The executable
 # defined below is just a thin wrapper.

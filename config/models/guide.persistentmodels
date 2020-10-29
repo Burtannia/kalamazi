@@ -1,3 +1,7 @@
+GuideGroup
+    title Text
+    guides [GuideId]
+    UniqueGuideGroupTitle title
 Guide
     title Text
     url Text

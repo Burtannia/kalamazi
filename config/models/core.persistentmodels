@@ -12,9 +12,9 @@ UploadImage
     created UTCTime
     UniqueUploadImageId uuid
     Primary uuid
-TextComponent
+MarkupComponent
     content Text
-    format TextType
+    format MarkupCompType
 Email
     email Text
     userId UserId Maybe
