@@ -176,7 +176,6 @@ instance Yesod App where
         -- you to use normal widget features in default-layout.
 
         pc <- widgetToPageContent $ do
-            addStylesheet $ StaticR css_bootstrap_css
             $(widgetFile "default-layout")
         withUrlRenderer $(hamletFile "templates/default-layout-wrapper.hamlet")
 
@@ -196,6 +195,7 @@ instance Yesod App where
     isAuthorized FaviconR _ = return Authorized
     isAuthorized RobotsR _ = return Authorized
     isAuthorized (StaticR _) _ = return Authorized
+    isAuthorized (ImagesR _) _ = return Authorized
     isAuthorized (ImageR _) _ = return Authorized
     isAuthorized AdminR _  = isAuthenticated
     isAuthorized ProfileR _ = isAuthenticated

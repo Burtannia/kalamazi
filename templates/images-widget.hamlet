@@ -4,4 +4,5 @@ $forall imgs <- imageRows
             <div .col-3>
                 <p>#{imageName $ entityVal i}
                 <img style="width: 100%;" src=#{mkImageUrl $ entityVal i}>
-                <i class="fas fa-trash-alt">
+                <i .del-img class="fas fa-trash-alt" data-img-url=@{ImageR $ entityKey i}">
+$# rather than using rows have a separate container which flows so we can remove the image

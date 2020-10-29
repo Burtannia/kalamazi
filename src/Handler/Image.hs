@@ -8,7 +8,6 @@ module Handler.Image where
 
 import Import
 import qualified Data.Text as T (append)
--- import Data.Time (getCurrentTime)
 import Yesod.Form.Bootstrap4 (BootstrapFormLayout (..), renderBootstrap4)
 
 imagesWidget :: Widget

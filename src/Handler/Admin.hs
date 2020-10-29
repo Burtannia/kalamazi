@@ -8,6 +8,7 @@ module Handler.Admin where
 import Import
 import Handler.Image
 import Data.Time.Format.ISO8601
+import System.Directory (removeFile, doesFileExist)
 
 getAdminR :: Handler Html
 getAdminR = do
@@ -41,6 +42,23 @@ postAdminR = do
     defaultLayout $ do
         setTitle "Admin"
         $(widgetFile "admin")
+
+deleteImageR :: ImageId -> Handler ()
+deleteImageR imgId = do
+    mImg <- runDB $ get imgId
+    
+    case mImg of
+        Nothing -> return ()
+            -- add proper error messages
+        Just img -> do
+            app <- getYesod
+            let imgPath = mkImagePath (appImageDir $ appSettings app) img
+            liftIO $ removeFile imgPath
+            stillExists <- liftIO $ doesFileExist imgPath
+
+            unless stillExists $ do
+                runDB $ delete imgId
+                return () -- add proper message
 
 msgRedirect :: Html -> Handler ()
 msgRedirect msg = do

@@ -1,0 +1,14 @@
+$('.del-img').click(function() {
+    var elem = $(this);
+    if (confirm("Are you sure you want to delete this image?"))
+        $.ajax({
+            type: "DELETE",
+            contentType: "application/json",
+            url: $(this).attr("data-img-url")
+        }).done(function(msg)
+        {
+            elem.parent().remove();
+            console.log("potato");
+        });
+    return false;
+});
