@@ -1,8 +1,9 @@
+<input type="text" #imageSearch onkeyup="filterImages()" placeholder="Search for images...">
 $forall imgs <- imageRows
     <div .row>
         $forall i <- imgs
-            <div .col-3>
+            <div .image-container>
                 <p>#{imageName $ entityVal i}
-                <img style="width: 100%;" src=#{mkImageUrl $ entityVal i}>
+                <img .image-thumbnail style="width: 200px;" src=@{ImagesR $ mkImageUrl $ entityVal i}>
                 <i .del-img class="fas fa-trash-alt" data-img-url=@{ImageR $ entityKey i}">
 $# rather than using rows have a separate container which flows so we can remove the image

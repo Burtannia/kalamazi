@@ -8,7 +8,15 @@ $('.del-img').click(function() {
         }).done(function(msg)
         {
             elem.parent().remove();
-            console.log("potato");
         });
     return false;
+});
+
+$(document).ready(function(){
+    $("#imageSearch").on("keyup", function() {
+        var value = $(this).val().toLowerCase();
+        $(".image-container p").filter(function() {
+            $(this).parent().toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+    });
 });
