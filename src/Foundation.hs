@@ -106,6 +106,9 @@ instance Yesod App where
                 $ RepPlain $ toContent $ T.append "Error: " full
         defaultErrorHandler errorResponse
         
+    maximumContentLength :: App -> Maybe (Route App) -> Maybe Word64
+    maximumContentLength _ (Just ImageManagerR) = Just $ 5 * 1024 * 1024 -- 5 megabytes
+    maximumContentLength _ _ = Just $ 2 * 1024 * 1024 -- 2 megabytes
 
     -- Store session data on the client in encrypted cookies,
     -- default session idle timeout is 120 minutes

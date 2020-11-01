@@ -12,9 +12,6 @@ import Yesod.Form.Bootstrap4 (BootstrapFormLayout (..), renderBootstrap4)
 import System.Directory (removeFile, doesFileExist)
 import Data.Time.Format.ISO8601
 
--- maximumContentLength _ (Just ImagesR) = Just $ 200 * 1024 * 1024 -- 200 megabytes
--- maximumContentLength _ _ = Just $ 10 * 1024 * 1024 -- 10 megabytes
--- limit files to images
 imagesWidget :: Widget
 imagesWidget = do
     allImages <- handlerToWidget $ runDB getAllImages
