@@ -1,9 +1,9 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Colour where
+module Import.Colours where
 
-import Yesod.ClassyPrelude
+import Data.Text
 
 newtype Colour = Colour { hex :: Text }
 

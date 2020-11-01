@@ -1,4 +1,4 @@
-module Import.Util where
+module Import.Utils where
 
 fours :: [a] -> [[a]]
 fours xs
