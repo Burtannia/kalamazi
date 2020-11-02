@@ -1,0 +1,12 @@
+$(function() {
+    setTimeout(function() {
+        $('#message').fadeOut(300, function() { 
+            $(this).remove();
+        });
+    }, 3000);
+});
+
+$('#message').click(function() {
+    $(this).remove();
+});
+
