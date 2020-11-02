@@ -1,0 +1,6 @@
+<div .guide>
+    <title>#{guideTitle guide}
+    <div .guideDates>
+        <p>Last modified: #{show $ guideModified guide}
+    $forall sectionId <- guideSections guide
+        ^{displaySection sectionId}

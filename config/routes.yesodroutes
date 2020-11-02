@@ -7,15 +7,19 @@
 /favicon.ico FaviconR GET
 /robots.txt RobotsR GET
 
-/images ImagesR Static appImages
+/ HomeR GET POST
 
+/admin AdminR GET POST
+
+/images ImagesR Static appImages
 /admin/images ImageManagerR GET POST
 /admin/images/#ImageId ImageR DELETE
 
-/ HomeR GET POST
+/guide/#GuideId GuideR GET POST DELETE
+/admin/guides GuideManagerR GET POST
+
+/section/#SectionId SectionR DELETE
 
 /comments CommentR POST
 
 /profile ProfileR GET
-
-/admin AdminR GET

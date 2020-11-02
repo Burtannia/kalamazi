@@ -193,16 +193,25 @@ instance Yesod App where
         -> Bool       -- ^ Whether or not this is a "write" request.
         -> Handler AuthResult
     isAuthorized (AuthR _) _ = return Authorized
-    isAuthorized CommentR _ = return Authorized
-    isAuthorized HomeR _ = isAuthenticated
     isAuthorized FaviconR _ = return Authorized
     isAuthorized RobotsR _ = return Authorized
     isAuthorized (StaticR _) _ = return Authorized
+
+    isAuthorized HomeR _ = return Authorized
+    isAuthorized AdminR _  = return Authorized --isAuthenticated
+
     isAuthorized (ImagesR _) _ = return Authorized
     isAuthorized (ImageR _) _ = return Authorized --isAuthenticated
     isAuthorized ImageManagerR _ = return Authorized --isAuthenticated
-    isAuthorized AdminR _  = return Authorized --isAuthenticated
+
+    isAuthorized (GuideR _) False = return Authorized
+    isAuthorized (GuideR _) True = return Authorized --isAuthenticated
+    isAuthorized GuideManagerR _ = return Authorized --isAuthenticated
+
+    isAuthorized (SectionR _) _ = return Authorized --isAuthenticated
+
     isAuthorized ProfileR _ = isAuthenticated
+    isAuthorized CommentR _ = return Authorized
 
     -- This function creates static content files in the static folder
     -- and names them based on a hash of their content. This allows
@@ -301,8 +310,6 @@ instance YesodAuth App where
 -- | Access function to determine if a user is logged in and is an admin.
 isAuthenticated :: Handler AuthResult
 isAuthenticated = do
-    -- (Entity _ user) <- requireAuth
-    -- return Authorized
     muser <- maybeAuth
     return $ case muser of
         Nothing -> Unauthorized "You must be logged in to access this page"

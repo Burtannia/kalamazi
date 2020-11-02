@@ -120,7 +120,6 @@ uploadForm = renderBootstrap4 BootstrapBasicForm $ ImageUpload
                 ]
             }
 
-
 parseExt :: Text -> Maybe ImageExt
 parseExt "image/jpeg" = Just JPG
 parseExt "image/png" = Just PNG

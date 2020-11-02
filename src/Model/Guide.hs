@@ -23,22 +23,22 @@ data Component
     | CBackgroundImg ImageId
     | CToggle ToggleGroup
     | CGrid GridOpts [Row]
-    deriving (Show, Read)
+    deriving (Show, Read, Eq)
 
 data SpaceChar = SpaceLine | SpaceChev
-    deriving (Show, Read)
+    deriving (Show, Read, Eq)
 
 type ToggleOption selector = (selector, [Component])
 
 data ToggleGroup
     = ToggleTexts SpaceChar [ToggleOption Text]
     | ToggleImages ImageId [ToggleOption ImageId]
-    deriving (Show, Read)
+    deriving (Show, Read, Eq)
 
 data GridOpts = GridOpts
-    { goRuleV :: Bool
-    , goRuleH :: Bool
-    } deriving (Show, Read)
+    { ruleV :: Bool
+    , ruleH :: Bool
+    } deriving (Show, Read, Eq)
 
 type Row = [Component]
 

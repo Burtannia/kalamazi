@@ -6,11 +6,11 @@ Guide
     title Text
     url Text
     isPublished Bool
-    created UTCTime
     modified UTCTime
     icon ImageId
     sections [SectionId]
     UnqiueGuideUrl url
+    Primary url
 Section
     title Text
     url Text
