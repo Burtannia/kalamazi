@@ -4,6 +4,8 @@
 {-# LANGUAGE QuasiQuotes #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE FlexibleInstances #-}
 
 module Handler.Guide where
 
@@ -11,6 +13,7 @@ import Import
 import Handler.Component
 import Handler.Section
 import Handler.Images (getAllImages)
+import Handler.Modal
 import qualified Data.Text as T (append)
 import Text.Blaze (text)
 import Yesod.Form.Bootstrap4 (BootstrapFormLayout (..), renderBootstrap4)
@@ -23,24 +26,78 @@ getGuideR guideId = do
         published = guideIsPublished guide
     when (not isAdmin && not published) notFound
 
-    --(formWidget, enctype) <- generateFormPost (guideForm $ Just guide)
+    -- Guide Form
+    gForm <- genBs4FormIdentify gFormIdent $ guideForm $ Just guide
+    let gWidget = mkModal "Edit" gForm
+
+    -- Sections    
+    let sectionWidgets = map getSectionWidget $ guideSections guide
+
+    -- New Section
+    nsForm <- genBs4FormIdentify nsFormIdent $ sectionForm guideId Nothing
+    let nsWidget = mkModal "New Section" nsForm
 
     defaultLayout $ do
         setTitle $ text $ guideTitle guide
         $(widgetFile "guide")
--- if admin then show edit options
+    -- if admin then show edit options
 
 postGuideR :: GuideId -> Handler Html
-postGuideR guideId = undefined
-    -- user <- requireAuth
-    -- guide <- runDB $ get404 guideId
-    -- let isAdmin = maybe False (userIsAdmin . entityVal) muser
+postGuideR guideId = do
+    muser <- maybeAuth
+    guide <- runDB $ get404 guideId
+    let isAdmin = maybe False (userIsAdmin . entityVal) muser
+        published = guideIsPublished guide
+    when (not isAdmin && not published) notFound
 
-    -- ((result, formWidget), enctype) <- runFormPost (guideForm $ Just guide)
+    -- Guide Form
+    ((gResult, gWidget'), gEnctype) <- runBs4FormIdentify gFormIdent
+                                        $ guideForm $ Just guide
+    let gWidget = mkModal "Edit" (gWidget', gEnctype)
 
+    case gResult of
+        FormSuccess newGuide -> do
+            runDB $ delete guideId
+            newId <- runDB $ insert newGuide -- irritating but necessary to get new id
+            let newUrl = guideUrl newGuide
+                urlChanged = not $ guideUrl guide == newUrl
+            when urlChanged $
+                flip mapM_ (guideSections newGuide) $
+                    \sId -> runDB $ update sId [SectionUrl =. newUrl]
+            -- make sure replacing url works as intended and error is thrown on violated constraint
+            setMessage "Guide updated successfully"
+            redirect $ GuideR newId
+        _ -> return ()
 
-guideForm :: Maybe Guide -> Form Guide
-guideForm mg = renderBootstrap4 BootstrapBasicForm $ Guide
+    -- Sections    
+    let sections = guideSections guide
+        sectionWidgets = map postSectionWidget sections
+
+    -- New Section
+    ((nsResult, nsWidget), nsEnctype) <- runBs4FormIdentify nsFormIdent
+                                            $ sectionForm guideId Nothing
+    let nsWidget = mkModal "New Section" (nsWidget, nsEnctype)
+
+    case nsResult of
+        FormSuccess newSection -> do
+            newSectionId <- runDB $ insert newSection
+            runDB $ update guideId [GuideSections =. sections ++ [newSectionId]]
+            setMessage "Section created successfully"
+            redirect $ GuideR guideId
+        _ -> return ()
+
+    defaultLayout $ do
+        setTitle $ text $ guideTitle guide
+        $(widgetFile "guide")
+
+gFormIdent :: Text
+gFormIdent = "guide"
+
+nsFormIdent :: Text
+nsFormIdent = "new-section"
+
+guideForm :: Maybe Guide -> AForm Handler Guide
+guideForm mg = Guide
     <$> areq textField "Title" (guideTitle <$> mg)
     <*> areq textField "Url" (guideUrl <$> mg) -- ensure it's valid for a url
     <*> areq checkBoxField "Published" (guideIsPublished <$> mg)
@@ -50,7 +107,16 @@ guideForm mg = renderBootstrap4 BootstrapBasicForm $ Guide
     where
         images = optionsPersistKey [] [Asc ImageCreated] imageName
         -- improve this to show a preview of the image
-        -- also allow searching
+        -- also allow searchin
+
+{-
+remind of lost changes when closing modal
+
+delete section uses ajax to SectionR
+
+deleting a component might be a little more tricky
+maybe send component index?
+-}
 
 deleteGuideR :: GuideId -> Handler ()
 deleteGuideR guideId = undefined
@@ -61,3 +127,26 @@ getGuideManagerR = undefined
 
 postGuideManagerR :: Handler Html
 postGuideManagerR = undefined
+
+-- data FullGuide = FullGuide
+--     { fgGuideId :: GuideId
+--     , fgGuide :: Maybe Guide
+--     , fgSections :: [Maybe Section]
+--     }
+
+-- class IsFullGuide a where
+--     toFullGuide :: a -> FullGuide
+
+-- instance IsFullGuide (Entity Guide) where
+--     toFullGuide e = FullGuide (entityKey e) (Just $ entityVal e) Nothing
+
+-- instance IsFullGuide Section where
+--     toFullGuide s = FullGuide (sectionGuideId s) Nothing (Just s)
+
+-- fullGuideForm :: FullGuide -> AForm Handler FullGuide
+-- fullGuideForm FullGuide {..} = FullGuide
+--     <$> pure fgGuideId
+--     <*> guideForm fgGuide
+--     <*> mkSectionForms fgSections
+--     where
+--         mkSectionForms = traverse $ sectionForm fgGuideId . Just

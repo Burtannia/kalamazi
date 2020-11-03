@@ -1,0 +1,6 @@
+<div .section>
+    <h2 ##{sectionUrl section}>#{sectionTitle section}
+    ^{modalWidget}
+
+    $forall comp <- sectionComponents section
+        ^{displayComponent comp}

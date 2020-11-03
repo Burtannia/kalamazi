@@ -15,7 +15,7 @@
 /admin/images ImageManagerR GET POST
 /admin/images/#ImageId ImageR DELETE
 
-/guide/#GuideId GuideR GET POST DELETE
+/guides/#GuideId GuideR GET POST DELETE
 /admin/guides GuideManagerR GET POST
 
 /section/#SectionId SectionR DELETE

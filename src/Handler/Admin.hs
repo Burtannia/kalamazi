@@ -7,11 +7,12 @@ module Handler.Admin where
 
 import Import
 import Handler.Guide
+import Yesod.Form.Bootstrap4 (BootstrapFormLayout (..), renderBootstrap4)
 
 getAdminR :: Handler Html
 getAdminR = do
     --(_, user) <- requireAuthPair
-    (formWidget, enctype) <- generateFormPost $ guideForm Nothing
+    (formWidget, enctype) <- generateFormPost $ renderBootstrap4 BootstrapBasicForm $ guideForm Nothing
 
     defaultLayout $ do
         setTitle "Admin"
@@ -19,7 +20,7 @@ getAdminR = do
 
 postAdminR :: Handler Html
 postAdminR = do
-    ((result, formWidget), enctype) <- runFormPost $ guideForm Nothing
+    ((result, formWidget), enctype) <- runFormPost $ renderBootstrap4 BootstrapBasicForm $ guideForm Nothing
 
     case result of
         FormSuccess guide -> do

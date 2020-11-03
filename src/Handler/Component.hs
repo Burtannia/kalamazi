@@ -44,38 +44,37 @@ displayComponent (CGrid opts rs) = -- currently ignoring grid opts
     |]
 
 displayToggle :: ToggleGroup -> Widget
-displayToggle (ToggleTexts sc toggles) = toggleWidget selectors contents
+displayToggle (ToggleTexts sc toggles) = toggleWidget parts
     where
         ids = [1..length toggles]
-        selectors = zip ids $ map (mkWidget . fst) toggles
-        contents = zip ids $ map snd toggles
+        parts = map mkPart $ zip ids toggles
+        mkPart (n, (sel, cont)) = (n, mkWidget sel, cont)
         mkWidget s = -- maybe add space char as css ::after
             [whamlet|
                 <p>#{s}
             |]
-displayToggle (ToggleImages borderImgId toggles) = toggleWidget selectors contents
+displayToggle (ToggleImages borderImgId toggles) = toggleWidget parts
     where
         ids = [1..length toggles]
-        selectors = zip ids $ map (mkWidget . fst) toggles
-        contents = zip ids $ map snd toggles
+        parts = map mkPart $ zip ids toggles
+        mkPart (n, (sel, cont)) = (n, mkWidget sel, cont)
         mkWidget imgId = do
             img <- handlerToWidget $ runDB $ getJust imgId
             [whamlet|
                 <img src=@{ImagesR $ mkImageUrl img}>
             |]
 
-toggleWidget :: [(Int, Widget)] -> [(Int, [Component])] -> Widget
-toggleWidget selectors contents =
+toggleWidget :: [(Int, Widget, MarkupComponentId)] -> Widget
+toggleWidget parts = do
     [whamlet|
         <div .component .compToggle>
             <div .toggleSelectorsContainer>
-                $forall (sId, selectorWidget) <- selectors
-                    <div .toggleSelector  data-toggle-id=#{sId}>
+                $forall (toggleId, selectorWidget, _) <- parts
+                    <div .toggleSelector  data-toggle-id=#{toggleId}>
                         ^{selectorWidget}
 
             <div .toggleContentContainer>
-                $forall (cId, comps) <- contents
-                    <div .toggleContent data-toggle-id=#{cId}>
-                        $forall c <- comps
-                            ^{displayComponent c}
+                $forall (toggleId, _, contentId) <- parts
+                    <div .toggleContent data-toggle-id=#{toggleId}>
+                        ^{displayComponent $ CMarkup contentId}
     |]

@@ -28,7 +28,7 @@ data Component
 data SpaceChar = SpaceLine | SpaceChev
     deriving (Show, Read, Eq)
 
-type ToggleOption selector = (selector, [Component])
+type ToggleOption selector = (selector, MarkupComponentId)
 
 data ToggleGroup
     = ToggleTexts SpaceChar [ToggleOption Text]
