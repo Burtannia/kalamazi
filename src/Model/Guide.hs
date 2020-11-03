@@ -20,7 +20,7 @@ import Model.Core
 data Component
     = CMarkup MarkupComponentId
     | CImage ImageId
-    | CBackgroundImg ImageId
+    | CIframe Text
     | CToggle ToggleGroup
     | CGrid GridOpts [Row]
     deriving (Show, Read, Eq)

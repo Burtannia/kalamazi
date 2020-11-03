@@ -2,5 +2,8 @@
     <h2 ##{sectionUrl section}>#{sectionTitle section}
     ^{modalWidget}
 
+    $maybe bg <- mBackground
+        <img src=@{ImagesR $ mkImageUrl bg}>
+
     $forall comp <- sectionComponents section
         ^{displayComponent comp}

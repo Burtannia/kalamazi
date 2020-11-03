@@ -29,7 +29,11 @@ displayComponent (CImage imageId) = do
             <img src=@{ImagesR $ mkImageUrl image} alt=#{imageName image}>
     |]
 
-displayComponent (CBackgroundImg imageId) = undefined
+displayComponent (CIframe link) =
+    [whamlet|
+        <div .component .compIframe>
+            <iframe src=#{link}>
+    |]
 
 displayComponent (CToggle toggle) = displayToggle toggle
 

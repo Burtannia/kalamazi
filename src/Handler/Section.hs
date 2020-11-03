@@ -10,6 +10,7 @@ module Handler.Section where
 import Import
 import Handler.Component
 import Handler.Modal
+import Handler.Images
 import qualified Data.List as L (delete)
 import Yesod.Form.Bootstrap4 (BootstrapFormLayout (..), renderBootstrap4)
 
@@ -18,12 +19,14 @@ getSectionWidget :: SectionId -> Widget
 getSectionWidget sectionId = do
     section <- liftHandler $ runDB $ getJust sectionId
     let guideId = sectionGuideId section
-
     form <- liftHandler $ genBs4FormIdentify
                 (sFormIdent $ sectionUrl section)
                 (sectionForm guideId $ Just section)
 
     let modalWidget = mkModal "Edit" form
+    mBackground <- maybe (return Nothing)
+                    (liftHandler . runDB . get)
+                    (sectionBackground section)
 
     $(widgetFile "section")
 
@@ -37,12 +40,16 @@ postSectionWidget sectionId = do
                                         (sectionForm guideId $ Just section)
 
     let modalWidget = mkModal "Edit" (formWidget, enctype)
+    mBackground <- maybe (return Nothing)
+                    (liftHandler . runDB . get)
+                    (sectionBackground section)
 
     case formRes of
         FormSuccess newSection -> do
             liftHandler $ runDB $ update sectionId
                 [ SectionTitle =. sectionTitle newSection
                 , SectionUrl =. sectionUrl newSection
+                , SectionBackground =. sectionBackground newSection
                 ]
             setMessage "Section updated successfully"
             redirect $ GuideR $ guideId
@@ -77,5 +84,8 @@ sectionForm :: GuideId -> Maybe Section -> AForm Handler Section
 sectionForm guideId msection = Section
     <$> areq textField "Title" (sectionTitle <$> msection)
     <*> areq textField "Url" (sectionUrl <$> msection)
+    <*> aopt (selectField images) "Background Image" (sectionBackground <$> msection)
     <*> pure guideId
     <*> pure (maybe [] sectionComponents msection)
+    where
+        images = optionsPersistKey [] [Asc ImageCreated] imageName
