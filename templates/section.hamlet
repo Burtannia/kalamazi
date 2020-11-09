@@ -1,9 +1,13 @@
 <div .section>
     <h2 ##{sectionUrl section}>#{sectionTitle section}
-    ^{modalWidget}
+    ^{sectionModal}
+    <btn .btn .btn-danger .deleteSection>Delete
 
     $maybe bg <- mBackground
         <img src=@{ImagesR $ mkImageUrl bg}>
 
-    $forall comp <- sectionComponents section
-        ^{displayComponent comp}
+    ^{newCompModal}
+
+    <div .sectionContent>
+        $forall (cIx, comp) <- withIndexes $ sectionContent section
+            ^{displayComponent sectionId cIx comp}

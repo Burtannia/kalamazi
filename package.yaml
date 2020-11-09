@@ -47,6 +47,7 @@ dependencies:
 - xss-sanitize
 - yesod-form-bootstrap4
 - blaze-markup
+- blaze-html
 
 # The library contains all of our application code. The executable
 # defined below is just a thin wrapper.

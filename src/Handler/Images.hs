@@ -7,7 +7,6 @@
 module Handler.Images where
 
 import Import
-import qualified Data.Text as T (append)
 import Yesod.Form.Bootstrap4 (BootstrapFormLayout (..), renderBootstrap4)
 import System.Directory (removeFile, doesFileExist)
 import Data.Time.Format.ISO8601
@@ -84,9 +83,8 @@ mkImagePath dir img = dir
 mkImageUrl :: Image -> Route Static
 mkImageUrl img = StaticRoute [name] []
     where
-        name = imageUuid img
-                `T.append` "."
-                `T.append` (pack $ toLower $ show $ imageExt img)
+        name = imageUuid img <> "."
+                <> (pack $ toLower $ show $ imageExt img)
 
 data ImageUpload = ImageUpload
     { iuFile :: FileInfo

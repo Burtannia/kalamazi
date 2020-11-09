@@ -17,34 +17,25 @@ import Database.Persist.Quasi
 
 import Model.Core
 
-data Component
-    = CMarkup MarkupComponentId
-    | CImage ImageId
-    | CIframe Text
-    | CToggle ToggleGroup
-    | CGrid GridOpts [Row]
-    deriving (Show, Read, Eq)
+data Component = CMarkup MarkupId -- | CToggle ToggleGroup
+    deriving (Show, Read)
 
 data SpaceChar = SpaceLine | SpaceChev
     deriving (Show, Read, Eq)
 
-type ToggleOption selector = (selector, MarkupComponentId)
+type ToggleOption selector = (selector, MarkupId)
 
 data ToggleGroup
     = ToggleTexts SpaceChar [ToggleOption Text]
     | ToggleImages ImageId [ToggleOption ImageId]
-    deriving (Show, Read, Eq)
+    deriving (Show, Read)
 
-data GridOpts = GridOpts
-    { ruleV :: Bool
-    , ruleH :: Bool
-    } deriving (Show, Read, Eq)
-
-type Row = [Component]
+type Grid = [Row]
+type Row = [Column]
+type Column = [Component]
 
 derivePersistField "SpaceChar"
 derivePersistField "ToggleGroup"
-derivePersistField "GridOpts"
 derivePersistField "Component"
 
 share [mkPersist sqlSettings] $(persistFileWith lowerCaseSettings "config/models/guide.persistentmodels")

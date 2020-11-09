@@ -18,7 +18,7 @@
 /guides/#GuideId GuideR GET POST DELETE
 /admin/guides GuideManagerR GET POST
 
-/section/#SectionId SectionR DELETE
+/section/#SectionId SectionR PATCH DELETE
 
 /comments CommentR POST
 

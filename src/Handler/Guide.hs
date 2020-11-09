@@ -24,7 +24,7 @@ getGuideR guideId = do
     guide <- runDB $ get404 guideId
     let isAdmin = maybe False (userIsAdmin . entityVal) muser
         published = guideIsPublished guide
-    when (not isAdmin && not published) notFound
+    --when (not isAdmin && not published) notFound
 
     -- Guide Form
     gForm <- genBs4FormIdentify gFormIdent $ guideForm $ Just guide
@@ -48,7 +48,7 @@ postGuideR guideId = do
     guide <- runDB $ get404 guideId
     let isAdmin = maybe False (userIsAdmin . entityVal) muser
         published = guideIsPublished guide
-    when (not isAdmin && not published) notFound
+    --when (not isAdmin && not published) notFound
 
     -- Guide Form
     ((gResult, gWidget'), gEnctype) <- runBs4FormIdentify gFormIdent
@@ -107,7 +107,7 @@ guideForm mg = Guide
     where
         images = optionsPersistKey [] [Asc ImageCreated] imageName
         -- improve this to show a preview of the image
-        -- also allow searchin
+        -- also allow searching
 
 {-
 remind of lost changes when closing modal
@@ -127,26 +127,3 @@ getGuideManagerR = undefined
 
 postGuideManagerR :: Handler Html
 postGuideManagerR = undefined
-
--- data FullGuide = FullGuide
---     { fgGuideId :: GuideId
---     , fgGuide :: Maybe Guide
---     , fgSections :: [Maybe Section]
---     }
-
--- class IsFullGuide a where
---     toFullGuide :: a -> FullGuide
-
--- instance IsFullGuide (Entity Guide) where
---     toFullGuide e = FullGuide (entityKey e) (Just $ entityVal e) Nothing
-
--- instance IsFullGuide Section where
---     toFullGuide s = FullGuide (sectionGuideId s) Nothing (Just s)
-
--- fullGuideForm :: FullGuide -> AForm Handler FullGuide
--- fullGuideForm FullGuide {..} = FullGuide
---     <$> pure fgGuideId
---     <*> guideForm fgGuide
---     <*> mkSectionForms fgSections
---     where
---         mkSectionForms = traverse $ sectionForm fgGuideId . Just

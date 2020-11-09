@@ -1,0 +1,10 @@
+$('##{rawJS contentId}').click(function() {
+    $(this).summernote({focus: true});
+    $('##{rawJS saveId}').show();
+});
+
+$('##{rawJS saveId}').click(function() {
+    var markup = $('##{rawJS contentId}').summernote('code');
+    $('##{rawJS contentId}').summernote('destroy');
+    $(this).hide();
+});

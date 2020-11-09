@@ -13,9 +13,8 @@ Image
     created UTCTime
     UniqueImageId uuid
     Primary uuid
-MarkupComponent
-    content Text
-    format MarkupCompType
+Markup
+    content Html
 Email
     email Text
     userId UserId Maybe

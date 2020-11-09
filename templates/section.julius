@@ -1,0 +1,49 @@
+function addComponent(btn) {
+    var section = $(btn).parent();
+
+    var action = {
+        tag: "AddComp"
+    };
+
+    runPatch(action, (data, textStatus, jqxhr) => {
+        section.append(data);
+    });
+}
+
+$('.deleteSection').click(function() {
+    var section = $(this).parent();
+    
+    if(confirm("Are you sure you want to delete this section?"))
+        $.ajax({
+            type: "DELETE",
+            contentType: "application/json",
+            url: "@{SectionR sectionId}",
+            success: function(data, textStatus, jqxhr) {
+                if(jqxhr.status == 200)
+                    section.remove();
+                else
+                    alert("Action failed with message: " + msg);
+            },
+            error: function(jqxhr, status, errType) {
+                alert("Action failed with reason: " + errType);
+            }
+        });
+});
+
+function runPatch(action, successCallback) {
+    $.ajax({
+        type: "PATCH",
+        contentType: "application/json",
+        url: "@{SectionR sectionId}",
+        data: JSON.stringify(action),
+        success: function(data, textStatus, jqxhr) {
+            if(jqxhr.status == 200)
+                successCallback(data, textStatus, jqxhr);
+            else
+                alert("Action failed with message: " + msg);
+        },
+        error: function(jqxhr, status, errType) {
+            alert("Action failed with reason: " + errType);
+        }
+    });
+}

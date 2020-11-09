@@ -16,5 +16,5 @@ Section
     url Text
     background ImageId Maybe
     guideId GuideId
-    components [Component]
+    content [Component]
     UniqueGuideSection guideId url
