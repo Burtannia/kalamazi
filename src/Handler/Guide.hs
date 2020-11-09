@@ -57,7 +57,7 @@ postGuideR guideId = do
 
     case gResult of
         FormSuccess newGuide -> do
-            runDB $ delete guideId
+            runDB $ delete guideId -- why are we doing this unless the url is new?
             newId <- runDB $ insert newGuide -- irritating but necessary to get new id
             let newUrl = guideUrl newGuide
                 urlChanged = not $ guideUrl guide == newUrl
@@ -82,6 +82,7 @@ postGuideR guideId = do
         FormSuccess newSection -> do
             newSectionId <- runDB $ insert newSection
             runDB $ update guideId [GuideSections =. sections ++ [newSectionId]]
+            updateGuideModified guideId
             setMessage "Section created successfully"
             redirect $ GuideR guideId
         _ -> return ()

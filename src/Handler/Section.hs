@@ -15,7 +15,6 @@ import qualified Data.List as L (delete, (!!))
 import Text.Blaze (preEscapedText)
 import Yesod.Form.Bootstrap4 (BootstrapFormLayout (..), renderBootstrap4)
 
--- make sure section urls don't contain spaces
 getSectionWidget :: SectionId -> Widget
 getSectionWidget sectionId = do
     section <- liftHandler $ runDB $ getJust sectionId
@@ -57,6 +56,11 @@ postSectionWidget sectionId = do
                     (liftHandler . runDB . get)
                     (sectionBackground section)
 
+    let onSuccess msg = do
+            updateGuideModified $ sectionGuideId section
+            setMessage msg
+            redirect $ GuideR guideId
+
     case sRes of
         FormSuccess newSection -> do
             liftHandler $ runDB $ update sectionId
@@ -64,8 +68,7 @@ postSectionWidget sectionId = do
                 , SectionUrl =. sectionUrl newSection
                 , SectionBackground =. sectionBackground newSection
                 ]
-            setMessage "Section updated successfully"
-            redirect $ GuideR guideId
+            onSuccess "Section updated successfully"
 
         _ -> return ()
 
@@ -74,8 +77,7 @@ postSectionWidget sectionId = do
             comp <- liftHandler $ createComponent compType
             liftHandler $ runDB $ update sectionId
                 [SectionContent =. sectionContent section ++ [comp]]
-            setMessage "Component created successfully"
-            redirect $ GuideR guideId
+            onSuccess "Component added successfully"
         
         _ -> return ()
 
@@ -89,20 +91,30 @@ ncFormIdent url = url <> "-new-comp"
 
 patchSectionR :: SectionId -> Handler ()
 patchSectionR sectionId = do
-    change <- requireCheckJsonBody :: Handler ComponentUpdate
+    cUpdate <- requireCheckJsonBody :: Handler ComponentUpdate
     section <- liftHandler $ runDB $ getJust sectionId
+    response <- runComponentUpdate (sectionId, section) cUpdate
+
+    case response of
+        Left err -> do
+            sendResponseStatus status500 err
+        Right msg -> do
+            updateGuideModified $ sectionGuideId section
+            sendResponse msg
+
+runComponentUpdate :: (SectionId, Section) -> ComponentUpdate -> Handler (Either Text Text)
+runComponentUpdate (sectionId, section) cUpdate = do
     let oldConts = sectionContent section
-    return ()
-    case change of
-        DeleteComp compIx -> boundsCheckM_ oldConts compIx $ do
+    case cUpdate of
+        DeleteComp compIx -> boundsCheckM oldConts compIx $ do
             let newConts = oldConts -! compIx
             deleteComponent $ oldConts L.!! compIx
             runDB $ update sectionId [SectionContent =. newConts]
-            sendResponse ("COMPONENT DELETED" :: Text)
-        UpdateComp compIx t -> boundsCheckM_ oldConts compIx $ do
+            return "COMPONENT DELETED"
+        UpdateComp compIx t -> boundsCheckM oldConts compIx $ do
             let (CMarkup mId) = oldConts L.!! compIx
             runDB $ update mId [MarkupContent =. preEscapedText t]
-            sendResponse ("COMPONENT UPDATED" :: Text)
+            return "COMPONENT UPDATED"
 
 deleteSectionR :: SectionId -> Handler ()
 deleteSectionR sectionId = do
@@ -110,10 +122,16 @@ deleteSectionR sectionId = do
     case mSection of
         Nothing -> return ()
         Just section -> do
-            removeSectionFromGuide sectionId (sectionGuideId section)
+            let guideId = sectionGuideId section
+            updateGuideModified guideId
+            removeSectionFromGuide sectionId guideId
             mapM_ deleteComponent $ sectionContent section
             runDB $ delete sectionId
             sendResponse ("SECTION DELETED" :: Text)
+
+updateGuideModified :: GuideId -> Handler ()
+updateGuideModified guideId = liftIO getCurrentTime >>=
+    \t -> runDB $ update guideId [GuideModified =. t]
 
 removeSectionFromGuide :: SectionId -> GuideId -> Handler ()
 removeSectionFromGuide sectionId guideId = do
