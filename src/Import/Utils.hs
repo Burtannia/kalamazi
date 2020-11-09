@@ -24,12 +24,12 @@ boundsCheck f xs n
     | n >= length xs = xs
     | otherwise = f n xs
 
-boundsCheckM_ :: Monad m => [a] -> Int -> (Int -> [a] -> m ()) -> m ()
+boundsCheckM_ :: Monad m => [a] -> Int -> m () -> m ()
 boundsCheckM_ xs n f = do
     when (n < 0) $ return ()
     when (n >= length xs) $ return ()
-    f n xs
-
+    f
+    
 genBs4Form :: AForm Handler a -> Handler (Widget, Enctype)
 genBs4Form = generateFormPost . renderBootstrap4 BootstrapBasicForm
 

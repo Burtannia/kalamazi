@@ -1,10 +1,52 @@
 $('##{rawJS contentId}').click(function() {
     $(this).summernote({focus: true});
     $('##{rawJS saveId}').show();
+    $('##{rawJS deleteId}').show();
 });
 
 $('##{rawJS saveId}').click(function() {
+    var comp = $('##{rawJS componentId}');
     var markup = $('##{rawJS contentId}').summernote('code');
-    $('##{rawJS contentId}').summernote('destroy');
-    $(this).hide();
+
+    var action = {
+        tag: "UpdateComp",
+        contents: [comp.data('comp-index'), markup]
+    };
+
+    runPatch(action, () => {
+        $('##{rawJS contentId}').summernote('destroy');
+        $('##{rawJS saveId}').hide();
+        $('##{rawJS deleteId}').hide();
+    });
 });
+
+$('##{rawJS deleteId}').click(function() {
+    var comp = $('##{rawJS componentId}');
+
+    var action = {
+        tag: "DeleteComp",
+        contents: comp.data('comp-index')
+    };
+
+    runPatch(action, () => {
+        comp.remove();
+    });
+});
+
+function runPatch(action, successCallback) {
+    $.ajax({
+        type: "PATCH",
+        contentType: "application/json",
+        url: "@{SectionR sectionId}",
+        data: JSON.stringify(action),
+        success: function(data, textStatus, jqxhr) {
+            if(jqxhr.status == 200)
+                successCallback(data, textStatus, jqxhr);
+            else
+                alert("Action failed: " + textStatus);
+        },
+        error: function(jqxhr, textStatus, errType) {
+            alert("Action failed: " + textStatus);
+        }
+    });
+}

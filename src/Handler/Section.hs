@@ -1,4 +1,3 @@
-{-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TemplateHaskell #-}
@@ -13,7 +12,6 @@ import Handler.Component
 import Handler.Modal
 import Handler.Images
 import qualified Data.List as L (delete, (!!))
-import Data.Aeson.Types
 import Text.Blaze (preEscapedText)
 import Yesod.Form.Bootstrap4 (BootstrapFormLayout (..), renderBootstrap4)
 
@@ -91,21 +89,21 @@ ncFormIdent url = url <> "-new-comp"
 
 patchSectionR :: SectionId -> Handler ()
 patchSectionR sectionId = do
-    change <- requireCheckJsonBody :: Handler SectionUpdate
+    change <- requireCheckJsonBody :: Handler ComponentUpdate
     section <- liftHandler $ runDB $ getJust sectionId
     let oldConts = sectionContent section
     return ()
-    -- case change of
-    --     DelComp compIx -> do
-    --         let newConts = oldConts -! compIx
-    --         runDB $ update sectionId [SectionContent =. newConts]
-    --         sendResponse ("COMPONENT DELETED" :: Text)
-    --     UpdateComp compIx t -> do
-    --         boundsCheckM_ oldConts compIx $
-    --             \n xs -> runDB $ update (xs L.!! n) [MarkupContent =. preEscapedText t]
-    --         sendResponse ("COMPONENT UPDATED" :: Text)
+    case change of
+        DeleteComp compIx -> boundsCheckM_ oldConts compIx $ do
+            let newConts = oldConts -! compIx
+            deleteComponent $ oldConts L.!! compIx
+            runDB $ update sectionId [SectionContent =. newConts]
+            sendResponse ("COMPONENT DELETED" :: Text)
+        UpdateComp compIx t -> boundsCheckM_ oldConts compIx $ do
+            let (CMarkup mId) = oldConts L.!! compIx
+            runDB $ update mId [MarkupContent =. preEscapedText t]
+            sendResponse ("COMPONENT UPDATED" :: Text)
 
--- belongsTo function is a thing
 deleteSectionR :: SectionId -> Handler ()
 deleteSectionR sectionId = do
     mSection <- runDB $ get sectionId
@@ -113,19 +111,9 @@ deleteSectionR sectionId = do
         Nothing -> return ()
         Just section -> do
             removeSectionFromGuide sectionId (sectionGuideId section)
-            --mapM_ (runDB . delete) $ sectionContent section
+            mapM_ deleteComponent $ sectionContent section
             runDB $ delete sectionId
             sendResponse ("SECTION DELETED" :: Text)
-
--- deleteComp :: Component -> Handler ()
--- deleteComp (CMarkup markupId) = runDB $ delete markupId
-
--- deleteComp (CToggle t) = case t of
---     ToggleTexts _ toggles -> deleteToggles toggles
---     ToggleImages _ toggles -> deleteToggles toggles
---     where
---         deleteToggles :: [ToggleOption a] -> Handler ()
---         deleteToggles = mapM_ $ runDB . delete . snd
 
 removeSectionFromGuide :: SectionId -> GuideId -> Handler ()
 removeSectionFromGuide sectionId guideId = do
@@ -145,16 +133,3 @@ sectionForm guideId msection = Section
     <*> pure (maybe [] sectionContent msection)
     where
         images = optionsPersistKey [] [Asc ImageCreated] imageName
-
-type CompIx = Int
-
-data SectionUpdate
-    = DelComp CompIx
-    | UpdateComp CompIx Text
-    deriving (Show, Read, Eq, Generic)
-
-instance ToJSON SectionUpdate where
-    toEncoding = genericToEncoding defaultOptions
-
-instance FromJSON SectionUpdate where
-    parseJSON = genericParseJSON defaultOptions
