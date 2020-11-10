@@ -23,9 +23,11 @@ getSectionWidget sectionId = do
                 (sFormIdent $ sectionUrl section)
                 (sectionForm guideId $ Just section)
 
-    ncForm <- liftHandler $ genBs4FormIdentify
-                (ncFormIdent $ sectionUrl section)
-                compForm
+    ncForm <- liftHandler $ generateFormPost
+        $ identifyForm (ncFormIdent $ sectionUrl section) compForm
+    -- ncForm <- liftHandler $ genBs4FormIdentify
+    --             (ncFormIdent $ sectionUrl section)
+    --             compForm
 
     let sectionModal = mkModal "Edit" sForm
         newCompModal = mkModal "Add Component" ncForm
@@ -45,9 +47,12 @@ postSectionWidget sectionId = do
                                         (sFormIdent $ sectionUrl section)
                                         (sectionForm guideId $ Just section)
 
-    ((ncRes, ncWidget), ncEnctype) <- liftHandler $ runBs4FormIdentify
-                                        (ncFormIdent $ sectionUrl section)
-                                        compForm
+    ((ncRes, ncWidget), ncEnctype) <- liftHandler $ runFormPost
+            $ identifyForm (ncFormIdent $ sectionUrl section) compForm
+    
+    -- ((ncRes, ncWidget), ncEnctype) <- liftHandler $ runBs4FormIdentify
+    --                                     (ncFormIdent $ sectionUrl section)
+    --                                     compForm
 
     let sectionModal = mkModal "Edit" (sWidget, sEnctype)
         newCompModal = mkModal "Add Component" (ncWidget, ncEnctype)

@@ -123,3 +123,16 @@ parseExt "image/jpeg" = Just JPG
 parseExt "image/png" = Just PNG
 parseExt "image/gif" = Just GIF
 parseExt _ = Nothing
+
+-- imageSelectField :: Field Handler ImageId
+-- imageSelectField = Field
+--     { fieldParse = \xs _ -> case xs of
+--         [] -> Right Nothing
+--         ("" : _) -> Right Nothing
+--         ("none" : _) -> Right Nothing
+--         (x : _) -> do
+--             mimg <- runDB $ getBy (UniqueImageId x)
+--             return $ maybe (Right Nothing) Left mimg
+--     , fieldView = 
+--     , fieldEnctype = UrlEncoded
+--     }

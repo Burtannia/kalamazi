@@ -12,25 +12,87 @@ import Import
 import Handler.Images
 import Handler.Modal
 import Summernote
+import Data.List (foldr1)
 import Data.Maybe (fromJust)
 import Text.Julius (rawJS)
 import Data.Aeson.Types
+import Control.Arrow ((&&&))
 import Yesod.Form.Bootstrap4 (BootstrapFormLayout (..), renderBootstrap4)
 
 import Model.Guide
 
-compForm :: AForm Handler ComponentType
-compForm = areq (radioField $ optionsPairs components) "Component Type" Nothing
-    where
-        components :: [(Text, ComponentType)]
-        components = [("Markup", CT_Markup)]
+compForm :: Form ComponentType
+compForm extra = do
+    images <- lift $ runDB getAllImages
 
-data ComponentType = CT_Markup -- | CT_Toggle
+    let markupList = [("Markup" :: Text, CT_Markup)]
+        markupSettings = "Markup" {fsName = Just "compField"}
+        markupField = radioField $ return $ mkOptions "markup" markupList
+
+        textList =
+            [ ("Toggle Group |" :: Text, CT_Toggle_Text SpaceLine)
+            , ("Toggle Group >", CT_Toggle_Text SpaceChev) ]
+        textSettings = "Text Toggle" {fsName = Just "compField"}
+        textField = radioField $ return $ mkOptions "text" textList
+        
+        mkImageOpt e = (imageName $ entityVal e, CT_Toggle_Image $ entityKey e)
+        imageList = map mkImageOpt images
+        imageSettings = "Image Toggle" {fsName = Just "compField"}
+        imageField = radioField $ return $ mkOptions "image" imageList
+
+    (markupRes, markupView) <- mreq markupField markupSettings Nothing
+    (textRes, textView) <- mreq textField textSettings Nothing
+    (imageRes, imageView) <- mreq imageField imageSettings Nothing
+
+    liftIO $ print markupRes
+    liftIO $ print textRes
+    liftIO $ print imageRes
+
+    let view =
+            [whamlet|
+                #{extra}
+                <div> Markup:
+                ^{fvInput markupView}
+                <div> Text Toggle:
+                ^{fvInput textView}
+                <div> Image Toggle:
+                ^{fvInput imageView}
+            |]
+
+        rs = [markupRes, textRes, imageRes]
+        res = fromMaybe (foldr1 (<|>) rs) (listToMaybe $ filter isSuccess rs)
+
+    liftIO $ print res
+
+    return (res, view)
+    
+isSuccess :: FormResult a -> Bool
+isSuccess (FormSuccess _) = True
+isSuccess _ = False
+    
+mkOptions :: Text -> [(Text, a)] -> OptionList a
+mkOptions prefix xs = mkOptionList opts
+    where
+        mkOption (ix, (disp, val)) = Option disp val $ prefix <> tshow ix
+        opts = map mkOption $ withIndexes xs
+
+data ComponentType
+    = CT_Markup
+    | CT_Toggle_Text SpaceChar
+    | CT_Toggle_Image ImageId
     deriving (Show, Read, Eq)
 
 createComponent :: ComponentType -> Handler Component
-createComponent CT_Markup = liftM CMarkup $
-    runDB $ insert $ Markup $ preEscapedToMarkup ("Click to edit..." :: Text)
+createComponent CT_Markup = liftM CMarkup createBlankMarkup
+createComponent (CT_Toggle_Text sc) = liftM CToggle $ do
+    markup <- createBlankMarkup
+    return $ ToggleTexts sc [("Blank Toggle", markup)]
+createComponent (CT_Toggle_Image bg) = return $
+    CToggle $ ToggleImages bg []
+
+createBlankMarkup :: Handler MarkupId
+createBlankMarkup = runDB $
+    insert $ Markup $ preEscapedToMarkup ("Click to edit..." :: Text)
 
 displayComponent :: SectionId -> Int -> Component -> Widget
 displayComponent sectionId cIx (CMarkup markupId) = do
@@ -42,16 +104,16 @@ displayComponent sectionId cIx (CMarkup markupId) = do
     addStylesheet $ StaticR summernote_summernotebs4_css
     addScript $ StaticR summernote_summernotebs4_js
     $(widgetFile "components/markup")
+displayComponent sectionId cIx (CToggle t) = [whamlet|Potato|]
 
 deleteComponent :: Component -> Handler ()
 deleteComponent (CMarkup markupId) = runDB $ delete markupId
-
--- deleteComponent (CToggle t) = case t of
---     ToggleTexts _ toggles -> deleteToggles toggles
---     ToggleImages _ toggles -> deleteToggles toggles
---     where
---         deleteToggles :: [ToggleOption a] -> Handler ()
---         deleteToggles = mapM_ $ runDB . delete . snd
+deleteComponent (CToggle t) = case t of
+    ToggleTexts _ toggles -> deleteToggles toggles
+    ToggleImages _ toggles -> deleteToggles toggles
+    where
+        deleteToggles :: [ToggleOption a] -> Handler ()
+        deleteToggles = mapM_ $ runDB . delete . snd
 
 type CompIx = Int
 

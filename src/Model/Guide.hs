@@ -10,6 +10,7 @@
 {-# LANGUAGE DerivingStrategies #-}
 {-# LANGUAGE StandaloneDeriving #-}
 {-# LANGUAGE UndecidableInstances #-}
+
 module Model.Guide where
 
 import ClassyPrelude.Yesod
@@ -17,7 +18,7 @@ import Database.Persist.Quasi
 
 import Model.Core
 
-data Component = CMarkup MarkupId -- | CToggle ToggleGroup
+data Component = CMarkup MarkupId | CToggle ToggleGroup
     deriving (Show, Read)
 
 data SpaceChar = SpaceLine | SpaceChev

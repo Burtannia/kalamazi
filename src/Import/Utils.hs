@@ -13,7 +13,7 @@ fours xs
     | otherwise = take 4 xs : fours (drop 4 xs)
 
 withIndexes :: [a] -> [(Int, a)]
-withIndexes xs = zip [0..length xs - 1] xs
+withIndexes xs = zip [0..] xs
 
 (-!) :: [a] -> Int -> [a]
 (-!) = boundsCheck $ \n ->
