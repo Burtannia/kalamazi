@@ -57,7 +57,7 @@ postSectionWidget sectionId = do
                     (sectionBackground section)
 
     let onSuccess msg = do
-            updateGuideModified $ sectionGuideId section
+            liftHandler $ updateGuideModified $ sectionGuideId section
             setMessage msg
             redirect $ GuideR guideId
 

@@ -1,4 +1,5 @@
 {-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module Import.Utils where
 
@@ -26,9 +27,9 @@ boundsCheck f xs n
 
 boundsCheckM :: Monad m => [a] -> Int -> m b -> m (Either Text b)
 boundsCheckM xs n mb
-    | n < 0 = Left "Index out of bounds (negative)"
-    | n >= length xs = Left "Index out of bounds"
-    | otherwise = mb >>= Right
+    | n < 0 = return $ Left "Index out of bounds (negative)"
+    | n >= length xs = return $ Left "Index out of bounds"
+    | otherwise = liftM Right mb
     
 genBs4Form :: AForm Handler a -> Handler (Widget, Enctype)
 genBs4Form = generateFormPost . renderBootstrap4 BootstrapBasicForm
