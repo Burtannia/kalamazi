@@ -12,7 +12,7 @@ $('.del-img').click(function() {
     return false;
 });
 
-$(document).ready(function(){
+$(document).ready(function() {
     $("#imageSearch").on("keyup", function() {
         var value = $(this).val().toLowerCase();
         $(".image-container p").filter(function() {

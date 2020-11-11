@@ -19,6 +19,16 @@ withIndexes xs = zip [0..] xs
 (-!) = boundsCheck $ \n ->
     map snd . filter (not . (==) n . fst) . withIndexes
 
+mkOptions :: Text -> [(Text, a)] -> OptionList a
+mkOptions prefix xs = mkOptionList opts
+    where
+        mkOption (ix, (disp, val)) = Option disp val $ prefix <> tshow ix
+        opts = map mkOption $ withIndexes xs
+
+isSuccess :: FormResult a -> Bool
+isSuccess (FormSuccess _) = True
+isSuccess _ = False
+
 boundsCheck :: (Int -> [a] -> [a]) -> [a] -> Int -> [a]
 boundsCheck f xs n
     | n < 0 = xs

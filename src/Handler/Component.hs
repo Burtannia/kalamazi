@@ -16,7 +16,6 @@ import Data.List (foldr1)
 import Data.Maybe (fromJust)
 import Text.Julius (rawJS)
 import Data.Aeson.Types
-import Control.Arrow ((&&&))
 import Yesod.Form.Bootstrap4 (BootstrapFormLayout (..), renderBootstrap4)
 
 import Model.Guide
@@ -38,15 +37,11 @@ compForm extra = do
         mkImageOpt e = (imageName $ entityVal e, CT_Toggle_Image $ entityKey e)
         imageList = map mkImageOpt images
         imageSettings = "Image Toggle" {fsName = Just "compField"}
-        imageField = radioField $ return $ mkOptions "image" imageList
+        imageField = imageSelectField -- radioField $ return $ mkOptions "image" imageList
 
     (markupRes, markupView) <- mreq markupField markupSettings Nothing
     (textRes, textView) <- mreq textField textSettings Nothing
     (imageRes, imageView) <- mreq imageField imageSettings Nothing
-
-    liftIO $ print markupRes
-    liftIO $ print textRes
-    liftIO $ print imageRes
 
     let view =
             [whamlet|
@@ -59,22 +54,10 @@ compForm extra = do
                 ^{fvInput imageView}
             |]
 
-        rs = [markupRes, textRes, imageRes]
+        rs = [markupRes, textRes, fmap (CT_Toggle_Image . entityKey) imageRes]
         res = fromMaybe (foldr1 (<|>) rs) (listToMaybe $ filter isSuccess rs)
-
-    liftIO $ print res
-
+        
     return (res, view)
-    
-isSuccess :: FormResult a -> Bool
-isSuccess (FormSuccess _) = True
-isSuccess _ = False
-    
-mkOptions :: Text -> [(Text, a)] -> OptionList a
-mkOptions prefix xs = mkOptionList opts
-    where
-        mkOption (ix, (disp, val)) = Option disp val $ prefix <> tshow ix
-        opts = map mkOption $ withIndexes xs
 
 data ComponentType
     = CT_Markup

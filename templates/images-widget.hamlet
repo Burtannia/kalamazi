@@ -1,4 +1,4 @@
-<input type="text" #imageSearch onkeyup="filterImages()" placeholder="Search for images...">
+<input type="text" #imageSearch placeholder="Search for images...">
 $forall imgs <- imageRows
     <div .row>
         $forall i <- imgs

@@ -3,6 +3,7 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE QuasiQuotes #-}
 
 module Handler.Images where
 
@@ -10,6 +11,7 @@ import Import
 import Yesod.Form.Bootstrap4 (BootstrapFormLayout (..), renderBootstrap4)
 import System.Directory (removeFile, doesFileExist)
 import Data.Time.Format.ISO8601
+import Control.Arrow ((&&&))
 
 imagesWidget :: Widget
 imagesWidget = do
@@ -124,15 +126,73 @@ parseExt "image/png" = Just PNG
 parseExt "image/gif" = Just GIF
 parseExt _ = Nothing
 
--- imageSelectField :: Field Handler ImageId
--- imageSelectField = Field
---     { fieldParse = \xs _ -> case xs of
---         [] -> Right Nothing
---         ("" : _) -> Right Nothing
---         ("none" : _) -> Right Nothing
---         (x : _) -> do
---             mimg <- runDB $ getBy (UniqueImageId x)
---             return $ maybe (Right Nothing) Left mimg
---     , fieldView = 
---     , fieldEnctype = UrlEncoded
---     }
+instance Eq Image where
+    (==) i1 i2 = (==) (imageUuid i1) (imageUuid i2)
+
+imageSelectField :: Field Handler (Entity Image)
+imageSelectField = selectFieldHelper outerView noneView otherView opts
+    where
+        outerView = \idAttr nameAttr attrs inside -> do
+            [whamlet|
+                $newline never
+                <input type="text" #imageSearch placeholder="Search for images...">
+                <div ##{idAttr}>^{inside}
+            |]
+            toWidget
+                [julius|
+                    $(document).ready(function() {
+                        $("#imageSearch").on("keyup", function() {
+                            var value = $(this).val().toLowerCase();
+                            $(".radioImageContainer p").filter(function() {
+                                $(this).parent().parent().toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                            });
+                        });
+                    });
+                |]
+        noneView = \idAttr nameAttr isSel ->
+            [whamlet|
+                $newline never
+                <label .radio for=#{idAttr}-none>
+                    <div>
+                        <input id=#{idAttr}-none type=radio name=#{nameAttr} value=none :isSel:checked>
+                        _{MsgSelectNone}
+            |]
+        otherView = \idAttr nameAttr attrs value isSel text -> do
+            opts' <- liftHandler opts
+            let mimg = fmap entityVal $ (olReadExternal opts') value
+            [whamlet|
+                $newline never
+                <label .radio for=#{idAttr}-#{value}>
+                    <div .radioImageContainer>
+                        <input id=#{idAttr}-#{value} type=radio name=#{nameAttr} value=#{value} :isSel:checked *{attrs}>
+                        $maybe img <- mimg
+                            <img .radioImage src=@{ImagesR $ mkImageUrl img}>
+                        <p>#{text}
+            |]
+            toWidget
+                [lucius|
+                    .radioImage {
+                        max-width: 120px;
+                    }
+                    /* HIDE RADIO */
+                    [type=radio] { 
+                    position: absolute;
+                    opacity: 0;
+                    width: 0;
+                    height: 0;
+                    }
+
+                    /* IMAGE STYLES */
+                    [type=radio] + img {
+                    cursor: pointer;
+                    }
+
+                    /* CHECKED STYLES */
+                    [type=radio]:checked + img {
+                    outline: 2px solid #f00;
+                    }
+                |]
+        opts = do
+            images <- runDB getAllImages
+            let imageList = map (imageName . entityVal &&& id) images
+            return $ mkOptions "image" imageList
