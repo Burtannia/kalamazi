@@ -163,8 +163,8 @@ imageSelectField = selectFieldHelper outerView noneView otherView opts
             [whamlet|
                 $newline never
                 <label .radio for=#{idAttr}-#{value}>
-                    <div .radioImageContainer>
-                        <input id=#{idAttr}-#{value} type=radio name=#{nameAttr} value=#{value} :isSel:checked *{attrs}>
+                    <div>
+                        <input .radioForImage id=#{idAttr}-#{value} type=radio name=#{nameAttr} value=#{value} :isSel:checked *{attrs}>
                         $maybe img <- mimg
                             <img .radioImage src=@{ImagesR $ mkImageUrl img}>
                         <p>#{text}
@@ -174,22 +174,21 @@ imageSelectField = selectFieldHelper outerView noneView otherView opts
                     .radioImage {
                         max-width: 120px;
                     }
-                    /* HIDE RADIO */
-                    [type=radio] { 
-                    position: absolute;
-                    opacity: 0;
-                    width: 0;
-                    height: 0;
+                    
+                    .radioForImage { 
+                        position: absolute;
+                        opacity: 0;
+                        width: 0;
+                        height: 0;
                     }
-
-                    /* IMAGE STYLES */
-                    [type=radio] + img {
-                    cursor: pointer;
+    
+                    .radioImage {
+                        cursor: pointer;
                     }
 
                     /* CHECKED STYLES */
-                    [type=radio]:checked + img {
-                    outline: 2px solid #f00;
+                    .radioForImage:checked + img {
+                        outline: 2px solid #f00;
                     }
                 |]
         opts = do
