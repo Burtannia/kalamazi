@@ -110,8 +110,7 @@ runComponentUpdate (sectionId, section) cUpdate = do
             runDB $ update sectionId [SectionContent =. newConts]
             return "COMPONENT DELETED"
         UpdateComp compIx t -> boundsCheckM oldConts compIx $ do
-            let (CMarkup mId) = oldConts L.!! compIx
-            runDB $ update mId [MarkupContent =. preEscapedText t]
+            updateComponent (oldConts L.!! compIx) t
             return "COMPONENT UPDATED"
 
 deleteSectionR :: SectionId -> Handler ()

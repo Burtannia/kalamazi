@@ -14,8 +14,10 @@ import Handler.Modal
 import Summernote
 import Data.List (foldr1)
 import Data.Maybe (fromJust)
+import Data.Bitraversable (bisequence)
 import Text.Julius (rawJS)
 import Data.Aeson.Types
+import Text.Blaze (preEscapedText)
 import Yesod.Form.Bootstrap4 (BootstrapFormLayout (..), renderBootstrap4)
 
 import Model.Guide
@@ -78,16 +80,48 @@ createBlankMarkup = runDB $
     insert $ Markup $ preEscapedToMarkup ("Click to edit..." :: Text)
 
 displayComponent :: SectionId -> Int -> Component -> Widget
-displayComponent sectionId cIx (CMarkup markupId) = do
-    markup <- handlerToWidget $ runDB $ getJust markupId
-    componentId <- newIdent
+displayComponent sectionId cIx comp = do
+    compId <- newIdent
+    $(widgetFile "component")
+    where
+        displayComponent' compId (CMarkup markupId) = do
+            markup <- liftHandler $ runDB $ getJust markupId
+            displayMarkup compId markup
+        
+        displayComponent' compId (CToggle (ToggleTexts sc ts')) = do
+            ts <- flip mapM ts' $ liftHandler
+                                . sequence
+                                . fmap (runDB . getJust)
+            let headers = map (preEscapedText . fst) ts
+            $(widgetFile "components/toggle")
+
+        displayComponent' compId (CToggle (ToggleImages bg ts')) = do
+            ts <- flip mapM ts' $ liftHandler
+                                . bisequence
+                                . bimap mkImageSnippet (runDB . getJust)
+            let headers = map fst ts
+            $(widgetFile "components/toggle")
+        
+        mkImageSnippet imgId = do
+            img <- runDB $ getJust imgId
+            withUrlRenderer
+                [hamlet|<img src=@{ImagesR $ mkImageUrl img}>|]
+
+displayMarkup :: Text -> Markup -> Widget
+displayMarkup compId markup = do
+    addStylesheet $ StaticR summernote_summernotebs4_css
+    addScript $ StaticR summernote_summernotebs4_js
     contentId <- newIdent
     saveId <- newIdent
     deleteId <- newIdent
-    addStylesheet $ StaticR summernote_summernotebs4_css
-    addScript $ StaticR summernote_summernotebs4_js
     $(widgetFile "components/markup")
-displayComponent sectionId cIx (CToggle t) = [whamlet|Potato|]
+
+data CCS = CCS
+    { ccsSave :: Bool
+    , ccsDelete :: Bool
+    }
+
+--componentControls :: CCS -> Widget
 
 deleteComponent :: Component -> Handler ()
 deleteComponent (CMarkup markupId) = runDB $ delete markupId
@@ -97,6 +131,11 @@ deleteComponent (CToggle t) = case t of
     where
         deleteToggles :: [ToggleOption a] -> Handler ()
         deleteToggles = mapM_ $ runDB . delete . snd
+
+updateComponent :: Component -> Text -> Handler ()
+updateComponent (CMarkup markupId) txt =
+    runDB $ update markupId [MarkupContent =. preEscapedText txt]
+updateComponent (CToggle t) txt = undefined
 
 type CompIx = Int
 

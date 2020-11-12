@@ -1,0 +1,10 @@
+<div .toggleHeaders>
+    $forall (ix, val) <- withIndexes headers
+        $with isFirst <- ix == 0
+            <div .toggleHeader :isFirst:.active data-toggle-ix=#{compId}-#{ix}>
+                #{val}
+
+<div .toggleContents>
+    $forall (ix, (_, markup)) <- withIndexes ts
+        <div .toggleContent data-toggle-ix=#{compId}-#{ix}>
+            ^{displayMarkup compId markup}

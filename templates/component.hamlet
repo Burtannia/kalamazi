@@ -1,0 +1,2 @@
+<div ##{compId} data-comp-index=#{cIx}>
+    ^{displayComponent' compId comp}

@@ -1,5 +1,4 @@
-<div .component ##{componentId} data-comp-index=#{cIx}>
-    <div .markupWrapper ##{contentId}>
-        #{markupContent markup}
-    <button .btn .btn-primary ##{saveId} type="button" style="display: none">Save
-    <button .btn .btn-danger ##{deleteId} type="button" style="display: none">Delete
+<div .markupWrapper ##{contentId}>
+    #{markupContent markup}
+<button .btn .btn-primary ##{saveId} type="button" style="display: none">Save
+<button .btn .btn-danger ##{deleteId} type="button" style="display: none">Delete
