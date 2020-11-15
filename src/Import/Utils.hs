@@ -7,6 +7,10 @@ import Import.NoFoundation
 import Foundation
 import Yesod.Form.Bootstrap4 (BootstrapFormLayout (..), renderBootstrap4)
 
+safeTail :: [a] -> [a]
+safeTail [] = []
+safeTail (_:xs) = xs
+
 fours :: [a] -> [[a]]
 fours xs
     | length xs < 4 = [xs]

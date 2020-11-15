@@ -26,8 +26,13 @@ getSectionWidget sectionId = do
     ncForm <- liftHandler $ generateFormPost
         $ identifyForm (ncFormIdent $ sectionUrl section) compForm
 
+    testForm <- liftHandler
+        $ genBs4FormIdentify ("fsdfjsaoidjfd")
+        $ createCompForm (CreateToggleText SpaceLine [("Potato", "Potato Content")])
+
     let sectionModal = mkModal "Edit" sForm
         newCompModal = mkModal "Add Component" ncForm
+        testModal = mkModal "Pepega" testForm
 
     mBackground <- maybe (return Nothing)
                     (liftHandler . runDB . get)
@@ -47,8 +52,13 @@ postSectionWidget sectionId = do
     ((ncRes, ncWidget), ncEnctype) <- liftHandler $ runFormPost
             $ identifyForm (ncFormIdent $ sectionUrl section) compForm
 
+    testForm <- liftHandler
+        $ genBs4FormIdentify ("fsdfjsaoidjfd")
+        $ createCompForm (CreateMarkup "")
+
     let sectionModal = mkModal "Edit" (sWidget, sEnctype)
         newCompModal = mkModal "Add Component" (ncWidget, ncEnctype)
+        testModal = mkModal "Pepega" testForm
 
     mBackground <- maybe (return Nothing)
                     (liftHandler . runDB . get)

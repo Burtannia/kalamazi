@@ -29,6 +29,7 @@ resolver: lts-16.19
 #   - auto-update
 #   - wai
 packages:
+- /mnt/c/Projects/yesod/yesod-form-multi
 - .
 # Dependency packages to be pulled from upstream that are not in the resolver.
 # These entries can reference officially published versions as well as

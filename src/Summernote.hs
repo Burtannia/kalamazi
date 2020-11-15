@@ -10,7 +10,7 @@
 module Summernote where
 
 import Import
-import           Text.Blaze.Html.Renderer.String (renderHtml)
+import Text.Blaze (toMarkup)
 import           Text.HTML.SanitizeXSS           (sanitizeBalance)
 import           Text.Julius                     (rawJS)
 
@@ -38,4 +38,4 @@ snField' f = Field
     , fieldEnctype = UrlEncoded
     }
     where
-        showRes = either id (pack . renderHtml)
+        showRes = either toMarkup toMarkup

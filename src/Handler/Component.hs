@@ -18,7 +18,7 @@ import Data.Bitraversable (bisequence)
 import Text.Julius (rawJS)
 import Data.Aeson.Types
 import Text.Blaze (preEscapedText)
-import Yesod.Form.Bootstrap4 (BootstrapFormLayout (..), renderBootstrap4)
+import Yesod.Form.Bootstrap4 (BootstrapFormLayout (..), bfs, renderBootstrap4)
 
 import Model.Guide
 
@@ -39,7 +39,7 @@ compForm extra = do
         mkImageOpt e = (imageName $ entityVal e, CT_Toggle_Image $ entityKey e)
         imageList = map mkImageOpt images
         imageSettings = "Image Toggle" {fsName = Just "compField"}
-        imageField = imageSelectField -- radioField $ return $ mkOptions "image" imageList
+        imageField = imageSelectField
 
     (markupRes, markupView) <- mreq markupField markupSettings Nothing
     (textRes, textView) <- mreq textField textSettings Nothing
@@ -116,12 +116,64 @@ displayMarkup compId markup = do
     deleteId <- newIdent
     $(widgetFile "components/markup")
 
+--runCreateComponent :: CreateComponent -> Component
+
 data CCS = CCS
     { ccsSave :: Bool
     , ccsDelete :: Bool
+    -- some sort of edit widget
     }
 
---componentControls :: CCS -> Widget
+-- TODO:
+
+-- componentControls :: CCS -> Widget
+
+createCompForm :: CreateComponent -> AForm Handler CreateComponent
+createCompForm (CreateMarkup m) = CreateMarkup
+    <$> areq snFieldUnsanitized "Content" (Just m)
+createCompForm (CreateToggleText sc ts) = CreateToggleText
+    <$> areq (radioFieldList spaceChars) "Space Character" (Just sc)
+    <*> amulti toggleField (bfs ("Sections" :: Text)) ts 0 bs4FASettings
+    where
+        spaceChars = [ ("Vertical Line |" :: Text, SpaceLine)
+                     , ("Chevron >", SpaceChev)
+                     ]
+        toggleField = convertFieldPair "myGroup"
+            fst snd (,) textField snFieldUnsanitized
+createCompForm (CreateToggleImage brd ts) = CreateToggleImage
+    <$> areq imageSelectField "Border Image" (Just brd)
+    <*> amulti toggleField (bfs ("Sections" :: Text)) ts 0 bs4FASettings
+    where
+        toggleField = convertFieldPair "myGroup"
+            fst snd (,) imageSelectField snFieldUnsanitized
+
+convertFieldPair :: Text
+    -> (c -> a)
+    -> (c -> b)
+    -> (a -> b -> c)
+    -> Field Handler a
+    -> Field Handler b
+    -> Field Handler c
+convertFieldPair groupClass toA toB toC fa fb = Field
+    { fieldParse = \rawVals fileVals -> do
+        let parseA = fieldParse fa
+            parseB = fieldParse fb
+
+        eResA <- parseA rawVals fileVals
+        eResB <- parseB (safeTail rawVals) (safeTail fileVals)
+
+        return $ liftA2 (liftA2 toC) eResA eResB
+
+    , fieldView = \ti tn as eRes req -> do
+        let viewA = fieldView fa
+            viewB = fieldView fb
+        [whamlet|
+            <div .#{groupClass}>
+                ^{viewA (ti <> "-A") tn as (fmap toA eRes) req}
+                ^{viewB (ti <> "-B") tn as (fmap toB eRes) req}
+        |]
+    , fieldEnctype = fieldEnctype fa
+    }
 
 deleteComponent :: Component -> Handler ()
 deleteComponent (CMarkup markupId) = runDB $ delete markupId
