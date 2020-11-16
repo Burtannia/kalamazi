@@ -56,10 +56,23 @@
     <hr>
         <div>
             <h3>Latest Video:
-            <iframe #youtube-latest src="" title="" style="display: none">
+            <iframe #youtube-latest
+                src="" title=""
+                frameborder="0" allowfullscreen="true" scrolling="no" style="display: none"
+                height="378" width="620">
 
     <hr>
+        <div>
+            <h3>Stream JS:
+            <div #twitch-embed>
 
+    <hr>
+        <div>
+            <h3>Stream Iframe:
+            <iframe #twitch-iframe
+                src="https://player.twitch.tv/?channel=kalamazi&parent=www.kalamazi.com&parent=localhost"
+                frameborder="0" allowfullscreen="true" scrolling="no"
+                height="378" width="620">
     <!-- Forms
         ================================================== -->
     <div .bs-docs-section>

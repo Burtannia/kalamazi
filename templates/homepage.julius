@@ -59,3 +59,12 @@ $.ajax({
         console.log("Error loading latest YouTube video");
     }
 });
+
+$(function() {
+    new Twitch.Player("twitch-embed", {
+        channel: "kalamazi",
+        muted: true,
+        width: 854,
+        height: 480
+    });
+});

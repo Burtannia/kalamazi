@@ -28,8 +28,8 @@ getHomeR = do
     let submission = Nothing :: Maybe FileForm
         handlerName = "getHomeR" :: Text
     allComments <- runDB $ getAllComments
-
     defaultLayout $ do
+        addScriptRemote twitchEmbed
         let (commentFormId, commentTextareaId, commentListId) = commentIds
         aDomId <- newIdent
         setTitle "Welcome To Yesod!"
@@ -43,8 +43,8 @@ postHomeR = do
             FormSuccess res -> Just res
             _ -> Nothing
     allComments <- runDB $ getAllComments
-
     defaultLayout $ do
+        addScriptRemote twitchEmbed
         let (commentFormId, commentTextareaId, commentListId) = commentIds
         aDomId <- newIdent
         setTitle "Welcome To Yesod!"
@@ -65,6 +65,9 @@ sampleForm = renderBootstrap3 BootstrapBasicForm $ FileForm
                 , ("placeholder", "File description")
                 ]
             }
+
+twitchEmbed :: Text
+twitchEmbed = "https://player.twitch.tv/js/embed/v1.js"
 
 commentIds :: (Text, Text, Text)
 commentIds = ("js-commentForm", "js-createCommentTextarea", "js-commentList")
