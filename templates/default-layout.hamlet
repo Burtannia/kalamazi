@@ -28,14 +28,10 @@
     $maybe msg <- mmsg
       <div .alert.alert-info #message>#{msg}
 
-
-$if (Just HomeR == mcurrentRoute)
-    ^{widget}
-$else
-    <div .container>
-        <div .row>
-            <div .col-md-12>
-                ^{widget}
+<div .container>
+    <div .row>
+        <div .col-md-12>
+            ^{widget}
 
 <!-- Footer -->
 <footer .footer>

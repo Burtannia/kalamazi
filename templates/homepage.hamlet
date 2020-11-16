@@ -1,21 +1,13 @@
-<div>
-    <h3>Latest Video:
-    <iframe #youtube-latest
-        src="" title=""
-        frameborder="0" allowfullscreen="true" scrolling="no" style="display: none"
-        height="378" width="620">
+<h3>Latest Video:
+<iframe #youtube-latest
+    src="" title=""
+    frameborder="0" allowfullscreen="true" scrolling="no" style="display: none"
+    height="288" width="512">
 
 <hr>
 
-<div>
-    <h3>Stream JS:
-    <div #twitch-embed>
-
-<hr>
-
-<div>
-    <h3>Stream Iframe:
-    <iframe #twitch-iframe
-        src="https://player.twitch.tv/?channel=kalamazi&parent=www.kalamazi.com&parent=localhost"
-        frameborder="0" allowfullscreen="true" scrolling="no"
-        height="378" width="620">
+<h3>Stream Iframe:
+<iframe #twitch-iframe
+    src="https://player.twitch.tv/?channel=kalamazi&parent=www.kalamazi.com&parent=localhost"
+    frameborder="0" allowfullscreen="true" scrolling="no"
+    height="288" width="512">
