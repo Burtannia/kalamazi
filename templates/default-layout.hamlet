@@ -1,5 +1,4 @@
-
-<!-- Static navbar -->
+<!-- Navbar -->
 <nav .navbar .navbar-expand-lg .navbar-dark .bg-dark>
     <button type="button" .navbar-toggler data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar" aria-label="Toggle navigation">
         <span .navbar-toggler-icon>

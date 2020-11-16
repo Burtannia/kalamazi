@@ -19,7 +19,3 @@
 /admin/guides GuideManagerR GET POST
 
 /section/#SectionId SectionR PATCH DELETE
-
-/comments CommentR POST
-
-/profile ProfileR GET
