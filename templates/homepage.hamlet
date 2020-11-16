@@ -54,6 +54,11 @@
                             If you had javascript enabled then you wouldn't be seeing this.
 
     <hr>
+        <div>
+            <h3>Latest Video:
+            <iframe #youtube-latest src="" title="" style="display: none">
+
+    <hr>
 
     <!-- Forms
         ================================================== -->

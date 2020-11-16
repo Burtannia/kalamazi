@@ -33,7 +33,7 @@ getHomeR = do
         let (commentFormId, commentTextareaId, commentListId) = commentIds
         aDomId <- newIdent
         setTitle "Welcome To Yesod!"
-        $(widgetFile "homepage")
+        $(widgetFile "homepage")        
 
 postHomeR :: Handler Html
 postHomeR = do

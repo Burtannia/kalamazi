@@ -32,3 +32,30 @@ $(function() {
 
   });
 });
+
+$.ajax({
+    url: "https://youtube.googleapis.com/youtube/v3/search",
+    type: 'GET',
+    data: {
+        part: "snippet",
+        channelId: "UCp4IOwajCQ50sEqp-SA4g8g",
+        maxResults: 1,
+        order: "date",
+        type: "video",
+        key: "AIzaSyBd2By_HmH_tvk5cm6nDQfcYeXstPNm_mU"
+    },
+    success: function (data, textStatus, jqxhr) {
+        if(jqxhr.status == 200)
+        {
+            var vidId = data.items[0].id.videoId;
+            var title = data.items[0].snippet.title;
+            var url = "https://www.youtube.com/embed/" + vidId;
+            $('#youtube-latest').prop('title', title);
+            $('#youtube-latest').prop('src', url);
+            $('#youtube-latest').show();
+        }
+    },
+    error: function (data) {
+        console.log("Error loading latest YouTube video");
+    }
+});
