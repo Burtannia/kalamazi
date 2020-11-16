@@ -135,8 +135,9 @@ imageSelectField = selectFieldHelper outerView noneView otherView opts
         outerView = \idAttr nameAttr attrs inside -> do
             [whamlet|
                 $newline never
-                <input type="text" #imageSearch placeholder="Search for images...">
-                <div ##{idAttr}>^{inside}
+                <div>
+                    <input type="text" #imageSearch placeholder="Search for images...">
+                    <div ##{idAttr}>^{inside}
             |]
             toWidget
                 [julius|

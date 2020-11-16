@@ -34,6 +34,12 @@ snField' f = Field
                 $(document).ready(function() {
                     $('##{rawJS idAttr}').summernote();
                 });
+
+                $('##{rawJS idAttr}').change(function(e) {
+                    console.log("Changed");
+                    $('##{rawJS idAttr}').summernote('destroy');
+                    $('##{rawJS idAttr}').summernote();
+                });
             |]
     , fieldEnctype = UrlEncoded
     }

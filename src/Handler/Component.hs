@@ -125,6 +125,10 @@ data CCS = CCS
     }
 
 -- TODO:
+-- consider how to use createCompForm to make new components
+-- not just edit existing ones
+-- maybe present the different forms for each possibility
+-- then switch between them with JS, use input form if necessary
 
 -- componentControls :: CCS -> Widget
 
@@ -138,23 +142,22 @@ createCompForm (CreateToggleText sc ts) = CreateToggleText
         spaceChars = [ ("Vertical Line |" :: Text, SpaceLine)
                      , ("Chevron >", SpaceChev)
                      ]
-        toggleField = convertFieldPair "myGroup"
+        toggleField = convertFieldPair
             fst snd (,) textField snFieldUnsanitized
 createCompForm (CreateToggleImage brd ts) = CreateToggleImage
     <$> areq imageSelectField "Border Image" (Just brd)
     <*> amulti toggleField (bfs ("Sections" :: Text)) ts 0 bs4FASettings
     where
-        toggleField = convertFieldPair "myGroup"
+        toggleField = convertFieldPair
             fst snd (,) imageSelectField snFieldUnsanitized
 
-convertFieldPair :: Text
-    -> (c -> a)
+convertFieldPair :: (c -> a)
     -> (c -> b)
     -> (a -> b -> c)
     -> Field Handler a
     -> Field Handler b
     -> Field Handler c
-convertFieldPair groupClass toA toB toC fa fb = Field
+convertFieldPair toA toB toC fa fb = Field
     { fieldParse = \rawVals fileVals -> do
         let parseA = fieldParse fa
             parseB = fieldParse fb
@@ -168,7 +171,7 @@ convertFieldPair groupClass toA toB toC fa fb = Field
         let viewA = fieldView fa
             viewB = fieldView fb
         [whamlet|
-            <div .#{groupClass}>
+            <div ##{ti}>
                 ^{viewA (ti <> "-A") tn as (fmap toA eRes) req}
                 ^{viewB (ti <> "-B") tn as (fmap toB eRes) req}
         |]

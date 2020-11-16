@@ -26,9 +26,12 @@ getSectionWidget sectionId = do
     ncForm <- liftHandler $ generateFormPost
         $ identifyForm (ncFormIdent $ sectionUrl section) compForm
 
+    imgs <- liftHandler $ runDB getAllImages
+    let (i:j:_) = imgs
     testForm <- liftHandler
         $ genBs4FormIdentify ("fsdfjsaoidjfd")
-        $ createCompForm (CreateToggleText SpaceLine [("Potato", "Potato Content")])
+        $ createCompForm (CreateToggleImage i [(j, "Potato Content")])
+        --(CreateToggleText SpaceLine [("Title", "Content")])
 
     let sectionModal = mkModal "Edit" sForm
         newCompModal = mkModal "Add Component" ncForm
