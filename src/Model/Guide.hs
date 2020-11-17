@@ -31,12 +31,6 @@ data ToggleGroup
     | ToggleImages ImageId [ToggleOption ImageId]
     deriving (Show, Read)
 
--- A form friendly representation of a component to be constructed.
-data CreateComponent
-    = CreateMarkup Html
-    | CreateToggleText SpaceChar [(Text, Html)]
-    | CreateToggleImage (Entity Image) [(Entity Image, Html)]
-
 type Grid = [Row]
 type Row = [Column]
 type Column = [Component]

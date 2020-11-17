@@ -12,7 +12,7 @@ module Handler.Guide where
 import Import
 import Handler.Component
 import Handler.Section
-import Handler.Images (getAllImages)
+import Handler.Images
 import Handler.Modal
 import qualified Data.Text as T (append)
 import Text.Blaze (text)
@@ -109,10 +109,8 @@ guideForm mg = Guide
     <*> areq textField "Url" (guideUrl <$> mg) -- ensure it's valid for a url
     <*> areq checkBoxField "Published" (guideIsPublished <$> mg)
     <*> lift (liftIO getCurrentTime)
-    <*> areq (selectField images) "Icon" (guideIcon <$> mg)
+    <*> areq imageSelectField "Icon" (guideIcon <$> mg)
     <*> pure (maybe [] guideSections mg)
-    where
-        images = optionsPersistKey [] [Asc ImageCreated] imageName
 
 deleteGuideR :: GuideId -> Handler ()
 deleteGuideR guideId = undefined

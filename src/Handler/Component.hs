@@ -56,7 +56,7 @@ compForm extra = do
                 ^{fvInput imageView}
             |]
 
-        rs = [markupRes, textRes, fmap (CT_Toggle_Image . entityKey) imageRes]
+        rs = [markupRes, textRes, fmap CT_Toggle_Image imageRes]
         res = fromMaybe (foldr1 (<|>) rs) (listToMaybe $ filter isSuccess rs)
         
     return (res, view)
@@ -131,6 +131,12 @@ data CCS = CCS
 -- then switch between them with JS, use input form if necessary
 
 -- componentControls :: CCS -> Widget
+
+-- A form friendly representation of a component to be constructed.
+data CreateComponent
+    = CreateMarkup Html
+    | CreateToggleText SpaceChar [(Text, Html)]
+    | CreateToggleImage ImageId [(ImageId, Html)]
 
 createCompForm :: CreateComponent -> AForm Handler CreateComponent
 createCompForm (CreateMarkup m) = CreateMarkup

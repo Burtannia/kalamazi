@@ -8,6 +8,7 @@
 module Handler.Images where
 
 import Import
+import qualified Data.List as L (head)
 import Yesod.Form.Bootstrap4 (BootstrapFormLayout (..), renderBootstrap4)
 import System.Directory (removeFile, doesFileExist)
 import Data.Time.Format.ISO8601
@@ -160,7 +161,7 @@ parseExt _ = Nothing
 instance Eq Image where
     (==) i1 i2 = (==) (imageUuid i1) (imageUuid i2)
 
-imageSelectField :: Field Handler (Entity Image)
+imageSelectField :: Field Handler ImageId
 imageSelectField = selectFieldHelper outerView noneView otherView opts
     where
         outerView = \idAttr nameAttr attrs inside -> do
@@ -192,14 +193,17 @@ imageSelectField = selectFieldHelper outerView noneView otherView opts
             |]
         otherView = \idAttr nameAttr attrs value isSel text -> do
             opts' <- liftHandler opts
-            let mimg = fmap entityVal $ (olReadExternal opts') value
+            let mimgId = (olReadExternal opts') value
+            mimg <- case mimgId of
+                Nothing -> return Nothing
+                Just imgId -> liftHandler $ fmap (listToMaybe . filter ((== imgId) . entityKey)) imgs
             [whamlet|
                 $newline never
                 <label .radio for=#{idAttr}-#{value}>
                     <div .radioImageContainer>
                         <input .radioForImage id=#{idAttr}-#{value} type=radio name=#{nameAttr} value=#{value} :isSel:checked *{attrs}>
                         $maybe img <- mimg
-                            <img .radioImage src=@{ImagesR $ mkImageUrl img}>
+                            <img .radioImage src=@{ImagesR $ mkImageUrl $ entityVal img}>
                         <p>#{text}
             |]
             toWidget
@@ -223,7 +227,9 @@ imageSelectField = selectFieldHelper outerView noneView otherView opts
                         outline: 2px solid #f00;
                     }
                 |]
-        opts = do
+        opts = fmap fst opts'
+        imgs = fmap snd opts'
+        opts' = do
             images <- runDB getAllImages
-            let imageList = map (imageName . entityVal &&& id) images
-            return $ mkOptions "image" imageList
+            let imageList = map (imageName . entityVal &&& entityKey) images
+            return $ (mkOptions "image" imageList, images)

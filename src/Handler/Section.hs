@@ -30,7 +30,7 @@ getSectionWidget sectionId = do
     let (i:j:_) = imgs
     testForm <- liftHandler
         $ genBs4FormIdentify ("fsdfjsaoidjfd")
-        $ createCompForm (CreateToggleImage i [(j, "Potato Content")])
+        $ createCompForm (CreateToggleImage (entityKey i) [(entityKey j, "Potato Content")])
         --(CreateToggleText SpaceLine [("Title", "Content")])
 
     let sectionModal = mkModal "Edit" sForm
