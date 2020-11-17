@@ -60,19 +60,50 @@ msgRedirect msg = do
 deleteImageR :: ImageId -> Handler ()
 deleteImageR imgId = do
     mImg <- runDB $ get imgId
-    
     case mImg of
-        Nothing -> return ()
-            -- add proper error messages
+        Nothing ->
+            sendResponseStatus status404 ("Image not found" :: Text)
         Just img -> do
-            app <- getYesod
-            let imgPath = mkImagePath (appImageDir $ appSettings app) img
-            liftIO $ removeFile imgPath
-            stillExists <- liftIO $ doesFileExist imgPath
+            minUseBy <- imageInUse imgId
+            case minUseBy of
+                Just name -> sendResponseStatus status403 $
+                    "Image in use by " <> name
+                Nothing -> do
+                    app <- getYesod
+                    let imgPath = mkImagePath (appImageDir $ appSettings app) img
+                    liftIO $ removeFile imgPath
+                    stillExists <- liftIO $ doesFileExist imgPath
+                    unless stillExists $ do
+                        runDB $ delete imgId
+                        sendResponse ("Image Deleted" :: Text)   
 
-            unless stillExists $ do
-                runDB $ delete imgId
-                return () -- add proper message        
+imageInUse :: ImageId -> Handler (Maybe Text)
+imageInUse imgId = do
+    guides <- runDB $ selectList [] [Asc GuideModified]
+    uses <- mapM (helper . entityVal) guides
+    return $ listToMaybe $ catMaybes uses
+    where
+        helper g = do
+            inUse <- guideUsesImg imgId g
+            return $ if inUse
+                then Just $ guideTitle g
+                else Nothing
+
+guideUsesImg :: ImageId -> Guide -> Handler Bool
+guideUsesImg imgId g = do
+    sections <- mapM (runDB . getJust) (guideSections g)
+    let isIcon = guideIcon g == imgId
+    return $ or $ isIcon : map (sectionUsesImg imgId) sections
+
+sectionUsesImg :: ImageId -> Section -> Bool
+sectionUsesImg imgId s = or $
+    (Just imgId == sectionBackground s)
+    : map (componentUsesImg imgId) (sectionContent s)
+
+componentUsesImg :: ImageId -> Component -> Bool
+componentUsesImg imgId (CToggle (ToggleImages bg ts)) =
+    or $ map (imgId ==) (bg : map fst ts)
+componentUsesImg _ _ = False
 
 getAllImages :: DB [Entity Image]
 getAllImages = selectList [] [Asc ImageCreated]

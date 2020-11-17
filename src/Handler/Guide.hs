@@ -69,7 +69,7 @@ postGuideR guideId = do
             redirect $ GuideR newId
         _ -> return ()
 
-    -- Sections    
+    -- Sections
     let sections = guideSections guide
         sectionWidgets = map postSectionWidget sections
 
@@ -107,17 +107,6 @@ guideForm mg = Guide
     <*> pure (maybe [] guideSections mg)
     where
         images = optionsPersistKey [] [Asc ImageCreated] imageName
-        -- improve this to show a preview of the image
-        -- also allow searching
-
-{-
-remind of lost changes when closing modal
-
-delete section uses ajax to SectionR
-
-deleting a component might be a little more tricky
-maybe send component index?
--}
 
 deleteGuideR :: GuideId -> Handler ()
 deleteGuideR guideId = undefined

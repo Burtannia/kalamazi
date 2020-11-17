@@ -130,14 +130,14 @@ deleteSectionR :: SectionId -> Handler ()
 deleteSectionR sectionId = do
     mSection <- runDB $ get sectionId
     case mSection of
-        Nothing -> return ()
+        Nothing -> sendResponseStatus status404 ("Section does not exist" :: Text)
         Just section -> do
             let guideId = sectionGuideId section
             updateGuideModified guideId
             removeSectionFromGuide sectionId guideId
             mapM_ deleteComponent $ sectionContent section
             runDB $ delete sectionId
-            sendResponse ("SECTION DELETED" :: Text)
+            sendResponse ("Section deleted" :: Text)
 
 updateGuideModified :: GuideId -> Handler ()
 updateGuideModified guideId = liftIO getCurrentTime >>=
