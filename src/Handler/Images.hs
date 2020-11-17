@@ -37,13 +37,13 @@ postImageManagerR = do
 
             let file = iuFile uploadImg
                 mExt = parseExt $ fileContentType file
-                uuid = iso8601Show $ iuTime uploadImg
                 dir = appImageDir $ appSettings app
             
             case mExt of
                 Nothing -> msgRedirect "Unsupported file type"
                 Just ext -> do
-                    let newImg = Image (pack uuid) (iuName uploadImg) ext (iuTime uploadImg)
+                    let uuid = (iso8601Show $ iuTime uploadImg) <> (pack $ toLower $ show ext)
+                        newImg = Image (pack uuid) (iuName uploadImg) ext (iuTime uploadImg)
                     liftIO $ fileMove (iuFile uploadImg) (mkImagePath dir newImg)
                     _ <- runDB $ insert newImg
                     msgRedirect "Image uploaded successfully"
@@ -110,15 +110,10 @@ getAllImages :: DB [Entity Image]
 getAllImages = selectList [] [Asc ImageCreated]
 
 mkImagePath :: FilePath -> Image -> FilePath
-mkImagePath dir img = dir
-    ++ ('/' : (unpack $ imageUuid img))
-    ++ ('.' : (toLower $ show $ imageExt img))
+mkImagePath dir img = dir ++ '/' : (unpack $ imageUuid img)
 
-mkImageUrl :: Image -> Route Static
-mkImageUrl img = StaticRoute [name] []
-    where
-        name = imageUuid img <> "."
-                <> (pack $ toLower $ show $ imageExt img)
+mkImageUrl :: ImageId -> Route Static
+mkImageUrl imgId = StaticRoute [tshow imgId] []
 
 data ImageUpload = ImageUpload
     { iuFile :: FileInfo
@@ -194,16 +189,13 @@ imageSelectField = selectFieldHelper outerView noneView otherView opts
         otherView = \idAttr nameAttr attrs value isSel text -> do
             opts' <- liftHandler opts
             let mimgId = (olReadExternal opts') value
-            mimg <- case mimgId of
-                Nothing -> return Nothing
-                Just imgId -> liftHandler $ fmap (listToMaybe . filter ((== imgId) . entityKey)) imgs
             [whamlet|
                 $newline never
                 <label .radio for=#{idAttr}-#{value}>
                     <div .radioImageContainer>
                         <input .radioForImage id=#{idAttr}-#{value} type=radio name=#{nameAttr} value=#{value} :isSel:checked *{attrs}>
-                        $maybe img <- mimg
-                            <img .radioImage src=@{ImagesR $ mkImageUrl $ entityVal img}>
+                        $maybe imgId <- mimgId
+                            <img .radioImage src=@{ImagesR $ mkImageUrl imgId}>
                         <p>#{text}
             |]
             toWidget
@@ -227,9 +219,7 @@ imageSelectField = selectFieldHelper outerView noneView otherView opts
                         outline: 2px solid #f00;
                     }
                 |]
-        opts = fmap fst opts'
-        imgs = fmap snd opts'
-        opts' = do
+        opts = do
             images <- runDB getAllImages
             let imageList = map (imageName . entityVal &&& entityKey) images
-            return $ (mkOptions "image" imageList, images)
+            return $ mkOptions "image" imageList

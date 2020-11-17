@@ -102,10 +102,8 @@ displayComponent sectionId cIx comp = do
             let headers = map fst ts
             $(widgetFile "components/toggle")
         
-        mkImageSnippet imgId = do
-            img <- runDB $ getJust imgId
-            withUrlRenderer
-                [hamlet|<img src=@{ImagesR $ mkImageUrl img}>|]
+        mkImageSnippet imgId = withUrlRenderer
+            [hamlet|<img src=@{ImagesR $ mkImageUrl imgId}>|]
 
 displayMarkup :: Text -> Markup -> Widget
 displayMarkup compId markup = do

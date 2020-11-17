@@ -62,11 +62,7 @@ postSectionWidget sectionId = do
     let sectionModal = mkModal "Edit" (sWidget, sEnctype)
         newCompModal = mkModal "Add Component" (ncWidget, ncEnctype)
         testModal = mkModal "Pepega" testForm
-
-    mBackground <- maybe (return Nothing)
-                    (liftHandler . runDB . get)
-                    (sectionBackground section)
-
+        
     let onSuccess msg = do
             liftHandler $ updateGuideModified $ sectionGuideId section
             setMessage msg

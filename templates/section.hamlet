@@ -3,7 +3,7 @@
     ^{sectionModal}
     <btn .btn .btn-danger .deleteSection>Delete
 
-    $maybe bg <- mBackground
+    $maybe bg <- sectionBackground section
         <img src=@{ImagesR $ mkImageUrl bg}>
 
     ^{testModal}
