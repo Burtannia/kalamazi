@@ -133,18 +133,19 @@ imageSelectField :: Field Handler (Entity Image)
 imageSelectField = selectFieldHelper outerView noneView otherView opts
     where
         outerView = \idAttr nameAttr attrs inside -> do
+            searchId <- newIdent
             [whamlet|
                 $newline never
                 <div>
-                    <input type="text" #imageSearch placeholder="Search for images...">
+                    <input type="text" ##{searchId} placeholder="Search for images...">
                     <div ##{idAttr}>^{inside}
             |]
             toWidget
                 [julius|
                     $(document).ready(function() {
-                        $("#imageSearch").on("keyup", function() {
+                        $("#" + #{searchId}).on("keyup", function() {
                             var value = $(this).val().toLowerCase();
-                            $(".radioImageContainer p").filter(function() {
+                            $("#" + #{idAttr} + " .radioImageContainer p").filter(function() {
                                 $(this).parent().parent().toggle($(this).text().toLowerCase().indexOf(value) > -1)
                             });
                         });
@@ -164,7 +165,7 @@ imageSelectField = selectFieldHelper outerView noneView otherView opts
             [whamlet|
                 $newline never
                 <label .radio for=#{idAttr}-#{value}>
-                    <div>
+                    <div .radioImageContainer>
                         <input .radioForImage id=#{idAttr}-#{value} type=radio name=#{nameAttr} value=#{value} :isSel:checked *{attrs}>
                         $maybe img <- mimg
                             <img .radioImage src=@{ImagesR $ mkImageUrl img}>
@@ -187,7 +188,6 @@ imageSelectField = selectFieldHelper outerView noneView otherView opts
                         cursor: pointer;
                     }
 
-                    /* CHECKED STYLES */
                     .radioForImage:checked + img {
                         outline: 2px solid #f00;
                     }
