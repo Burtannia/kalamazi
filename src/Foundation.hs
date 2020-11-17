@@ -278,6 +278,13 @@ instance YesodAuth App where
     redirectToReferer :: App -> Bool
     redirectToReferer _ = True
 
+    loginHandler = do
+        ma <- maybeAuthId
+        when (isJust ma) $ do
+            setMessage "You are already logged in"
+            redirect HomeR
+        redirect $ AuthR $ oauth2Url "google"
+
     authenticate :: (MonadHandler m, HandlerSite m ~ App)
                  => Creds App -> m (AuthenticationResult App)
     authenticate creds = liftHandler $ runDB $ do
