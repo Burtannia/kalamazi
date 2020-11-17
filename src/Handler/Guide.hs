@@ -57,16 +57,22 @@ postGuideR guideId = do
 
     case gResult of
         FormSuccess newGuide -> do
-            runDB $ delete guideId -- why are we doing this unless the url is new?
-            newId <- runDB $ insert newGuide -- irritating but necessary to get new id
             let newUrl = guideUrl newGuide
                 urlChanged = not $ guideUrl guide == newUrl
-            when urlChanged $
-                flip mapM_ (guideSections newGuide) $
-                    \sId -> runDB $ update sId [SectionUrl =. newUrl]
-            -- make sure replacing url works as intended and error is thrown on violated constraint
+
+            theId <-
+                if urlChanged then do
+                    newId <- runDB $ insert newGuide
+                    runDB $ delete guideId
+                    flip mapM_ (guideSections newGuide) $
+                        \sId -> runDB $ update sId [SectionGuideId =. newId]
+                    return newId
+                else do
+                    runDB $ replace guideId newGuide
+                    return guideId
+
             setMessage "Guide updated successfully"
-            redirect $ GuideR newId
+            redirect $ GuideR theId
         _ -> return ()
 
     -- Sections
