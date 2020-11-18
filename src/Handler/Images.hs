@@ -160,20 +160,20 @@ imageSelectField :: Field Handler ImageId
 imageSelectField = selectFieldHelper outerView noneView otherView opts
     where
         outerView = \idAttr nameAttr attrs inside -> do
-            searchClass <- newIdent
             [whamlet|
                 $newline never
                 <div>
-                    <input type="text" .#{searchClass} placeholder="Search for images..."
+                    <input type="text" ##{idAttr <> "-search"} placeholder="Search for images..."
                         onkeyup="searchImages(this)" onchange="showImages(this)">
                     <div ##{idAttr}>^{inside}
             |]
             toWidget
                 [julius|
                     function showImages(e) {
-                        $(e).next().find(".radioImageContainer").filter(function() {
-                            $(this).parent().show();
-                        });
+                        if ($(e).val() == "")
+                            $(e).next().find(".radioImageContainer").each(function() {
+                                $(this).parent().show();
+                            });
                     }
 
                     function searchImages(e) {

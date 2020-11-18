@@ -26,7 +26,6 @@ getSectionWidget sectionId = do
         $ identifyForm (ncFormIdent $ sectionUrl section) compForm
 
     imgs <- liftHandler $ runDB getAllImages
-    let (i:j:_) = imgs
     testForm <- liftHandler
         $ genBs4FormIdentify ("fsdfjsaoidjfd")
         $ createCompForm $ CreateToggleImage Nothing []

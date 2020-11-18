@@ -26,7 +26,7 @@ snField' f = Field
         addStylesheet $ StaticR summernote_summernotebs4_css
         addScript $ StaticR summernote_summernotebs4_js
         [whamlet|
-            <textarea id=#{idAttr} name=#{nameAttr} *{otherAttrs}>#{showRes eResult}
+            <textarea id=#{idAttr} name=#{nameAttr} *{otherAttrs} onchange="remakeSn(this)">#{showRes eResult}
         |]
         toWidget
             [julius|
@@ -34,11 +34,11 @@ snField' f = Field
                     $('##{rawJS idAttr}').summernote();
                 });
 
-                $('##{rawJS idAttr}').change(function(e) {
-                    console.log("Changed");
-                    $('##{rawJS idAttr}').summernote('destroy');
-                    $('##{rawJS idAttr}').summernote();
-                });
+                function remakeSn(e) {
+                    $(e).summernote('destroy');
+                    $(e).summernote();
+                    $(e).next('.note-editor').next('.note-editor').remove(); //horrible hack to remove duplicate
+                }
             |]
     , fieldEnctype = UrlEncoded
     }
