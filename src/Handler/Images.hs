@@ -42,7 +42,7 @@ postImageManagerR = do
             case mExt of
                 Nothing -> msgRedirect "Unsupported file type"
                 Just ext -> do
-                    let uuid = (iso8601Show $ iuTime uploadImg) <> (pack $ toLower $ show ext)
+                    let uuid = (iso8601Show $ iuTime uploadImg) <> "." <> (pack $ toLower $ show ext)
                         newImg = Image (pack uuid) (iuName uploadImg) ext (iuTime uploadImg)
                     liftIO $ fileMove (iuFile uploadImg) (mkImagePath dir newImg)
                     _ <- runDB $ insert newImg
