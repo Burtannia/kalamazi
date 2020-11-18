@@ -113,7 +113,7 @@ mkImagePath :: FilePath -> Image -> FilePath
 mkImagePath dir img = dir ++ '/' : (unpack $ imageUuid img)
 
 mkImageUrl :: ImageId -> Route Static
-mkImageUrl imgId = StaticRoute [tshow imgId] []
+mkImageUrl imgId = StaticRoute [toPathPiece imgId] []
 
 data ImageUpload = ImageUpload
     { iuFile :: FileInfo
@@ -160,23 +160,28 @@ imageSelectField :: Field Handler ImageId
 imageSelectField = selectFieldHelper outerView noneView otherView opts
     where
         outerView = \idAttr nameAttr attrs inside -> do
-            searchId <- newIdent
+            searchClass <- newIdent
             [whamlet|
                 $newline never
                 <div>
-                    <input type="text" ##{searchId} placeholder="Search for images...">
+                    <input type="text" .#{searchClass} placeholder="Search for images..."
+                        onkeyup="searchImages(this)" onchange="showImages(this)">
                     <div ##{idAttr}>^{inside}
             |]
             toWidget
                 [julius|
-                    $(document).ready(function() {
-                        $("#" + #{searchId}).on("keyup", function() {
-                            var value = $(this).val().toLowerCase();
-                            $("#" + #{idAttr} + " .radioImageContainer p").filter(function() {
-                                $(this).parent().parent().toggle($(this).text().toLowerCase().indexOf(value) > -1)
-                            });
+                    function showImages(e) {
+                        $(e).next().find(".radioImageContainer").filter(function() {
+                            $(this).parent().show();
                         });
-                    });
+                    }
+
+                    function searchImages(e) {
+                        var value = $(e).val().toLowerCase();
+                        $(e).next().find(".radioImageContainer p").filter(function() {
+                            $(this).parent().parent().toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                        });
+                    }
                 |]
         noneView = \idAttr nameAttr isSel ->
             [whamlet|
