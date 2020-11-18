@@ -17,7 +17,6 @@ import Data.Maybe (fromJust)
 import Data.Bitraversable (bisequence)
 import Text.Julius (rawJS)
 import Data.Aeson.Types
-import Text.Blaze (preEscapedText)
 import Yesod.Form.Bootstrap4 (BootstrapFormLayout (..), bfs, renderBootstrap4)
 
 import Model.Guide
@@ -92,7 +91,7 @@ displayComponent sectionId cIx comp = do
             ts <- flip mapM ts' $ liftHandler
                                 . sequence
                                 . fmap (runDB . getJust)
-            let headers = map (preEscapedText . fst) ts
+            let headers = map (preEscapedToMarkup . fst) ts
             $(widgetFile "components/toggle")
 
         displayComponent' compId (CToggle (ToggleImages bg ts')) = do
@@ -122,25 +121,24 @@ data CCS = CCS
     -- some sort of edit widget
     }
 
--- TODO:
--- consider how to use createCompForm to make new components
--- not just edit existing ones
--- maybe present the different forms for each possibility
--- then switch between them with JS, use input form if necessary
-
 -- componentControls :: CCS -> Widget
 
 -- A form friendly representation of a component to be constructed.
 data CreateComponent
-    = CreateMarkup Html
-    | CreateToggleText SpaceChar [(Text, Html)]
-    | CreateToggleImage ImageId [(ImageId, Html)]
+    = CreateMarkup (Maybe Html)
+    | CreateToggleText (Maybe SpaceChar) [(Text, Html)]
+    | CreateToggleImage (Maybe ImageId) [(ImageId, Html)]
 
-createCompForm :: CreateComponent -> AForm Handler CreateComponent
-createCompForm (CreateMarkup m) = CreateMarkup
-    <$> areq snFieldUnsanitized "Content" (Just m)
-createCompForm (CreateToggleText sc ts) = CreateToggleText
-    <$> areq (radioFieldList spaceChars) "Space Character" (Just sc)
+data ComponentData
+    = CD_Markup Html
+    | CD_ToggleText SpaceChar [(Text, Html)]
+    | CD_ToggleImage ImageId [(ImageId, Html)]
+
+createCompForm :: CreateComponent -> AForm Handler ComponentData
+createCompForm (CreateMarkup mhtml) = CD_Markup
+    <$> areq snFieldUnsanitized "Content" mhtml
+createCompForm (CreateToggleText msc ts) = CD_ToggleText
+    <$> areq (radioFieldList spaceChars) "Space Character" msc
     <*> amulti toggleField (bfs ("Sections" :: Text)) ts 0 bs4FASettings
     where
         spaceChars = [ ("Vertical Line |" :: Text, SpaceLine)
@@ -148,8 +146,8 @@ createCompForm (CreateToggleText sc ts) = CreateToggleText
                      ]
         toggleField = convertFieldPair
             fst snd (,) textField snFieldUnsanitized
-createCompForm (CreateToggleImage brd ts) = CreateToggleImage
-    <$> areq imageSelectField "Border Image" (Just brd)
+createCompForm (CreateToggleImage mbrd ts) = CD_ToggleImage
+    <$> areq imageSelectField "Border Image" mbrd
     <*> amulti toggleField (bfs ("Sections" :: Text)) ts 0 bs4FASettings
     where
         toggleField = convertFieldPair
@@ -193,18 +191,5 @@ deleteComponent (CToggle t) = case t of
 
 updateComponent :: Component -> Text -> Handler ()
 updateComponent (CMarkup markupId) txt =
-    runDB $ update markupId [MarkupContent =. preEscapedText txt]
+    runDB $ update markupId [MarkupContent =. preEscapedToMarkup txt]
 updateComponent (CToggle t) txt = undefined
-
-type CompIx = Int
-
-data ComponentUpdate
-    = DeleteComp CompIx
-    | UpdateComp CompIx Text
-    deriving (Show, Read, Eq, Generic)
-
-instance ToJSON ComponentUpdate where
-    toEncoding = genericToEncoding defaultOptions
-
-instance FromJSON ComponentUpdate where
-    parseJSON = genericParseJSON defaultOptions

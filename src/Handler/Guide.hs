@@ -15,7 +15,6 @@ import Handler.Section
 import Handler.Images
 import Handler.Modal
 import qualified Data.Text as T (append)
-import Text.Blaze (text)
 import Yesod.Form.Bootstrap4 (BootstrapFormLayout (..), renderBootstrap4)
 
 getGuideR :: GuideId -> Handler Html
@@ -38,7 +37,7 @@ getGuideR guideId = do
     let nsWidget = mkModal "New Section" nsForm
 
     defaultLayout $ do
-        setTitle $ text $ guideTitle guide
+        setTitle $ toHtml $ guideTitle guide
         $(widgetFile "guide")
     -- if admin then show edit options
 
@@ -94,7 +93,7 @@ postGuideR guideId = do
         _ -> return ()
 
     defaultLayout $ do
-        setTitle $ text $ guideTitle guide
+        setTitle $ toHtml $ guideTitle guide
         $(widgetFile "guide")
 
 gFormIdent :: Text

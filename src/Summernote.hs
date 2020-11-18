@@ -10,7 +10,6 @@
 module Summernote where
 
 import Import
-import Text.Blaze (toMarkup)
 import           Text.HTML.SanitizeXSS           (sanitizeBalance)
 import           Text.Julius                     (rawJS)
 
@@ -22,7 +21,7 @@ snField = snField' id
 
 snField' :: (Text -> Text) -> Field Handler Html
 snField' f = Field
-    { fieldParse = parseHelper $ Right . preEscapedToMarkup . f
+    { fieldParse = parseHelper (Right . preEscapedToMarkup . f)
     , fieldView = \idAttr nameAttr otherAttrs eResult isReq -> do
         addStylesheet $ StaticR summernote_summernotebs4_css
         addScript $ StaticR summernote_summernotebs4_js
@@ -44,4 +43,4 @@ snField' f = Field
     , fieldEnctype = UrlEncoded
     }
     where
-        showRes = either toMarkup toMarkup
+        showRes = either toHtml id

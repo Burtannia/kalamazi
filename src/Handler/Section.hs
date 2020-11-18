@@ -12,7 +12,6 @@ import Handler.Component
 import Handler.Modal
 import Handler.Images
 import qualified Data.List as L (delete, (!!))
-import Text.Blaze (preEscapedText)
 import Yesod.Form.Bootstrap4 (BootstrapFormLayout (..), renderBootstrap4)
 
 getSectionWidget :: SectionId -> Widget
@@ -30,8 +29,7 @@ getSectionWidget sectionId = do
     let (i:j:_) = imgs
     testForm <- liftHandler
         $ genBs4FormIdentify ("fsdfjsaoidjfd")
-        $ createCompForm (CreateToggleImage (entityKey i) [(entityKey j, "Potato Content")])
-        --(CreateToggleText SpaceLine [("Title", "Content")])
+        $ createCompForm $ CreateToggleImage Nothing []
 
     let sectionModal = mkModal "Edit" sForm
         newCompModal = mkModal "Add Component" ncForm
@@ -57,7 +55,7 @@ postSectionWidget sectionId = do
 
     testForm <- liftHandler
         $ genBs4FormIdentify ("fsdfjsaoidjfd")
-        $ createCompForm (CreateMarkup "")
+        $ createCompForm $ CreateMarkup Nothing
 
     let sectionModal = mkModal "Edit" (sWidget, sEnctype)
         newCompModal = mkModal "Add Component" (ncWidget, ncEnctype)
@@ -90,37 +88,8 @@ postSectionWidget sectionId = do
 
     $(widgetFile "section")
 
-sFormIdent :: Text -> Text
-sFormIdent url = "section-" <> url
-
-ncFormIdent :: Text -> Text
-ncFormIdent url = url <> "-new-comp"
-
 patchSectionR :: SectionId -> Handler ()
-patchSectionR sectionId = do
-    cUpdate <- requireCheckJsonBody :: Handler ComponentUpdate
-    section <- liftHandler $ runDB $ getJust sectionId
-    response <- runComponentUpdate (sectionId, section) cUpdate
-
-    case response of
-        Left err -> do
-            sendResponseStatus status500 err
-        Right msg -> do
-            updateGuideModified $ sectionGuideId section
-            sendResponse msg
-
-runComponentUpdate :: (SectionId, Section) -> ComponentUpdate -> Handler (Either Text Text)
-runComponentUpdate (sectionId, section) cUpdate = do
-    let oldConts = sectionContent section
-    case cUpdate of
-        DeleteComp compIx -> boundsCheckM oldConts compIx $ do
-            let newConts = oldConts -! compIx
-            deleteComponent $ oldConts L.!! compIx
-            runDB $ update sectionId [SectionContent =. newConts]
-            return "COMPONENT DELETED"
-        UpdateComp compIx t -> boundsCheckM oldConts compIx $ do
-            updateComponent (oldConts L.!! compIx) t
-            return "COMPONENT UPDATED"
+patchSectionR sectionId = undefined
 
 deleteSectionR :: SectionId -> Handler ()
 deleteSectionR sectionId = do
@@ -134,6 +103,12 @@ deleteSectionR sectionId = do
             mapM_ deleteComponent $ sectionContent section
             runDB $ delete sectionId
             sendResponse ("Section deleted" :: Text)
+
+sFormIdent :: Text -> Text
+sFormIdent url = "section-" <> url
+
+ncFormIdent :: Text -> Text
+ncFormIdent url = url <> "-new-comp"
 
 updateGuideModified :: GuideId -> Handler ()
 updateGuideModified guideId = liftIO getCurrentTime >>=
