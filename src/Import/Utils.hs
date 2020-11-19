@@ -1,11 +1,16 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE QuasiQuotes #-}
 
 module Import.Utils where
 
 import Import.NoFoundation
 import Foundation
 import Yesod.Form.Bootstrap4 (BootstrapFormLayout (..), renderBootstrap4)
+
+mkFormId :: [Text] -> Text
+mkFormId ts = foldr (<>) "" $ intersperse "" ts
 
 safeTail :: [a] -> [a]
 safeTail [] = []
@@ -20,8 +25,10 @@ withIndexes :: [a] -> [(Int, a)]
 withIndexes xs = zip [0..] xs
 
 (-!) :: [a] -> Int -> [a]
-(-!) = boundsCheck $ \n ->
-    map snd . filter (not . (==) n . fst) . withIndexes
+(-!) xs n = [ x | (i,x) <- withIndexes xs, not $ i == n ]
+
+(/!) :: [a] -> (a, Int) -> [a]
+(/!) xs (y, n) = [ if i == n then y else x | (i,x) <- withIndexes xs ]
 
 mkOptions :: Text -> [(Text, a)] -> OptionList a
 mkOptions prefix xs = mkOptionList opts
@@ -56,3 +63,30 @@ genBs4FormIdentify t = generateFormPost . identifyForm t . renderBootstrap4 Boot
 
 runBs4FormIdentify :: Text -> AForm Handler a -> Handler ((FormResult a, Widget), Enctype)
 runBs4FormIdentify t = runFormPost . identifyForm t . renderBootstrap4 BootstrapBasicForm
+
+convertFieldPair :: (c -> a)
+    -> (c -> b)
+    -> (a -> b -> c)
+    -> Field Handler a
+    -> Field Handler b
+    -> Field Handler c
+convertFieldPair toA toB toC fa fb = Field
+    { fieldParse = \rawVals fileVals -> do
+        let parseA = fieldParse fa
+            parseB = fieldParse fb
+
+        eResA <- parseA rawVals fileVals
+        eResB <- parseB (safeTail rawVals) (safeTail fileVals)
+
+        return $ liftA2 (liftA2 toC) eResA eResB
+
+    , fieldView = \ti tn as eRes req -> do
+        let viewA = fieldView fa
+            viewB = fieldView fb
+        [whamlet|
+            <div ##{ti}>
+                ^{viewA (ti <> "-A") tn as (fmap toA eRes) req}
+                ^{viewB (ti <> "-B") tn as (fmap toB eRes) req}
+        |]
+    , fieldEnctype = fieldEnctype fa
+    }

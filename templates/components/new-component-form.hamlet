@@ -1,0 +1,8 @@
+<div ##{compId} .tab-pane .fade :isFirst:.show :isFirst:.active role="tabpanel" data-toggle-index=#{ix}>
+    <div .modal-body>
+        <form ##{formId} method=post enctype=#{enctype}>
+            ^{formWidget}
+
+    <div .modal-footer>
+        <button type="button" .btn .btn-secondary data-dismiss="modal">Close
+        <button type="submit" .btn .btn-primary form=#{formId}>Save

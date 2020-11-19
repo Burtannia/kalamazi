@@ -1,0 +1,34 @@
+$('##{rawJS delId}').click(function() {
+    var comp = $('##{rawJS compId}');
+    var ix = comp.data('comp-index');
+
+    var action = {
+        tag: "DeleteComp",
+        contents: parseInt(ix, 10)
+    };
+
+    if(confirm("Are you sure you want to delete this component?"))
+        $.ajax({
+            type: "PATCH",
+            contentType: "application/json",
+            url: "@{SectionR sectionId}",
+            data: "" + ix,
+            success: function(data, textStatus, jqxhr) {
+                if(jqxhr.status == 200)
+                {
+                    comp.remove();
+                    $('.component').each(function() {
+                        var thisIx = $(this).data('comp-index');
+                        if (thisIx > ix)
+                            $(this).data('comp-index', thisIx - 1);
+                    });
+                }
+                else
+                    alert("Action failed with message: " + msg);
+            },
+            error: function(jqxhr, status, errType) {
+                alert("Action failed with reason: " + errType);
+                console.log(jqxhr.responseText);
+            }
+        });
+});

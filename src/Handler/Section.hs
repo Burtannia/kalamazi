@@ -4,10 +4,12 @@
 {-# LANGUAGE QuasiQuotes #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE DeriveGeneric #-}
 
 module Handler.Section where
 
 import Import
+import Data.Aeson.Types
 import Handler.Component
 import Handler.Modal
 import Handler.Images
@@ -22,17 +24,10 @@ getSectionWidget sectionId = do
                 (sFormIdent $ sectionUrl section)
                 (sectionForm guideId $ Just section)
 
-    ncForm <- liftHandler $ generateFormPost
-        $ identifyForm (ncFormIdent $ sectionUrl section) compForm
-
-    imgs <- liftHandler $ runDB getAllImages
-    testForm <- liftHandler
-        $ genBs4FormIdentify ("fsdfjsaoidjfd")
-        $ createCompForm $ CreateToggleImage Nothing []
-
     let sectionModal = mkModal "Edit" sForm
-        newCompModal = mkModal "Add Component" ncForm
-        testModal = mkModal "Pepega" testForm
+        ncWidget = genNewComponent sectionId
+        compWidgets = map (uncurry $ getCompWidget sectionId)
+            $ withIndexes $ sectionContent section
 
     mBackground <- maybe (return Nothing)
                     (liftHandler . runDB . get)
@@ -44,26 +39,46 @@ postSectionWidget :: SectionId -> Widget
 postSectionWidget sectionId = do
     section <- liftHandler $ runDB $ getJust sectionId
     let guideId = sectionGuideId section
+        content = sectionContent section
 
     ((sRes, sWidget), sEnctype) <- liftHandler $ runBs4FormIdentify
                                         (sFormIdent $ sectionUrl section)
                                         (sectionForm guideId $ Just section)
 
-    ((ncRes, ncWidget), ncEnctype) <- liftHandler $ runFormPost
-            $ identifyForm (ncFormIdent $ sectionUrl section) compForm
-
-    testForm <- liftHandler
-        $ genBs4FormIdentify ("fsdfjsaoidjfd")
-        $ createCompForm $ CreateMarkup Nothing
-
     let sectionModal = mkModal "Edit" (sWidget, sEnctype)
-        newCompModal = mkModal "Add Component" (ncWidget, ncEnctype)
-        testModal = mkModal "Pepega" testForm
-        
+    
+    
+    (ncWidget, mcomp) <- liftHandler $ runNewComponent sectionId
+    
+    liftIO $ putStrLn "c1"
+    (compWidgets, mcomps) <- liftHandler $ fmap unzip
+        $ mapM (uncurry $ postCompWidget sectionId)
+        $ withIndexes content
+    liftIO $ putStrLn "c2"
+
     let onSuccess msg = do
+            liftIO $ putStrLn "On success"
             liftHandler $ updateGuideModified $ sectionGuideId section
             setMessage msg
             redirect $ GuideR guideId
+
+    liftIO $ print mcomps
+        
+    for_ (listToMaybe $ catMaybes mcomps) $ \c@(_, ix) -> do
+        liftIO $ putStrLn "Updating component"
+        when (ix > 0 || ix >= length content) $ do
+            setMessage "Error updating component: index out of bounds"
+            redirect $ GuideR guideId
+        liftIO $ putStrLn "Running query"
+        liftHandler $ runDB $ update sectionId
+            [ SectionContent =. content /! c ]
+        onSuccess "Component updated"
+
+    for_ mcomp $ \comp -> do
+        liftIO $ putStrLn "Adding component to section"
+        liftHandler $ runDB $ update sectionId
+            [ SectionContent =. content ++ [comp] ]
+        onSuccess "Component added"
 
     case sRes of
         FormSuccess newSection -> do
@@ -76,19 +91,34 @@ postSectionWidget sectionId = do
 
         _ -> return ()
 
-    case ncRes of
-        FormSuccess compType -> do
-            comp <- liftHandler $ createComponent compType
-            liftHandler $ runDB $ update sectionId
-                [SectionContent =. sectionContent section ++ [comp]]
-            onSuccess "Component added successfully"
-        
-        _ -> return ()
-
     $(widgetFile "section")
 
+data SectionUpdate
+    = DeleteComp Int
+    deriving (Show, Read, Generic)
+
+instance ToJSON SectionUpdate where
+    toEncoding = genericToEncoding defaultOptions
+
+instance FromJSON SectionUpdate where
+    parseJSON = genericParseJSON defaultOptions
+
 patchSectionR :: SectionId -> Handler ()
-patchSectionR sectionId = undefined
+patchSectionR sectionId = do
+    mSection <- runDB $ get sectionId
+    supdate <- requireCheckJsonBody :: Handler SectionUpdate
+    
+    for_ mSection $ \section -> do
+        let cs = sectionContent section
+        case supdate of
+            DeleteComp ix
+                | ix >= 0 && ix < length cs -> do
+                    runDB $ update sectionId $
+                        [ SectionContent =. cs -! ix ]
+                    updateGuideModified $ sectionGuideId section
+                    sendResponse ("Component deleted" :: Text)
+                | otherwise -> sendResponseStatus status500
+                    ("Index out of bounds " <> tshow ix)
 
 deleteSectionR :: SectionId -> Handler ()
 deleteSectionR sectionId = do

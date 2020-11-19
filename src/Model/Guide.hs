@@ -18,13 +18,13 @@ import Database.Persist.Quasi
 
 import Model.Core
 
-data Component = CMarkup MarkupId | CToggle ToggleGroup
+data Component = CMarkup MarkupBlockId | CToggle ToggleGroup
     deriving (Show, Read)
 
 data SpaceChar = SpaceLine | SpaceChev
     deriving (Show, Read, Eq)
 
-type ToggleOption selector = (selector, MarkupId)
+type ToggleOption selector = (selector, MarkupBlockId)
 
 data ToggleGroup
     = ToggleTexts SpaceChar [ToggleOption Text]

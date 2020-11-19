@@ -1,2 +1,3 @@
-<div ##{compId} data-comp-index=#{cIx}>
-    ^{displayComponent' compId comp}
+<div ##{compId} .component data-comp-index=#{ix}>
+    ^{compWidget}
+    ^{controls}

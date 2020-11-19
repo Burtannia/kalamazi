@@ -10,7 +10,7 @@ Image
     created UTCTime
     UniqueImageId uuid
     Primary uuid
-Markup
+MarkupBlock
     content Html
 -- Comment json -- Adding "json" causes ToJSON and FromJSON instances to be derived.
     -- message Text

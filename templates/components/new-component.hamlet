@@ -1,0 +1,21 @@
+<button type="button" .btn .btn-primary data-toggle="modal" data-target="##{modalId}">New Component
+
+<div .modal .fade ##{modalId} tabindex="-1">
+    <div .modal-dialog .modal-lg>
+        <div .modal-content>
+            <div .modal-header>
+                <h5 .modal-title>New Component
+                <button type="button" .close data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;
+
+            <div #comp-create-nav>
+                <ul .nav .nav-tabs role="tablist">
+                    $forall (ix, (compName, compId, cc)) <- withIndexes comps
+                        $with isFirst <- ix == 0
+                            <li .nav-item role="presentation">
+                                <a href=##{compId} ##{compId}-tab
+                                    .nav-link :isFirst:.active role="tab" data-toggle="tab">#{compName}
+
+            <div .tab-content>
+                $forall w <- formWidgets
+                    ^{w}
