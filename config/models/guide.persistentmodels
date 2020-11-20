@@ -2,6 +2,7 @@ GuideGroup
     title Text
     guides [GuideId]
     UniqueGuideGroupTitle title
+    deriving Show
 Guide
     title Text
     url Text
@@ -11,6 +12,7 @@ Guide
     sections [SectionId]
     UnqiueGuideUrl url
     Primary url
+    deriving Show
 Section
     title Text
     url Text
@@ -18,3 +20,4 @@ Section
     guideId GuideId
     content [Component]
     UniqueGuideSection guideId url
+    deriving Show

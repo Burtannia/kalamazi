@@ -13,24 +13,18 @@ import Yesod.Form.Bootstrap4 (BootstrapFormLayout (..), renderBootstrap4)
 import System.Directory (removeFile, doesFileExist)
 import Data.Time.Format.ISO8601
 import Control.Arrow ((&&&))
+    
+getImageManager :: Widget
+getImageManager = do
+    (formWidget, enctype) <- liftHandler $ genBs4FormIdentify "upload-image" uploadForm
+    modalId <- newIdent
+    $(widgetFile "image-manager")
 
-imagesWidget :: Widget
-imagesWidget = do
-    allImages <- handlerToWidget $ runDB getAllImages
-    let imageRows = fours allImages
-
-    $(widgetFile "images-widget")
-
-getImageManagerR :: Handler Html
-getImageManagerR = do
-    (formWidget, enctype) <- generateFormPost uploadForm
-    defaultLayout $ do
-        setTitle "Image Manager"
-        $(widgetFile "image-manager")
-
-postImageManagerR :: Handler Html
-postImageManagerR = do
-    ((result, formWidget), enctype) <- runFormPost uploadForm
+postImageManager :: Widget
+postImageManager = do
+    ((result, formWidget), enctype) <- liftHandler $
+        runBs4FormIdentify "upload-image" uploadForm
+    modalId <- newIdent
     case result of
         FormSuccess uploadImg -> do
             app <- getYesod
@@ -40,23 +34,25 @@ postImageManagerR = do
                 dir = appImageDir $ appSettings app
             
             case mExt of
-                Nothing -> msgRedirect "Unsupported file type"
+                Nothing -> liftHandler $ msgRedirect "Unsupported file type"
                 Just ext -> do
                     let uuid = (iso8601Show $ iuTime uploadImg) <> "." <> (pack $ toLower $ show ext)
                         newImg = Image (pack uuid) (iuName uploadImg) ext (iuTime uploadImg)
                     liftIO $ fileMove (iuFile uploadImg) (mkImagePath dir newImg)
-                    _ <- runDB $ insert newImg
-                    msgRedirect "Image uploaded successfully"
+                    _ <- liftHandler $ runDB $ insert newImg
+                    liftHandler $ msgRedirect "Image uploaded successfully"
 
-        _ -> msgRedirect "Something went wrong"
-    defaultLayout $ do
-        setTitle "Image Manager"
-        $(widgetFile "image-manager")
+        FormMissing -> return ()
+        
+        _ -> liftHandler $ msgRedirect "Something went wrong"
+    
+    $(widgetFile "image-manager")
 
-msgRedirect :: Html -> Handler ()
-msgRedirect msg = do
-    setMessage msg
-    redirect ImageManagerR
+imagesWidget :: Widget
+imagesWidget = do
+    allImages <- handlerToWidget $ runDB getAllImages
+    let imageRows = fours allImages
+    $(widgetFile "images-widget")
 
 deleteImageR :: ImageId -> Handler ()
 deleteImageR imgId = do
@@ -121,8 +117,8 @@ data ImageUpload = ImageUpload
     , iuTime :: UTCTime
     }
 
-uploadForm :: Form ImageUpload
-uploadForm = renderBootstrap4 BootstrapBasicForm $ ImageUpload
+uploadForm :: AForm Handler ImageUpload
+uploadForm = ImageUpload
     <$> fileAFormReq fileSettings
     <*> areq textField textSettings Nothing
     <*> lift (liftIO getCurrentTime)

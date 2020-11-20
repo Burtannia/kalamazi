@@ -1,3 +1,6 @@
+$maybe adminTools <- madminTools
+    ^{adminTools}
+
 <h3>Latest Video:
 <iframe #youtube-latest
     src="" title=""

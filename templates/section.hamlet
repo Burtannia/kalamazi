@@ -1,12 +1,12 @@
 <div .section>
     <h2 ##{sectionUrl section}>#{sectionTitle section}
-    ^{sectionModal}
-    <button .btn .btn-danger .deleteSection>Delete
+    <div .controls>
+        ^{ncWidget}
+        ^{sectionModal}
+        <button .btn .btn-danger .deleteSection>Delete
 
     $maybe bg <- sectionBackground section
         <img src=@{ImagesR $ mkImageUrl bg}>
-
-    ^{ncWidget}
 
     <div .sectionContent>
         $forall cw <- compWidgets

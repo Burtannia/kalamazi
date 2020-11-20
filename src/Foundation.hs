@@ -107,8 +107,7 @@ instance Yesod App where
         defaultErrorHandler errorResponse
         
     maximumContentLength :: App -> Maybe (Route App) -> Maybe Word64
-    maximumContentLength _ (Just ImageManagerR) = Just $ 5 * 1024 * 1024 -- 5 megabytes
-    maximumContentLength _ _ = Just $ 2 * 1024 * 1024 -- 2 megabytes
+    maximumContentLength _ _ = Just $ 5 * 1024 * 1024 -- 5 megabytes
 
     -- Store session data on the client in encrypted cookies,
     -- default session idle timeout is 120 minutes
@@ -193,11 +192,9 @@ instance Yesod App where
     isAuthorized (StaticR _) _ = return Authorized
 
     isAuthorized HomeR _ = return Authorized
-    isAuthorized AdminR _  = return Authorized --isAuthenticated
 
     isAuthorized (ImagesR _) _ = return Authorized
     isAuthorized (ImageR _) _ = return Authorized --isAuthenticated
-    isAuthorized ImageManagerR _ = return Authorized --isAuthenticated
 
     isAuthorized (GuideR _) False = return Authorized
     isAuthorized (GuideR _) True = return Authorized --isAuthenticated
@@ -332,6 +329,14 @@ instance HasHttpManager App where
 
 unsafeHandler :: App -> Handler a -> IO a
 unsafeHandler = Unsafe.fakeHandlerGetLogger appLogger
+
+msgRedirect :: Html -> Handler ()
+msgRedirect msg = do
+    mcurrentRoute <- getCurrentRoute
+    setMessage msg
+    case mcurrentRoute of
+        Nothing -> redirect HomeR
+        Just r -> redirect r
 
 -- Note: Some functionality previously present in the scaffolding has been
 -- moved to documentation in the Wiki. Following are some hopefully helpful

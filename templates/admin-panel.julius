@@ -1,0 +1,11 @@
+$('#preview-mode').change(function() {
+    $('.controls').each(function() {
+        $(this).hide();
+    });
+});
+
+$('#edit-mode').change(function() {
+    $('.controls').each(function() {
+        $(this).show();
+    });
+});

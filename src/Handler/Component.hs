@@ -168,11 +168,12 @@ postCompWidget sectionId ix comp = do
         FormSuccess compData -> do
             cd <- mkComponent compData
             deleteComponent comp -- switch to updateComp if we have time
+            liftIO $ print cd
             return $ Just (cd, ix)
         _ -> return Nothing
 
     let widget = $(widgetFile "component")
-
+    liftIO $ print mr
     return (widget, mr)
 
 compControls :: SectionId -> Int -> Text -> (Widget, Enctype) -> Widget

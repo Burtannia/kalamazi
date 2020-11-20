@@ -10,6 +10,7 @@
 module Handler.Guide where
 
 import Import
+import Handler.AdminTools
 import Handler.Component
 import Handler.Section
 import Handler.Images
@@ -38,6 +39,10 @@ getGuideR guideId = do
 
     defaultLayout $ do
         setTitle $ toHtml $ guideTitle guide
+        let madminTools = Just $ mkAdminTools $ AdminTools
+                                                getImageManager
+                                                genNewGuide
+                                                Nothing
         $(widgetFile "guide")
     -- if admin then show edit options
 
@@ -94,6 +99,10 @@ postGuideR guideId = do
 
     defaultLayout $ do
         setTitle $ toHtml $ guideTitle guide
+        let madminTools = Just $ mkAdminTools $ AdminTools
+                                                postImageManager
+                                                runNewGuide
+                                                Nothing
         $(widgetFile "guide")
 
 gFormIdent :: Text
@@ -110,6 +119,31 @@ guideForm mg = Guide
     <*> lift (liftIO getCurrentTime)
     <*> areq imageSelectField "Icon" (guideIcon <$> mg)
     <*> pure (maybe [] guideSections mg)
+
+genNewGuide :: Widget
+genNewGuide = do
+    form <- liftHandler $ genBs4FormIdentify ngFormIdent $ guideForm Nothing
+    mkModal "New Guide" form
+
+runNewGuide :: Widget
+runNewGuide = do
+    ((result, formWidget), enctype) <- liftHandler $
+        runBs4FormIdentify ngFormIdent $ guideForm Nothing
+
+    case result of
+        FormSuccess guide -> do
+            guideId <- liftHandler $ runDB $ insert guide
+            liftHandler $ setMessage "Guide created successfully"
+            redirect $ GuideR guideId
+
+        FormMissing -> return ()
+
+        _ -> liftHandler $ msgRedirect "Something went wrong"
+
+    mkModal "New Guide" (formWidget, enctype)
+
+ngFormIdent :: Text
+ngFormIdent = "new-guide"
 
 deleteGuideR :: GuideId -> Handler ()
 deleteGuideR guideId = undefined

@@ -9,10 +9,7 @@
 
 / HomeR GET POST
 
-/admin AdminR GET POST
-
 /images ImagesR Static appImages
-/admin/images ImageManagerR GET POST
 /admin/images/#ImageId ImageR DELETE
 
 /guides/#GuideId GuideR GET POST DELETE
