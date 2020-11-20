@@ -2,3 +2,7 @@
     opacity: 0.9;
     cursor: pointer;
 }
+
+.image-container img {
+    width: 7rem;
+}

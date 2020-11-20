@@ -50,8 +50,7 @@ postImageManager = do
 
 imagesWidget :: Widget
 imagesWidget = do
-    allImages <- handlerToWidget $ runDB getAllImages
-    let imageRows = fours allImages
+    imgs <- handlerToWidget $ runDB getAllImages
     $(widgetFile "images-widget")
 
 deleteImageR :: ImageId -> Handler ()

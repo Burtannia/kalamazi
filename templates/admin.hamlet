@@ -1,4 +1,0 @@
-<h1>New Guide:
-<form method=post enctype=#{enctype}>
-    ^{formWidget}
-    <input .btn type=submit value="Create">
