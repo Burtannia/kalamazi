@@ -7,7 +7,6 @@ $maybe adminTools <- madminTools
         <p>Last modified: #{show $ guideModified guide}
     <div .controls>
         ^{nsWidget}
-        ^{gWidget}
 
     $forall sWidget <- sectionWidgets
         ^{sWidget}

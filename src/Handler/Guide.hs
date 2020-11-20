@@ -28,7 +28,11 @@ getGuideR guideId = do
 
     -- Guide Form
     gForm <- genBs4FormIdentify gFormIdent $ guideForm $ Just guide
-    let gWidget = mkModal "Edit" gForm
+    let gWidget =
+            [whamlet|
+                ^{mkModal "Edit" gForm}
+                <button #delete-guide .btn .btn-danger type="button">Delete
+            |] 
 
     -- Sections    
     let sectionWidgets = map getSectionWidget $ guideSections guide
@@ -42,7 +46,7 @@ getGuideR guideId = do
         let madminTools = Just $ mkAdminTools $ AdminTools
                                                 getImageManager
                                                 genNewGuide
-                                                Nothing
+                                                (Just gWidget)
         $(widgetFile "guide")
     -- if admin then show edit options
 
@@ -57,7 +61,11 @@ postGuideR guideId = do
     -- Guide Form
     ((gResult, gWidget'), gEnctype) <- runBs4FormIdentify gFormIdent
                                         $ guideForm $ Just guide
-    let gWidget = mkModal "Edit" (gWidget', gEnctype)
+    let gWidget =
+            [whamlet|
+                ^{mkModal "Edit" (gWidget', gEnctype)}
+                <button #delete-guide .btn .btn-danger type="button">Delete
+            |]
 
     case gResult of
         FormSuccess newGuide -> do
@@ -102,7 +110,7 @@ postGuideR guideId = do
         let madminTools = Just $ mkAdminTools $ AdminTools
                                                 postImageManager
                                                 runNewGuide
-                                                Nothing
+                                                (Just gWidget)
         $(widgetFile "guide")
 
 gFormIdent :: Text
@@ -146,8 +154,16 @@ ngFormIdent :: Text
 ngFormIdent = "new-guide"
 
 deleteGuideR :: GuideId -> Handler ()
-deleteGuideR guideId = undefined
-    --mGuide <- runDB $ get guideId
+deleteGuideR guideId = do
+    mGuide <- runDB $ get guideId
+    for_ mGuide $ \guide -> do
+        sections <- fmap catMaybes $ mapM (runDB . get) $ guideSections guide
+        mapM_ deleteComponent $ concatMap sectionContent sections
+        mapM_ (runDB . delete) $ guideSections guide
+        runDB $ delete guideId
+        setMessage "Guide deleted successfully"
+        sendResponse ("Guide deleted successfully" :: Text)
+    sendResponseStatus status404 ("Guide does not exist" :: Text)
 
 getGuideManagerR :: Handler Html
 getGuideManagerR = undefined
