@@ -41,9 +41,8 @@ $(function() {
             return;
         }
 
-        var groupGuides = $('gg-guides').val();
-        if (!groupGuides)
-            groupGuides = [];
+        var groupGuides = $('#gg-guides').val();
+
 
         $.ajax({
             url: '@{GroupManagerR}',

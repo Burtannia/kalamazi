@@ -5,14 +5,19 @@
 
     <div #navbar .collapse .navbar-collapse>
         <ul .navbar-nav .mr-auto>
-            $forall MenuItem label route _ <- navbarLeftFilteredMenuItems
-                <li .nav-item :Just route == mcurrentRoute:.active>
-                    <a .nav-link href="@{route}">#{label}
-
-        <ul .navbar-nav .mr-auto>
-            $forall MenuItem label route _ <- navbarRightFilteredMenuItems
-                <li .nav-item :Just route == mcurrentRoute:.active>
-                    <a .nav-link href="@{route}">#{label}
+            $forall (ix, nav) <- filteredMenuItems
+                $case nav
+                    $of NavLink (MenuItem label route _)
+                        <li .nav-item :Just route == mcurrentRoute:.active>
+                            <a .nav-link href="@{route}">#{label}
+                    $of NavDrop groupLabel _ mis
+                        <li .nav-item .dropdown>
+                            <a .nav-link .dropdown-toggle #nav-drop-#{ix} href="#"
+                                data-toggle="dropdown" aria-haspopup="true"
+                                aria-expanded="false">#{groupLabel}
+                            <div .dropdown-menu aria-labelledby="nav-drop-#{ix}">
+                                $forall MenuItem label route _ <- mis
+                                    <a .dropdown-item href=@{route}>#{label}
 
 <!-- Page Contents -->
 

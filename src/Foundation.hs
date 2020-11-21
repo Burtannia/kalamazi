@@ -16,6 +16,8 @@ import Text.Hamlet          (hamletFile)
 import Text.Jasmine         (minifym)
 import Control.Monad.Logger (LogSource)
 
+import Control.Arrow ((&&&))
+
 -- Used only when in "auth-dummy-login" setting is enabled.
 import Yesod.Auth.Dummy
 
@@ -51,8 +53,8 @@ data MenuItem = MenuItem
     }
 
 data MenuTypes
-    = NavbarLeft MenuItem
-    | NavbarRight MenuItem
+    = NavLink MenuItem
+    | NavDrop Text Bool [MenuItem]
 
 -- This is where we define all of the routes in our application. For a full
 -- explanation of the syntax, please see:
@@ -134,6 +136,8 @@ instance Yesod App where
         muser <- maybeAuthPair
         mcurrentRoute <- getCurrentRoute
 
+        let isAdmin = maybe False (userIsAdmin . snd) muser
+
         -- Get the breadcrumbs, as defined in the YesodBreadcrumbs instance.
         (title, parents) <- breadcrumbs
 
@@ -141,30 +145,33 @@ instance Yesod App where
         -- Add admin if logged in and admin
         -- Add login if on admin page and not logged in
 
+        guideGroups <- fmap (map entityVal) $
+            liftHandler $ runDB $ selectList [] [Asc GuideGroupPosition]
+
+        let mkGuideLink (guideId, guide) = MenuItem
+                (guideTitle guide) (GuideR guideId) (isAdmin || guideIsPublished guide)
+            mkGroupNav gg = liftHandler $ do
+                guides <- mapM (sequence . (id &&& runDB . getJust)) $ guideGroupGuides gg
+                let guideLinks = map mkGuideLink guides
+                    shouldShow = length guideLinks > 0
+                return $ NavDrop (guideGroupName gg) shouldShow guideLinks
+
+        ggLinks <- mapM mkGroupNav guideGroups
+
         -- Define the menu items of the header.
         let menuItems =
-                [ NavbarLeft $ MenuItem
-                    { menuItemLabel = "Home"
-                    , menuItemRoute = HomeR
-                    , menuItemAccessCallback = True
-                    }
-                , NavbarRight $ MenuItem
-                    { menuItemLabel = "Login"
-                    , menuItemRoute = AuthR LoginR
-                    , menuItemAccessCallback = isNothing muser
-                    }
-                , NavbarRight $ MenuItem
-                    { menuItemLabel = "Logout"
-                    , menuItemRoute = AuthR LogoutR
-                    , menuItemAccessCallback = isJust muser
-                    }
+                (NavLink $ MenuItem "Home" HomeR True)
+                : ggLinks ++
+                [ NavLink $ MenuItem "Login" (AuthR LoginR) (isNothing muser)
+                , NavLink $ MenuItem "Logout" (AuthR LogoutR) (isJust muser)
                 ]
 
-        let navbarLeftMenuItems = [x | NavbarLeft x <- menuItems]
-        let navbarRightMenuItems = [x | NavbarRight x <- menuItems]
+            getCallback (NavLink mi) = menuItemAccessCallback mi
+            getCallback (NavDrop _ cb _) = cb
 
-        let navbarLeftFilteredMenuItems = [x | x <- navbarLeftMenuItems, menuItemAccessCallback x]
-        let navbarRightFilteredMenuItems = [x | x <- navbarRightMenuItems, menuItemAccessCallback x]
+            filteredMenuItems =
+                let xs = [x | x <- menuItems, getCallback x]
+                 in zip [0..length xs - 1] xs
 
         -- We break up the default layout into two components:
         -- default-layout is the contents of the body tag, and

@@ -13,7 +13,7 @@
                     <input type="text" #gg-name .form-control placeholder="Group Name" required>
                     <select multiple #gg-guides .form-control>
                         $forall g <- guides
-                            <option value=#{guideTitle g}>#{guideTitle g}
+                            <option value=#{guideUrl g}>#{guideTitle g}
                     <button type="submit" .btn .btn-primary>Add
 
             <table .table>

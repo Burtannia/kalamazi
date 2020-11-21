@@ -181,6 +181,7 @@ postGroupManagerR = do
     gg' <- requireCheckJsonBody :: Handler GuideGroup
     numGroups <- runDB $ count ([] :: [Filter GuideGroup])
     gg <- runDB $ insertEntity (gg' {guideGroupPosition = numGroups + 1})
+    liftIO $ print gg
     returnJson gg
 
 deleteGuideGroupR :: GuideGroupId -> Handler ()
