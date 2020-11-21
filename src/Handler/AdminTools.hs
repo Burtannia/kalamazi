@@ -10,14 +10,11 @@ import Import
 
 data AdminTools = AdminTools
     { awImageManager :: Widget
-    --, awGuideGroups :: Widget
+    , awGuideGroups :: Widget
     , awNewGuide :: Widget
-    , awGuideControls :: Maybe Widget -- show preview toggle if this isJust
+    , awGuideControls :: Maybe Widget
     }
 
 mkAdminTools :: AdminTools -> Widget
 mkAdminTools AdminTools {..} = do
     $(widgetFile "admin-panel")
-
--- create this widget inside each handler by passing internal widgets
--- embed it in defaultLayout?

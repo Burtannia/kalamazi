@@ -5,6 +5,7 @@
         <h3>Admin Tools
         <div .row>
             ^{awImageManager}
+            ^{awGuideGroups}
             ^{awNewGuide}
 
         $maybe guideControls <- awGuideControls

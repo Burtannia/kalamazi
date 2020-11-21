@@ -7,6 +7,7 @@ module Import.Utils where
 
 import Import.NoFoundation
 import Foundation
+import qualified Data.List as L (tail)
 import Yesod.Form.Bootstrap4 (BootstrapFormLayout (..), renderBootstrap4)
 
 mkFormId :: [Text] -> Text

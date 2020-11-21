@@ -16,6 +16,7 @@ getHomeR = do
         setTitle "Welcome To Yesod!"
         let madminTools = Just $ mkAdminTools $ AdminTools
                                                 getImageManager
+                                                ggManager
                                                 genNewGuide
                                                 Nothing
         $(widgetFile "homepage")        
@@ -26,6 +27,7 @@ postHomeR = do
         setTitle "Welcome To Yesod!"
         let madminTools = Just $ mkAdminTools $ AdminTools
                                                 postImageManager
+                                                ggManager
                                                 runNewGuide
                                                 Nothing
         $(widgetFile "homepage")

@@ -47,7 +47,6 @@ postSectionWidget sectionId = do
 
     let sectionModal = mkModal "Edit" (sWidget, sEnctype)
     
-    
     (ncWidget, mcomp) <- liftHandler $ runNewComponent sectionId
     
     liftIO $ putStrLn "c1"

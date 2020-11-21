@@ -45,6 +45,7 @@ getGuideR guideId = do
         setTitle $ toHtml $ guideTitle guide
         let madminTools = Just $ mkAdminTools $ AdminTools
                                                 getImageManager
+                                                ggManager
                                                 genNewGuide
                                                 (Just gWidget)
         $(widgetFile "guide")
@@ -109,6 +110,7 @@ postGuideR guideId = do
         setTitle $ toHtml $ guideTitle guide
         let madminTools = Just $ mkAdminTools $ AdminTools
                                                 postImageManager
+                                                ggManager
                                                 runNewGuide
                                                 (Just gWidget)
         $(widgetFile "guide")
@@ -165,8 +167,31 @@ deleteGuideR guideId = do
         sendResponse ("Guide deleted successfully" :: Text)
     sendResponseStatus status404 ("Guide does not exist" :: Text)
 
-getGuideManagerR :: Handler Html
-getGuideManagerR = undefined
+ggManager :: Widget
+ggManager = do
+    ggs <- fmap (map entityVal) $
+        liftHandler $ runDB $ selectList [] [Asc GuideGroupPosition]
+    guides <- fmap (map entityVal) $
+        liftHandler $ runDB $ selectList [] [Asc GuideTitle]
+    modalId <- newIdent
+    $(widgetFile "guide-groups")
 
-postGuideManagerR :: Handler Html
-postGuideManagerR = undefined
+postGroupManagerR :: Handler Value
+postGroupManagerR = do
+    gg' <- requireCheckJsonBody :: Handler GuideGroup
+    numGroups <- runDB $ count ([] :: [Filter GuideGroup])
+    gg <- runDB $ insertEntity (gg' {guideGroupPosition = numGroups + 1})
+    returnJson gg
+
+deleteGuideGroupR :: GuideGroupId -> Handler ()
+deleteGuideGroupR ggid = do
+    mgg <- runDB $ get ggid
+    for_ mgg $ \gg -> do
+        let pos = guideGroupPosition gg
+        runDB $ delete ggid
+        runDB $ updateWhere [GuideGroupPosition >. pos] [GuideGroupPosition -=. 1]
+        sendResponse ("Group deleted" :: Text)
+    sendResponseStatus status404 ("Group does not exist" :: Text)
+
+ggFormIdent :: Text
+ggFormIdent = "guide-groups"

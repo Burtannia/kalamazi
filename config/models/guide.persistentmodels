@@ -1,7 +1,9 @@
-GuideGroup
-    title Text
+GuideGroup json
+    name Text
+    position Int
     guides [GuideId]
-    UniqueGuideGroupTitle title
+    UniqueGuideGroupName name
+    Primary name
     deriving Show
 Guide
     title Text

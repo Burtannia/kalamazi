@@ -1,0 +1,34 @@
+<button type="button" .btn .btn-primary
+    data-toggle="modal" data-target="##{modalId}">Manage Groups
+
+<div .modal .fade ##{modalId} tabindex="-1">
+    <div .modal-dialog .modal-lg>
+        <div .modal-content>
+            <div .modal-header>
+                <h5 .modal-title>Guide Group Manager
+                <button type="button" .close data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;
+            <div .modal-body>
+                <form #gg-form .form-inline>
+                    <input type="text" #gg-name .form-control placeholder="Group Name" required>
+                    <select multiple #gg-guides .form-control>
+                        $forall g <- guides
+                            <option value=#{guideTitle g}>#{guideTitle g}
+                    <button type="submit" .btn .btn-primary>Add
+
+            <table .table>
+                <thead>
+                    <tr>
+                        <th scope="col">#
+                        <th scope="col">Name
+                        <th scope="col">Guides
+                        <th scope="col">-
+                <tbody #group-rows>
+                    $forall gg <- ggs
+                        <tr .group-row data-ggid=#{guideGroupName gg}>
+                            <th scope="row">#{guideGroupPosition gg}
+                            <td>#{guideGroupName gg}
+                            <td>
+                                <button .btn .btn-danger .del-gg type="button">Delete
+            <div .modal-footer>
+                <button type="button" .btn .btn-secondary data-dismiss="modal">Close
