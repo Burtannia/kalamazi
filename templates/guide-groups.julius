@@ -43,7 +43,6 @@ $(function() {
 
         var groupGuides = $('#gg-guides').val();
 
-
         $.ajax({
             url: '@{GroupManagerR}',
             type: 'POST',
@@ -64,6 +63,14 @@ $(function() {
                 var newName = $("<td></td>");
                 newName.text(data.name);
 
+                var newGuides = $("<td></td>");
+                for(i = 0; i < data.guides.length; i++) {
+                    var newGuideTitle = $(".guide-option[value='"
+                                            + data.guides[i] + "']").text();
+                    var newGuide = $("<p>" + newGuideTitle + "</p>");
+                    newGuides.append(newGuide);
+                }
+
                 var newDelWrap = $("<td></td>");
                 var newDel = $("<button class=\"btn btn-danger del-gg\" type=\"button\">Delete</button>")
                 newDel.data('ggid', data.id);
@@ -71,6 +78,7 @@ $(function() {
 
                 newRow.append(newPos);
                 newRow.append(newName);
+                newRow.append(newGuides);
                 newDelWrap.append(newDel);
                 newRow.append(newDelWrap);
 

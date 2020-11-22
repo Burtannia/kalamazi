@@ -169,10 +169,12 @@ deleteGuideR guideId = do
 
 ggManager :: Widget
 ggManager = do
-    ggs <- fmap (map entityVal) $
+    ggs' <- fmap (map entityVal) $
         liftHandler $ runDB $ selectList [] [Asc GuideGroupPosition]
-    guides <- fmap (map entityVal) $
-        liftHandler $ runDB $ selectList [] [Asc GuideTitle]
+    guides' <- liftHandler $ runDB $ selectList [] [Asc GuideTitle]
+    let guides = map entityVal guides'
+    ggs <- liftHandler $
+        mapM (sequence . (id &&& runDB . getMany . guideGroupGuides)) ggs'
     modalId <- newIdent
     $(widgetFile "guide-groups")
 
@@ -181,7 +183,6 @@ postGroupManagerR = do
     gg' <- requireCheckJsonBody :: Handler GuideGroup
     numGroups <- runDB $ count ([] :: [Filter GuideGroup])
     gg <- runDB $ insertEntity (gg' {guideGroupPosition = numGroups + 1})
-    liftIO $ print gg
     returnJson gg
 
 deleteGuideGroupR :: GuideGroupId -> Handler ()
