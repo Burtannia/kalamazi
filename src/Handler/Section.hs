@@ -14,6 +14,7 @@ import Handler.Component
 import Handler.Modal
 import Handler.Images
 import qualified Data.List as L (delete, (!!))
+import Text.Julius (rawJS)
 import Yesod.Form.Bootstrap4 (BootstrapFormLayout (..), renderBootstrap4)
 
 getSectionWidget :: SectionId -> Widget
@@ -33,10 +34,13 @@ getSectionWidget sectionId = do
                     (liftHandler . runDB . get)
                     (sectionBackground section)
 
+    sectionDelId <- newIdent
+
     $(widgetFile "section")
 
 postSectionWidget :: SectionId -> Widget
 postSectionWidget sectionId = do
+    liftIO $ putStrLn "post section"
     section <- liftHandler $ runDB $ getJust sectionId
     let guideId = sectionGuideId section
         content = sectionContent section
@@ -49,11 +53,11 @@ postSectionWidget sectionId = do
     
     (ncWidget, mcomp) <- liftHandler $ runNewComponent sectionId
     
-    liftIO $ putStrLn "c1"
+    liftIO $ putStrLn "s1"
     (compWidgets, mcomps) <- liftHandler $ fmap unzip
         $ mapM (uncurry $ postCompWidget sectionId)
         $ withIndexes content
-    liftIO $ putStrLn "c2"
+    liftIO $ putStrLn "s2"
 
     let onSuccess msg = do
             liftIO $ putStrLn "On success"
@@ -73,11 +77,15 @@ postSectionWidget sectionId = do
             [ SectionContent =. content /! c ]
         onSuccess "Component updated"
 
+    liftIO $ putStrLn "s3"
+
     for_ mcomp $ \comp -> do
         liftIO $ putStrLn "Adding component to section"
         liftHandler $ runDB $ update sectionId
             [ SectionContent =. content ++ [comp] ]
         onSuccess "Component added"
+
+    liftIO $ putStrLn "s4"
 
     case sRes of
         FormSuccess newSection -> do
@@ -89,6 +97,10 @@ postSectionWidget sectionId = do
             onSuccess "Section updated successfully"
 
         _ -> return ()
+
+    liftIO $ putStrLn "s5"
+
+    sectionDelId <- newIdent
 
     $(widgetFile "section")
 
@@ -155,8 +167,8 @@ sectionForm :: GuideId -> Maybe Section -> AForm Handler Section
 sectionForm guideId msection = Section
     <$> areq textField "Title" (sectionTitle <$> msection)
     <*> areq textField "Url" (sectionUrl <$> msection)
-    <*> aopt (selectField images) "Background Image" (sectionBackground <$> msection)
+    <*> pure Nothing --aopt (selectField images) "Background Image" (sectionBackground <$> msection)
     <*> pure guideId
-    <*> pure (maybe [] sectionContent msection)
-    where
-        images = optionsPersistKey [] [Asc ImageCreated] imageName
+    <*> pure [] -- (maybe [] sectionContent msection)
+    -- where
+    --     images = optionsPersistKey [] [Asc ImageCreated] imageName

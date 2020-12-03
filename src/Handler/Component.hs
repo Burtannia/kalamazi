@@ -75,7 +75,7 @@ comps :: [(Text, Text, CreateComponent)]
 comps =
     [ ("Markup", "markup", CreateMarkup Nothing)
     , ("Toggle Texts", "toggletext", CreateToggleText Nothing [])
-    , ("Toggle Images", "toggleimage", CreateToggleImage Nothing [])
+    --, ("Toggle Images", "toggleimage", CreateToggleImage Nothing [])
     ]
 
 toCreateComp :: Component -> Handler CreateComponent
@@ -154,13 +154,16 @@ getCompWidget sectionId ix comp = do
 postCompWidget :: SectionId -> Int -> Component
     -> Handler (Widget, Maybe (Component, Int))
 postCompWidget sectionId ix comp = do
-    compId <- newIdent
-    cc <- toCreateComp comp
+    liftIO $ putStrLn "postCompWidget"
 
+    compId <- newIdent
+    liftIO $ putStrLn "c1"
+    cc <- toCreateComp comp
+    liftIO $ putStrLn "c2"
     ((formRes, formWidget), enctype) <- liftHandler
         $ runBs4FormIdentify (mkEditCompId sectionId $ tshow ix)
         $ createCompForm cc
-
+    liftIO $ putStrLn "c3"
     let controls = compControls sectionId ix compId (formWidget, enctype)
         compWidget = displayComponent sectionId ix compId comp
 
@@ -171,7 +174,7 @@ postCompWidget sectionId ix comp = do
             liftIO $ print cd
             return $ Just (cd, ix)
         _ -> return Nothing
-
+    liftIO $ putStrLn "c4"
     let widget = $(widgetFile "component")
     liftIO $ print mr
     return (widget, mr)

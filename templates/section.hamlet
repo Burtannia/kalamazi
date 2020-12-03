@@ -3,7 +3,7 @@
     <div .controls>
         ^{ncWidget}
         ^{sectionModal}
-        <button .btn .btn-danger .deleteSection>Delete
+        <button .btn .btn-danger ##{sectionDelId}>Delete
 
     $maybe bg <- sectionBackground section
         <img src=@{ImagesR $ mkImageUrl bg}>

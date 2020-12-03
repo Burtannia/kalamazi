@@ -37,7 +37,7 @@ getGuideR guideId = do
     -- Sections    
     let sectionWidgets = map getSectionWidget $ guideSections guide
 
-    -- New Section
+    
     nsForm <- genBs4FormIdentify nsFormIdent $ sectionForm guideId Nothing
     let nsWidget = mkModal "New Section" nsForm
 
@@ -53,6 +53,7 @@ getGuideR guideId = do
 
 postGuideR :: GuideId -> Handler Html
 postGuideR guideId = do
+    liftIO $ putStrLn "post guide"
     muser <- maybeAuth
     guide <- runDB $ get404 guideId
     let isAdmin = maybe False (userIsAdmin . entityVal) muser
@@ -88,15 +89,19 @@ postGuideR guideId = do
             redirect $ GuideR theId
         _ -> return ()
 
+    liftIO $ putStrLn "g1"
+
     -- Sections
     let sections = guideSections guide
         sectionWidgets = map postSectionWidget sections
 
-    -- New Section
-    ((nsResult, nsWidget), nsEnctype) <- runBs4FormIdentify nsFormIdent
+    ((nsResult, nsWidget'), nsEnctype) <- runBs4FormIdentify nsFormIdent
                                             $ sectionForm guideId Nothing
-    let nsWidget = mkModal "New Section" (nsWidget, nsEnctype)
+    let nsWidget = mkModal "New Section" (nsWidget', nsEnctype)
 
+    liftIO $ putStrLn "g2"
+
+    -- New Section
     case nsResult of
         FormSuccess newSection -> do
             newSectionId <- runDB $ insert newSection
@@ -105,6 +110,8 @@ postGuideR guideId = do
             setMessage "Section created successfully"
             redirect $ GuideR guideId
         _ -> return ()
+
+    liftIO $ putStrLn "g3"
 
     defaultLayout $ do
         setTitle $ toHtml $ guideTitle guide

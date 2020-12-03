@@ -1,5 +1,5 @@
-$('.deleteSection').click(function() {
-    var section = $(this).parent();
+$('##{rawJS sectionDelId}').click(function() {
+    var section = $(this).parents('.section');
     
     if(confirm("Are you sure you want to delete this section?"))
         $.ajax({
