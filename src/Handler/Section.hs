@@ -34,6 +34,8 @@ getSectionWidget sectionId = do
                     (liftHandler . runDB . get)
                     (sectionBackground section)
 
+    sectionUpId <- newIdent
+    sectionDownId <- newIdent
     sectionDelId <- newIdent
 
     $(widgetFile "section")
@@ -85,12 +87,16 @@ postSectionWidget sectionId = do
 
         _ -> return ()
 
+    sectionUpId <- newIdent
+    sectionDownId <- newIdent
     sectionDelId <- newIdent
 
     $(widgetFile "section")
 
 data SectionUpdate
     = DeleteComp Int
+    | SectionUp
+    | SectionDown
     deriving (Show, Read, Generic)
 
 instance ToJSON SectionUpdate where
@@ -105,7 +111,13 @@ patchSectionR sectionId = do
     supdate <- requireCheckJsonBody :: Handler SectionUpdate
     
     for_ mSection $ \section -> do
+        let guideId = sectionGuideId section
+
+        guide <- runDB $ getJust guideId
+
         let cs = sectionContent section
+            allSections = guideSections guide
+
         case supdate of
             DeleteComp ix
                 | ix >= 0 && ix < length cs -> do
@@ -115,7 +127,17 @@ patchSectionR sectionId = do
                     sendResponse ("Component deleted" :: Text)
                 | otherwise -> sendResponseStatus status500
                     ("Index out of bounds " <> tshow ix)
-
+            SectionUp -> do
+                let newSections = moveBackward sectionId allSections
+                runDB $ update guideId [GuideSections =. newSections]
+                updateGuideModified guideId
+                sendResponse ("Section moved" :: Text)
+            SectionDown -> do
+                let newSections = moveForward sectionId allSections
+                runDB $ update guideId [GuideSections =. newSections]
+                updateGuideModified guideId
+                sendResponse ("Section moved" :: Text)
+                
 deleteSectionR :: SectionId -> Handler ()
 deleteSectionR sectionId = do
     mSection <- runDB $ get sectionId

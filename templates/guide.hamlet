@@ -3,10 +3,11 @@ $maybe adminTools <- madminTools
 
 <div .guide>
     <h1>#{guideTitle guide}
-    <div .guideDates>
+    <div .guide-dates>
         <p>Last modified: #{show $ guideModified guide}
     <div .controls>
         ^{nsWidget}
 
-    $forall sWidget <- sectionWidgets
-        ^{sWidget}
+    <div .sections-container>
+        $forall sWidget <- sectionWidgets
+            ^{sWidget}

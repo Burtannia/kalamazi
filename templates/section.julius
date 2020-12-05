@@ -17,3 +17,55 @@ $('##{rawJS sectionDelId}').click(function() {
             }
         });
 });
+
+$('##{rawJS sectionUpId}').click(function() {
+    var section = $(this).parents('.section');
+
+    $.ajax({
+        type: "PATCH",
+        contentType: "application/json",
+        url: "@{SectionR sectionId}",
+        data: JSON.stringify({tag: "SectionUp"}),
+        success: function(data, textStatus, jqxhr) {
+            if(jqxhr.status == 200)
+                moveUp(section);
+            else
+                console.log(jqxhr.responseText);
+        },
+        error: function(jqxhr, status, errType) {
+            console.log(jqxhr.responseText);
+        }
+    });
+});
+
+$('##{rawJS sectionDownId}').click(function() {
+    var section = $(this).parents('.section');
+
+    $.ajax({
+        type: "PATCH",
+        contentType: "application/json",
+        url: "@{SectionR sectionId}",
+        data: JSON.stringify({tag: "SectionDown"}),
+        success: function(data, textStatus, jqxhr) {
+            if(jqxhr.status == 200)
+                moveDown(section);
+            else
+                console.log(jqxhr.responseText);
+        },
+        error: function(jqxhr, status, errType) {
+            console.log(jqxhr.responseText);
+        }
+    });
+});
+
+function moveUp(section) {
+    var el = $(section)
+    if (el.not(':first-child'))
+        el.prev().before(el);
+}
+
+function moveDown(section) {
+    var el = $(section)
+    if (el.not(':last-child'))
+        el.next().after(el);
+}

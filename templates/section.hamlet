@@ -3,6 +3,8 @@
     <div .controls>
         ^{ncWidget}
         ^{sectionModal}
+        <button .btn .btn-secondary ##{sectionUpId}>Up
+        <button .btn .btn-secondary ##{sectionDownId}>Down
         <button .btn .btn-danger ##{sectionDelId}>Delete
 
     $maybe bg <- sectionBackground section

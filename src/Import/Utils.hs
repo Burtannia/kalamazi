@@ -10,6 +10,20 @@ import Foundation
 import qualified Data.List as L (tail)
 import Yesod.Form.Bootstrap4 (BootstrapFormLayout (..), renderBootstrap4)
 
+moveForward :: Eq a => a -> [a] -> [a]
+moveForward _ [] = []
+moveForward _ [x] = [x]
+moveForward x (y:z:ys)
+    | x == y    = z : y : ys
+    | otherwise = y : moveForward x (z:ys)
+
+moveBackward :: Eq a => a -> [a] -> [a]
+moveBackward _ [] = []
+moveBackward _ [x] = [x]
+moveBackward x (y:z:ys)
+    | x == z    = z : y : ys
+    | otherwise = y : moveBackward x (z:ys)
+
 mkFormId :: [Text] -> Text
 mkFormId ts = foldr (<>) "" $ intersperse "" ts
 

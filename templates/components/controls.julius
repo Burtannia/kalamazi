@@ -4,7 +4,7 @@ $('##{rawJS delId}').click(function() {
 
     var action = {
         tag: "DeleteComp",
-        contents: parseInt(ix, 10)
+        contents: ix
     };
 
     if(confirm("Are you sure you want to delete this component?"))
@@ -12,7 +12,7 @@ $('##{rawJS delId}').click(function() {
             type: "PATCH",
             contentType: "application/json",
             url: "@{SectionR sectionId}",
-            data: "" + ix,
+            data: JSON.stringify(action),
             success: function(data, textStatus, jqxhr) {
                 if(jqxhr.status == 200)
                 {
