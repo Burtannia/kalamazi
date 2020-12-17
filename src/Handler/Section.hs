@@ -14,6 +14,7 @@ import Handler.Component
 import Handler.Modal
 import Handler.Images
 import qualified Data.List as L (delete, (!!))
+import qualified Data.Text as T (foldr)
 import Text.Julius (rawJS)
 import Yesod.Form.Bootstrap4 (BootstrapFormLayout (..), renderBootstrap4)
 
@@ -84,7 +85,6 @@ postSectionWidget sectionId = do
                 , SectionBackground =. sectionBackground newSection
                 ]
             onSuccess "Section updated successfully"
-
         _ -> return ()
 
     sectionUpId <- newIdent
@@ -173,9 +173,19 @@ removeSectionFromGuide sectionId guideId = do
 sectionForm :: GuideId -> Maybe Section -> AForm Handler Section
 sectionForm guideId msection = Section
     <$> areq textField "Title" (sectionTitle <$> msection)
-    <*> areq textField "Url" (sectionUrl <$> msection)
+    <*> areq secUrlField "Url" (sectionUrl <$> msection)
     <*> aopt (selectField images) "Background Image" (sectionBackground <$> msection)
     <*> pure guideId
     <*> pure (maybe [] sectionContent msection)
     where
         images = optionsPersistKey [] [Asc ImageCreated] imageName
+        secUrlField = check validateUrl textField
+        validateUrl t =
+            if isValid
+                then Right t
+                else Left err
+            where
+                err :: Text
+                err = "Please enter a value containing only letters, numbers, hyphens and underscores)."
+                isValid = T.foldr (\c b -> b && c `elem` validChars) True t
+                validChars = '-' : '_' : (['a'..'z'] ++ ['A'..'Z'] ++ ['0'..'9'])
