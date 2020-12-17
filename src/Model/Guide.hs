@@ -18,7 +18,12 @@ import Database.Persist.Quasi
 
 import Model.Core
 
-data Component = CMarkup MarkupBlockId | CToggle ToggleGroup
+data Component
+    = CMarkup MarkupBlockId
+    | CToggle ToggleGroup
+    | CImage ImageId
+    | CVideo Text
+    | CWeakAura Text Textarea
     deriving (Show, Read)
 
 data SpaceChar = SpaceLine | SpaceChev

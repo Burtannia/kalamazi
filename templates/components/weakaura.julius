@@ -1,0 +1,17 @@
+$('##{rawJS btnId}').click(function() {
+    var wa = #{unTextarea content};
+    
+    navigator.clipboard.writeText(wa).then(function() {
+        var label = $('##{rawJS btnId}').find('p');
+        var prev = label.text();
+
+        label.text('Copied!');
+
+        setTimeout(() => {
+            label.text(prev);
+        }, 2000);
+
+    }, function(err) {
+        console.error('Could not copy text: ', err);
+    });
+});

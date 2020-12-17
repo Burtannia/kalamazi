@@ -70,12 +70,18 @@ data CreateComponent
     = CreateMarkup (Maybe Html)
     | CreateToggleText (Maybe SpaceChar) [(Text, Html)]
     | CreateToggleImage (Maybe ImageId) [(ImageId, Html)]
+    | CreateImage (Maybe ImageId)
+    | CreateVideo (Maybe Text)
+    | CreateWeakAura (Maybe Text) (Maybe Textarea)
 
 comps :: [(Text, Text, CreateComponent)]
 comps =
     [ ("Markup", "markup", CreateMarkup Nothing)
     , ("Toggle Texts", "toggletext", CreateToggleText Nothing [])
-    --, ("Toggle Images", "toggleimage", CreateToggleImage Nothing [])
+    , ("Toggle Images", "toggleimage", CreateToggleImage Nothing [])
+    , ("Image", "image", CreateImage Nothing)
+    , ("Video", "video", CreateVideo Nothing)
+    , ("WeakAura", "weakaura", CreateWeakAura Nothing Nothing)
     ]
 
 toCreateComp :: Component -> Handler CreateComponent
@@ -87,6 +93,9 @@ toCreateComp (CToggle (ToggleTexts sc ts)) = CreateToggleText
 toCreateComp (CToggle (ToggleImages bg ts)) = CreateToggleImage
     <$> pure (Just bg)
     <*> mapM getMarkup ts
+toCreateComp (CImage imgId) = return $ CreateImage $ Just imgId
+toCreateComp (CVideo url) = return $ CreateVideo $ Just url
+toCreateComp (CWeakAura title content) = return $ CreateWeakAura (Just title) (Just content)
 
 getMarkup :: (a, MarkupBlockId) -> Handler (a, Html)
 getMarkup = sequence . fmap (fmap markupBlockContent . runDB . getJust)
@@ -95,6 +104,9 @@ data ComponentData
     = CD_Markup Html
     | CD_ToggleText SpaceChar [(Text, Html)]
     | CD_ToggleImage ImageId [(ImageId, Html)]
+    | CD_Image ImageId
+    | CD_Video Text
+    | CD_WeakAura Text Textarea
 
 mkComponent :: ComponentData -> Handler Component
 mkComponent (CD_Markup m) = do
@@ -106,6 +118,9 @@ mkComponent (CD_ToggleText sc ts') = do
 mkComponent (CD_ToggleImage bg ts') = do
     ts <- mapM (traverse (runDB . insert . MarkupBlock)) ts'
     return $ CToggle $ ToggleImages bg ts
+mkComponent (CD_Image imgId) = return $ CImage imgId
+mkComponent (CD_Video url) = return $ CVideo url
+mkComponent (CD_WeakAura title content) = return $ CWeakAura title content
 
 createCompForm :: CreateComponent -> AForm Handler ComponentData
 createCompForm (CreateMarkup mhtml) = CD_Markup
@@ -125,6 +140,13 @@ createCompForm (CreateToggleImage mbrd ts) = CD_ToggleImage
     where
         toggleField = convertFieldPair
             fst snd (,) imageSelectField snFieldUnsanitized
+createCompForm (CreateImage mimg) = CD_Image
+    <$> areq imageSelectField "Image" mimg
+createCompForm (CreateVideo murl) = CD_Video
+    <$> areq textField "Url" murl 
+createCompForm (CreateWeakAura mtitle mcontent) = CD_WeakAura
+    <$> areq textField "Title" mtitle
+    <*> areq textareaField "Content" mcontent
 
 deleteComponent :: Component -> Handler ()
 deleteComponent (CMarkup markupId) = runDB $ delete markupId
@@ -134,6 +156,9 @@ deleteComponent (CToggle t) = case t of
     where
         deleteToggles :: [ToggleOption a] -> Handler ()
         deleteToggles = mapM_ $ runDB . delete . snd
+deleteComponent (CImage _) = return ()
+deleteComponent (CVideo _) = return ()
+deleteComponent (CWeakAura _ _) = return ()
 
 getCompWidget :: SectionId -> Int -> Component -> Widget
 getCompWidget sectionId ix comp = do
@@ -154,29 +179,21 @@ getCompWidget sectionId ix comp = do
 postCompWidget :: SectionId -> Int -> Component
     -> Handler (Widget, Maybe (Component, Int))
 postCompWidget sectionId ix comp = do
-    liftIO $ putStrLn "postCompWidget"
-
     compId <- newIdent
-    liftIO $ putStrLn "c1"
     cc <- toCreateComp comp
-    liftIO $ putStrLn "c2"
     ((formRes, formWidget), enctype) <- liftHandler
         $ runBs4FormIdentify (mkEditCompId sectionId $ tshow ix)
         $ createCompForm cc
-    liftIO $ putStrLn "c3"
     let controls = compControls sectionId ix compId (formWidget, enctype)
         compWidget = displayComponent sectionId ix compId comp
 
     mr <- case formRes of
         FormSuccess compData -> do
             cd <- mkComponent compData
-            deleteComponent comp -- switch to updateComp if we have time
-            liftIO $ print cd
+            deleteComponent comp
             return $ Just (cd, ix)
         _ -> return Nothing
-    liftIO $ putStrLn "c4"
     let widget = $(widgetFile "component")
-    liftIO $ print mr
     return (widget, mr)
 
 compControls :: SectionId -> Int -> Text -> (Widget, Enctype) -> Widget
@@ -186,7 +203,6 @@ compControls sectionId cIx compId f = do
             ModalSettings [shamlet| Edit |] "btn btn-primary"
     $(widgetFile "components/controls")
 
--- change this to accept a create component
 displayComponent :: SectionId -> Int -> Text -> Component -> Widget
 displayComponent sectionId cIx compId = displayComponent'
     where
@@ -208,6 +224,16 @@ displayComponent sectionId cIx compId = displayComponent'
             let headers = map fst ts
             $(widgetFile "components/toggle")
         
+        displayComponent' (CImage imgId) =
+            [whamlet|<img src=@{ImagesR $ mkImageUrl imgId}>|]
+
+        displayComponent' (CVideo url) =
+            [whamlet|<iframe .video-comp src=#{url}>|]
+
+        displayComponent' (CWeakAura title content) = do
+            btnId <- newIdent
+            $(widgetFile "components/weakaura")
+
         mkImageSnippet imgId = withUrlRenderer
             [hamlet|<img src=@{ImagesR $ mkImageUrl imgId}>|]
 

@@ -65,7 +65,7 @@ postSectionWidget sectionId = do
             redirect $ GuideR guideId
         
     for_ (listToMaybe $ catMaybes mcomps) $ \c@(_, ix) -> do
-        when (ix > 0 || ix >= length content) $ do
+        when (ix < 0 || ix >= length content) $ do
             setMessage "Error updating component: index out of bounds"
             redirect $ GuideR guideId
         liftHandler $ runDB $ update sectionId
