@@ -49,7 +49,6 @@ getGuideR guideId = do
                                                 genNewGuide
                                                 (Just gWidget)
         $(widgetFile "guide")
-    -- if admin then show edit options
 
 postGuideR :: GuideId -> Handler Html
 postGuideR guideId = do
@@ -72,7 +71,6 @@ postGuideR guideId = do
         FormSuccess newGuide -> do
             let newUrl = guideUrl newGuide
                 urlChanged = not $ guideUrl guide == newUrl
-
             theId <-
                 if urlChanged then do
                     newId <- runDB $ insert newGuide
