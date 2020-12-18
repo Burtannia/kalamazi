@@ -41,7 +41,6 @@ $newline never
       var csrfCookieName = "#{TE.decodeUtf8 defaultCsrfCookieName}";
       var csrfToken = Cookies.get(csrfCookieName);
 
-
       if (csrfToken) {
       \  $.ajaxPrefilter(function( options, originalOptions, jqXHR ) {
       \      if (!options.crossDomain) {
