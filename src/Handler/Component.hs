@@ -54,7 +54,13 @@ runNewComponent sectionId = do
             mr <- case formRes of
                 FormSuccess compData ->
                     fmap Just $ mkComponent compData
-                _ -> return Nothing
+
+                FormMissing -> return Nothing
+
+                FormFailure errs -> do
+                    liftIO $ putStrLn "runNewComponent"
+                    print errs
+                    return Nothing
 
             let widget = $(widgetFile "components/new-component-form")
             return (widget, mr)
@@ -192,7 +198,14 @@ postCompWidget sectionId ix comp = do
             cd <- mkComponent compData
             deleteComponent comp
             return $ Just (cd, ix)
-        _ -> return Nothing
+
+        FormMissing -> return Nothing
+
+        FormFailure errs -> do
+            liftIO $ putStrLn "postCompWidget"
+            print errs
+            return Nothing
+
     let widget = $(widgetFile "component")
     return (widget, mr)
 

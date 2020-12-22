@@ -88,7 +88,12 @@ postGuideR guideId = do
 
             setMessage "Guide updated successfully"
             redirect $ GuideR theId
-        _ -> return ()
+
+        FormMissing -> return ()
+
+        FormFailure errs -> do
+            liftIO $ putStrLn "runNewComponent"
+            print errs
 
     -- Sections
     let sections = guideSections guide
@@ -106,7 +111,12 @@ postGuideR guideId = do
             updateGuideModified guideId
             setMessage "Section created successfully"
             redirect $ GuideR guideId
-        _ -> return ()
+
+        FormMissing -> return ()
+
+        FormFailure errs -> do
+            liftIO $ putStrLn "postGuideR nsResult"
+            print errs
 
     timeNow <- liftIO getCurrentTime
 
@@ -153,8 +163,8 @@ runNewGuide = do
         FormMissing -> return ()
 
         FormFailure errs -> do
-            liftIO $ print errs
-            liftHandler $ msgRedirect "Something went wrong"
+            liftIO $ putStrLn "runNewGUide"
+            print errs
 
     mkModal "New Guide" (formWidget, enctype)
 

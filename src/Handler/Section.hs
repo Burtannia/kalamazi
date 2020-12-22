@@ -85,7 +85,12 @@ postSectionWidget sectionId = do
                 , SectionBackground =. sectionBackground newSection
                 ]
             onSuccess "Section updated successfully"
-        _ -> return ()
+
+        FormMissing -> return ()
+
+        FormFailure errs -> do
+            liftIO $ putStrLn "postSectionWidget sRes"
+            print errs
 
     sectionUpId <- newIdent
     sectionDownId <- newIdent

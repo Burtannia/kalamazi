@@ -25,6 +25,7 @@ postImageManager = do
     ((result, formWidget), enctype) <- liftHandler $
         runBs4FormIdentify "upload-image" uploadForm
     modalId <- newIdent
+
     case result of
         FormSuccess uploadImg -> do
             app <- getYesod
@@ -44,7 +45,9 @@ postImageManager = do
 
         FormMissing -> return ()
         
-        _ -> liftHandler $ msgRedirect "Something went wrong"
+        FormFailure errs -> do
+            liftIO $ putStrLn "postImageManager"
+            print errs
     
     $(widgetFile "image-manager")
 
