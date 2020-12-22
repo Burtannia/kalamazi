@@ -9,7 +9,6 @@ $('.del-img').click(function() {
         .done(() => elem.parent().remove())
         .fail(function (jqXHR, textStatus, errorThrown) {
             console.log(errorThrown + ": " + jqXHR.responseText);
-            alert(errorThrown + ": " + jqXHR.responseText);
         });
     return false;
 });

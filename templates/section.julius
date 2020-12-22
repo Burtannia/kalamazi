@@ -5,16 +5,11 @@ $('##{rawJS sectionDelId}').click(function() {
         $.ajax({
             type: "DELETE",
             contentType: "application/json",
-            url: "@{SectionR sectionId}",
-            success: function(data, textStatus, jqxhr) {
-                if(jqxhr.status == 200)
-                    section.remove();
-                else
-                    alert("Action failed with message: " + msg);
-            },
-            error: function(jqxhr, status, errType) {
-                alert("Action failed with reason: " + errType);
-            }
+            url: "@{SectionR sectionId}"
+        })
+        .done(() => section.remove())
+        .fail(function (jqXHR, textStatus, errorThrown) {
+            console.log(errorThrown + ": " + jqXHR.responseText);
         });
 });
 
@@ -25,16 +20,11 @@ $('##{rawJS sectionUpId}').click(function() {
         type: "PATCH",
         contentType: "application/json",
         url: "@{SectionR sectionId}",
-        data: JSON.stringify({tag: "SectionUp"}),
-        success: function(data, textStatus, jqxhr) {
-            if(jqxhr.status == 200)
-                moveUp(section);
-            else
-                console.log(jqxhr.responseText);
-        },
-        error: function(jqxhr, status, errType) {
-            console.log(jqxhr.responseText);
-        }
+        data: JSON.stringify({tag: "SectionUp"})
+    })
+    .done(() => moveUp(section))
+    .fail(function (jqXHR, textStatus, errorThrown) {
+        console.log(errorThrown + ": " + jqXHR.responseText);
     });
 });
 
@@ -45,16 +35,11 @@ $('##{rawJS sectionDownId}').click(function() {
         type: "PATCH",
         contentType: "application/json",
         url: "@{SectionR sectionId}",
-        data: JSON.stringify({tag: "SectionDown"}),
-        success: function(data, textStatus, jqxhr) {
-            if(jqxhr.status == 200)
-                moveDown(section);
-            else
-                console.log(jqxhr.responseText);
-        },
-        error: function(jqxhr, status, errType) {
-            console.log(jqxhr.responseText);
-        }
+        data: JSON.stringify({tag: "SectionDown"})
+    })
+    .done(() => moveDown(section))
+    .fail(function (jqXHR, textStatus, errorThrown) {
+        console.log(errorThrown + ": " + jqXHR.responseText);
     });
 });
 

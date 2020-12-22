@@ -7,27 +7,22 @@ function deleteGuideGroup(btn) {
     $.ajax({
         type: "DELETE",
         contentType: "application/json",
-        url: "/guidegroup/" + ggid,
-        success: function(data, textStatus, jqxhr) {
-            if(jqxhr.status == 200)
-            {
-                var delRow = $(".group-row[data-ggid='" + ggid + "']");
-                var delPos = parseInt(delRow.first().text(), 10);
+        url: "/guidegroup/" + ggid
+    })
+    .done(function (data) {
+        var delRow = $(".group-row[data-ggid='" + ggid + "']");
+        var delPos = parseInt(delRow.first().text(), 10);
 
-                $('.group-row th:first-child').each(function() {
-                    var pos = parseInt($(this).text(), 10);
-                    if (pos > delPos)
-                        $(this).text(pos - 1);
-                });
+        $('.group-row th:first-child').each(function() {
+            var pos = parseInt($(this).text(), 10);
+            if (pos > delPos)
+                $(this).text(pos - 1);
+        });
 
-                delRow.remove();
-            }
-            else
-                alert("Action failed with message: " + msg);
-        },
-        error: function(jqxhr, status, errType) {
-            alert("Action failed with reason: " + errType);
-        }
+        delRow.remove();
+    })
+    .fail(function (jqXHR, textStatus, errorThrown) {
+        console.log(errorThrown + ": " + jqXHR.responseText);
     });
 }
 
@@ -51,43 +46,40 @@ $(function() {
                 name: groupName,
                 position: 0,
                 guides: groupGuides
-            }),
-            success: function(data) {
-                console.log(data);
+            })
+        })
+        .done(function (data) {
+            var newRow = $("<tr class=\"group-row\" data-ggid=\"" + data.name + "\"></tr>");
 
-                var newRow = $("<tr class=\"group-row\" data-ggid=\"" + data.name + "\"></tr>");
+            var newPos = $("<th scope=\"row\"></th>");
+            newPos.text(data.position);
 
-                var newPos = $("<th scope=\"row\"></th>");
-                newPos.text(data.position);
+            var newName = $("<td></td>");
+            newName.text(data.name);
 
-                var newName = $("<td></td>");
-                newName.text(data.name);
-
-                var newGuides = $("<td></td>");
-                for(i = 0; i < data.guides.length; i++) {
-                    var newGuideTitle = $(".guide-option[value='"
-                                            + data.guides[i] + "']").text();
-                    var newGuide = $("<p>" + newGuideTitle + "</p>");
-                    newGuides.append(newGuide);
-                }
-
-                var newDelWrap = $("<td></td>");
-                var newDel = $("<button class=\"btn btn-danger del-gg\" type=\"button\">Delete</button>")
-                newDel.data('ggid', data.id);
-                newDel.click(() => deleteGuideGroup(newDel));
-
-                newRow.append(newPos);
-                newRow.append(newName);
-                newRow.append(newGuides);
-                newDelWrap.append(newDel);
-                newRow.append(newDelWrap);
-
-                $('#group-rows').append(newRow);
-            },
-            error: function(data) {
-                console.log("Error creating guide group:");
-                console.log(data);
+            var newGuides = $("<td></td>");
+            for(i = 0; i < data.guides.length; i++) {
+                var newGuideTitle = $(".guide-option[value='"
+                                        + data.guides[i] + "']").text();
+                var newGuide = $("<p>" + newGuideTitle + "</p>");
+                newGuides.append(newGuide);
             }
+
+            var newDelWrap = $("<td></td>");
+            var newDel = $("<button class=\"btn btn-danger del-gg\" type=\"button\">Delete</button>")
+            newDel.data('ggid', data.id);
+            newDel.click(() => deleteGuideGroup(newDel));
+
+            newRow.append(newPos);
+            newRow.append(newName);
+            newRow.append(newGuides);
+            newDelWrap.append(newDel);
+            newRow.append(newDelWrap);
+
+            $('#group-rows').append(newRow);
+        })
+        .fail(function (jqXHR, textStatus, errorThrown) {
+            console.log(errorThrown + ": " + jqXHR.responseText);
         });
     });
 });

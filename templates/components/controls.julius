@@ -12,23 +12,17 @@ $('##{rawJS delId}').click(function() {
             type: "PATCH",
             contentType: "application/json",
             url: "@{SectionR sectionId}",
-            data: JSON.stringify(action),
-            success: function(data, textStatus, jqxhr) {
-                if(jqxhr.status == 200)
-                {
-                    comp.remove();
-                    $('.component').each(function() {
-                        var thisIx = $(this).data('comp-index');
-                        if (thisIx > ix)
-                            $(this).data('comp-index', thisIx - 1);
-                    });
-                }
-                else
-                    alert("Action failed with message: " + msg);
-            },
-            error: function(jqxhr, status, errType) {
-                alert("Action failed with reason: " + errType);
-                console.log(jqxhr.responseText);
-            }
+            data: JSON.stringify(action)
+        })
+        .done(function (data) {
+            comp.remove();
+            $('.component').each(function() {
+                var thisIx = $(this).data('comp-index');
+                if (thisIx > ix)
+                    $(this).data('comp-index', thisIx - 1);
+            });
+        })
+        .fail(function (jqXHR, textStatus, errorThrown) {
+            console.log(errorThrown + ": " + jqXHR.responseText);
         });
 });

@@ -9,15 +9,10 @@ $('#delete-guide').click(function() {
         $.ajax({
             type: "DELETE",
             contentType: "application/json",
-            url: "@{GuideR guideId}",
-            success: function(data, textStatus, jqxhr) {
-                if(jqxhr.status == 200)
-                    window.location.replace("@{HomeR}");
-                else
-                    alert("Action failed with message: " + msg);
-            },
-            error: function(jqxhr, status, errType) {
-                alert("Action failed with reason: " + errType);
-            }
+            url: "@{GuideR guideId}"
+        })
+        .done(() => window.location.replace("@{HomeR}"))
+        .fail(function (jqXHR, textStatus, errorThrown) {
+            console.log(errorThrown + ": " + jqXHR.responseText);
         });
 });
