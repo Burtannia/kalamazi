@@ -129,7 +129,7 @@ nsFormIdent = "new-section"
 guideForm :: Maybe Guide -> AForm Handler Guide
 guideForm mg = Guide
     <$> areq textField "Title" (guideTitle <$> mg)
-    <*> areq textField "Url" (guideUrl <$> mg) -- ensure it's valid for a url
+    <*> fmap remSpecialChars (areq textField "Url" (guideUrl <$> mg))
     <*> areq checkBoxField "Published" (guideIsPublished <$> mg)
     <*> lift (liftIO getCurrentTime)
     <*> areq imageSelectField "Icon" (guideIcon <$> mg)
@@ -146,17 +146,13 @@ runNewGuide = do
         runBs4FormIdentify ngFormIdent $ guideForm Nothing
     case result of
         FormSuccess guide -> do
-            liftIO $ putStrLn "potato"
             guideId <- liftHandler $ runDB $ insert guide
             liftHandler $ setMessage "Guide created successfully"
             redirect $ GuideR guideId
 
-        FormMissing -> do
-            liftIO $ putStrLn "potato2"
-            return ()
+        FormMissing -> return ()
 
         FormFailure errs -> do
-            liftIO $ putStrLn "potato3"
             liftIO $ print errs
             liftHandler $ msgRedirect "Something went wrong"
 

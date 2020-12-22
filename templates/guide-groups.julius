@@ -59,8 +59,7 @@ $(function() {
 
             var newGuides = $("<td></td>");
             for(i = 0; i < data.guides.length; i++) {
-                var newGuideTitle = $(".guide-option[value='"
-                                        + data.guides[i] + "']").text();
+                var newGuideTitle = $(".guide-option[value='" + data.guides[i] + "']").text();
                 var newGuide = $("<p>" + newGuideTitle + "</p>");
                 newGuides.append(newGuide);
             }
