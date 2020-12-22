@@ -16,6 +16,7 @@ import Handler.Section
 import Handler.Images
 import Handler.Modal
 import qualified Data.Text as T (append)
+import Data.Time.Clock (diffUTCTime)
 import Yesod.Form.Bootstrap4 (BootstrapFormLayout (..), renderBootstrap4)
 
 getGuideR :: GuideId -> Handler Html
@@ -41,6 +42,8 @@ getGuideR guideId = do
     nsForm <- genBs4FormIdentify nsFormIdent $ sectionForm guideId Nothing
     let nsWidget = mkModal "New Section" nsForm
 
+    timeNow <- liftIO getCurrentTime
+
     defaultLayout $ do
         setTitle $ toHtml $ guideTitle guide
         let madminTools = Just $ mkAdminTools $ AdminTools
@@ -48,6 +51,7 @@ getGuideR guideId = do
                                                 ggManager
                                                 genNewGuide
                                                 (Just gWidget)
+            timeAgo = diffUTCTime timeNow $ guideModified guide
         $(widgetFile "guide")
 
 postGuideR :: GuideId -> Handler Html
@@ -104,6 +108,8 @@ postGuideR guideId = do
             redirect $ GuideR guideId
         _ -> return ()
 
+    timeNow <- liftIO getCurrentTime
+
     defaultLayout $ do
         setTitle $ toHtml $ guideTitle guide
         let madminTools = Just $ mkAdminTools $ AdminTools
@@ -111,6 +117,7 @@ postGuideR guideId = do
                                                 ggManager
                                                 runNewGuide
                                                 (Just gWidget)
+            timeAgo = diffUTCTime timeNow $ guideModified guide
         $(widgetFile "guide")
 
 gFormIdent :: Text
@@ -137,16 +144,21 @@ runNewGuide :: Widget
 runNewGuide = do
     ((result, formWidget), enctype) <- liftHandler $
         runBs4FormIdentify ngFormIdent $ guideForm Nothing
-
     case result of
         FormSuccess guide -> do
+            liftIO $ putStrLn "potato"
             guideId <- liftHandler $ runDB $ insert guide
             liftHandler $ setMessage "Guide created successfully"
             redirect $ GuideR guideId
 
-        FormMissing -> return ()
+        FormMissing -> do
+            liftIO $ putStrLn "potato2"
+            return ()
 
-        _ -> liftHandler $ msgRedirect "Something went wrong"
+        FormFailure errs -> do
+            liftIO $ putStrLn "potato3"
+            liftIO $ print errs
+            liftHandler $ msgRedirect "Something went wrong"
 
     mkModal "New Guide" (formWidget, enctype)
 

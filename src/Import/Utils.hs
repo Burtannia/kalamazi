@@ -8,7 +8,28 @@ module Import.Utils where
 import Import.NoFoundation
 import Foundation
 import qualified Data.List as L (tail)
+import Data.Time.Clock (NominalDiffTime)
 import Yesod.Form.Bootstrap4 (BootstrapFormLayout (..), renderBootstrap4)
+
+formatDiffTime :: NominalDiffTime -> String
+formatDiffTime dt = go (floor $ toRational dt) incs
+    where
+        go :: Int -> [(Int, String, String)] -> String
+        go _ [] = "formatDiffTime: this should never happen"
+        go t ((x, sing, plur) : xs) =
+            case t `divMod` x of
+                (0, 1) -> "1" ++ sing
+                (0, n) -> show n ++ plur
+                (m, _) -> go m xs
+        incs :: [(Int, String, String)]
+        incs =
+            [ (60, " second", " seconds")
+            , (60, " minute", " minutes")
+            , (24, " hour", " hours")
+            , (30, " day", " days")
+            , (12, " month", " months")
+            , (1, " year", " years")
+            ]
 
 moveForward :: Eq a => a -> [a] -> [a]
 moveForward _ [] = []

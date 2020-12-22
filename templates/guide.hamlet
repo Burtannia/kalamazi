@@ -4,7 +4,7 @@ $maybe adminTools <- madminTools
 <div .guide>
     <h1>#{guideTitle guide}
     <div .guide-dates>
-        <p>Last modified: #{show $ guideModified guide}
+        <p>Last modified #{formatDiffTime timeAgo} ago
     <div .controls>
         ^{nsWidget}
 
