@@ -26,6 +26,65 @@ function deleteGuideGroup(btn) {
     });
 }
 
+$('.up-gg').click(function() {
+    moveGuideGroup(this, "up");
+});
+
+$('.down-gg').click(function() {
+    moveGuideGroup(this, "down");
+});
+
+function moveGuideGroup(btn, dir) {
+    var moveTag;
+    var posModifier;
+    var mvFunc;
+
+    if (dir == "up")
+    {
+        moveTag = "\"GGUp\"";
+        posModifier = -1;
+        mvFunc = ggmoveUp;
+    }
+    else if (dir == "down")
+    {
+        moveTag = "\"GGDown\"";
+        posModifier = 1;
+        mvFunc = ggmoveDown;
+    }
+    else
+    {
+        console.log("Invalid direction supplied: " + dir);
+        return;
+    }
+
+    var ggid = $(btn).parent().parent().data('ggid');
+
+    $.ajax({
+        type: "PATCH",
+        contentType: "application/json",
+        url: "/guidegroup/" + ggid,
+        data: moveTag
+    })
+    .done(function (data) {
+        var mvRow = $(".group-row[data-ggid='" + ggid + "']");
+        var mvPos = parseInt(mvRow.first().text(), 10);
+        var newPos = mvPos + posModifier;
+
+        $('.group-row th:first-child').each(function() {
+            var pos = parseInt($(this).text(), 10);
+            if (pos == newPos)
+                $(this).text(pos + (posModifier * -1));
+        });
+
+        mvRow.find('th').first().text(newPos);
+
+        mvFunc(mvRow);
+    })
+    .fail(function (jqXHR, textStatus, errorThrown) {
+        console.log(errorThrown + ": " + jqXHR.responseText);
+    });
+}
+
 $(function() {
     $("#gg-form").submit(function(event) {
         event.preventDefault();
@@ -65,15 +124,28 @@ $(function() {
             }
 
             var newDelWrap = $("<td></td>");
-            var newDel = $("<button class=\"btn btn-danger del-gg\" type=\"button\">Delete</button>")
-            newDel.data('ggid', data.id);
+            var newDel = $("<button class=\"btn btn-danger del-gg\" type=\"button\">Delete</button>");
+            
             newDel.click(() => deleteGuideGroup(newDel));
+
+            var newMvWrap = $("<td></td>");
+
+            var newUp = $("<button class=\"btn btn-secondary up-gg\" type=\"button\">Up</button>");
+            newUp.click(() => moveGuideGroup(newUp, "up"));
+
+            var newDown = $("<button class=\"btn btn-secondary down-gg\" type=\"button\">Down</button>");
+            newDown.click(() => moveGuideGroup(newDown, "down"));
 
             newRow.append(newPos);
             newRow.append(newName);
             newRow.append(newGuides);
+
             newDelWrap.append(newDel);
             newRow.append(newDelWrap);
+
+            newMvWrap.append(newUp);
+            newMvWrap.append(newDown);
+            newRow.append(newMvWrap);
 
             $('#group-rows').append(newRow);
         })
@@ -82,3 +154,15 @@ $(function() {
         });
     });
 });
+
+function ggmoveUp(gg) {
+    var el = $(gg)
+    if (el.not(':first-child'))
+        el.prev().before(el);
+}
+
+function ggmoveDown(gg) {
+    var el = $(gg)
+    if (el.not(':last-child'))
+        el.next().after(el);
+}

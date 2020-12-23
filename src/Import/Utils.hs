@@ -68,6 +68,9 @@ withIndexes xs = zip [0..] xs
 (-!) :: [a] -> Int -> [a]
 (-!) xs n = [ x | (i,x) <- withIndexes xs, not $ i == n ]
 
+(-=!) :: Eq a => [a] -> a -> [a]
+(-=!) xs y = [x | x <- xs, not $ x == y]
+
 (/!) :: [a] -> (a, Int) -> [a]
 (/!) xs (y, n) = [ if i == n then y else x | (i,x) <- withIndexes xs ]
 

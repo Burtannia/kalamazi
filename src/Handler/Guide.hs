@@ -6,10 +6,12 @@
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE DeriveGeneric #-}
 
 module Handler.Guide where
 
 import Import
+import Data.Aeson.Types
 import Handler.AdminTools
 import Handler.Component
 import Handler.Section
@@ -179,9 +181,18 @@ deleteGuideR guideId = do
         mapM_ deleteComponent $ concatMap sectionContent sections
         mapM_ (runDB . delete) $ guideSections guide
         runDB $ delete guideId
+        removeFromGroups guideId
         setMessage "Guide deleted successfully"
         sendResponse ("Guide deleted successfully" :: Text)
     sendResponseStatus status404 ("Guide does not exist" :: Text)
+
+removeFromGroups :: GuideId -> Handler ()
+removeFromGroups guideId = do
+    ggs <- runDB $ selectList [] [Asc GuideGroupPosition]
+    flip mapM_ ggs $ \entgg -> do
+        let ggGuides = guideGroupGuides $ entityVal entgg
+        when (guideId `elem` ggGuides) $
+            runDB $ update (entityKey entgg) [GuideGroupGuides =. ggGuides -=! guideId]
 
 ggManager :: Widget
 ggManager = do
@@ -200,6 +211,34 @@ postGroupManagerR = do
     numGroups <- runDB $ count ([] :: [Filter GuideGroup])
     gg <- runDB $ insertEntity (gg' {guideGroupPosition = numGroups + 1})
     returnJson gg
+
+patchGuideGroupR :: GuideGroupId -> Handler ()
+patchGuideGroupR ggid = do
+    gg <- runDB $ getJust ggid
+    change <- requireCheckJsonBody :: Handler GGUpdate
+    numGroups <- runDB $ count ([] :: [Filter GuideGroup])
+    let pos = guideGroupPosition gg
+    case change of
+        GGUp
+            | pos == 1 -> return ()
+            | otherwise -> do
+                runDB $ updateWhere [GuideGroupPosition ==. pos - 1] [GuideGroupPosition +=. 1]
+                runDB $ update ggid [GuideGroupPosition -=. 1]
+
+        GGDown
+            | pos == numGroups -> return ()
+            | otherwise -> do
+                runDB $ updateWhere [GuideGroupPosition ==. pos + 1] [GuideGroupPosition -=. 1]
+                runDB $ update ggid [GuideGroupPosition +=. 1]
+
+data GGUpdate = GGUp | GGDown
+    deriving (Show, Read, Generic)
+
+instance ToJSON GGUpdate where
+    toEncoding = genericToEncoding defaultOptions
+
+instance FromJSON GGUpdate where
+    parseJSON = genericParseJSON defaultOptions
 
 deleteGuideGroupR :: GuideGroupId -> Handler ()
 deleteGuideGroupR ggid = do

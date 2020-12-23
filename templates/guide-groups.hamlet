@@ -23,6 +23,7 @@
                         <th scope="col">Name
                         <th scope="col">Guides
                         <th scope="col">#
+                        <th scope="col">#
                 <tbody #group-rows>
                     $forall (gg, guides) <- ggs
                         <tr .group-row data-ggid=#{guideGroupName gg}>
@@ -33,5 +34,8 @@
                                     <p>#{guideTitle guide}                       
                             <td>
                                 <button .btn .btn-danger .del-gg type="button">Delete
+                            <td>
+                                <button .btn .btn-secondary .up-gg type="button">Up
+                                <button .btn .btn-secondary .down-gg type="button">Down
             <div .modal-footer>
                 <button type="button" .btn .btn-secondary data-dismiss="modal">Close
