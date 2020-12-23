@@ -149,7 +149,7 @@ instance Yesod App where
                 (guideTitle guide) (GuideR guideId) (isAdmin || guideIsPublished guide)
             mkGroupNav gg = liftHandler $ do
                 guides <- mapM (sequence . (id &&& runDB . getJust)) $ guideGroupGuides gg
-                let guideLinks = map mkGuideLink guides
+                let guideLinks = filter menuItemAccessCallback $ map mkGuideLink guides
                     shouldShow = length guideLinks > 0
                 return $ NavDrop (guideGroupName gg) shouldShow guideLinks
 
@@ -195,18 +195,19 @@ instance Yesod App where
     isAuthorized RobotsR _ = return Authorized
     isAuthorized (StaticR _) _ = return Authorized
 
-    isAuthorized HomeR _ = return Authorized
+    isAuthorized HomeR False = return Authorized
+    isAuthorized HomeR _ = isAuthenticated
 
     isAuthorized (ImagesR _) _ = return Authorized
-    isAuthorized (ImageR _) _ = return Authorized --isAuthenticated
+    isAuthorized (ImageR _) _ = isAuthenticated
 
     isAuthorized (GuideR _) False = return Authorized
-    isAuthorized (GuideR _) True = return Authorized --isAuthenticated
+    isAuthorized (GuideR _) True = isAuthenticated
     
-    isAuthorized GroupManagerR _ = return Authorized --isAuthenticated
-    isAuthorized (GuideGroupR _) _ = return Authorized --isAuthenticated
+    isAuthorized GroupManagerR _ = isAuthenticated
+    isAuthorized (GuideGroupR _) _ = isAuthenticated
 
-    isAuthorized (SectionR _) _ = return Authorized --isAuthenticated
+    isAuthorized (SectionR _) _ = isAuthenticated
 
     -- This function creates static content files in the static folder
     -- and names them based on a hash of their content. This allows

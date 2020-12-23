@@ -27,7 +27,7 @@ getGuideR guideId = do
     guide <- runDB $ get404 guideId
     let isAdmin = maybe False (userIsAdmin . entityVal) muser
         published = guideIsPublished guide
-    --when (not isAdmin && not published) notFound
+    when (not isAdmin && not published) notFound
 
     -- Guide Form
     gForm <- genBs4FormIdentify gFormIdent $ guideForm $ Just guide
@@ -67,7 +67,7 @@ postGuideR guideId = do
     guide <- runDB $ get404 guideId
     let isAdmin = maybe False (userIsAdmin . entityVal) muser
         published = guideIsPublished guide
-    --when (not isAdmin && not published) notFound
+    when (not isAdmin && not published) notFound
 
     -- Guide Form
     ((gResult, gWidget'), gEnctype) <- runBs4FormIdentify gFormIdent
