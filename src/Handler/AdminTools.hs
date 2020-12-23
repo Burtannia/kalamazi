@@ -16,5 +16,4 @@ data AdminTools = AdminTools
     }
 
 mkAdminTools :: AdminTools -> Widget
-mkAdminTools AdminTools {..} = do
-    $(widgetFile "admin-panel")
+mkAdminTools AdminTools {..} = $(widgetFile "admin-panel")

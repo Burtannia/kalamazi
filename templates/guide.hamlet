@@ -5,8 +5,9 @@ $maybe adminTools <- madminTools
     <h1>#{guideTitle guide}
     <div .guide-dates>
         <p>Last modified #{formatDiffTime timeAgo} ago
-    <div .controls>
-        ^{nsWidget}
+    $if isAdmin
+        <div .controls>
+            ^{nsWidget}
 
     <div .sections-container>
         $forall sWidget <- sectionWidgets

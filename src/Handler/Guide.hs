@@ -38,7 +38,7 @@ getGuideR guideId = do
             |] 
 
     -- Sections    
-    let sectionWidgets = map getSectionWidget $ guideSections guide
+    let sectionWidgets = map (getSectionWidget isAdmin) $ guideSections guide
 
     
     nsForm <- genBs4FormIdentify nsFormIdent $ sectionForm guideId Nothing
@@ -48,11 +48,16 @@ getGuideR guideId = do
 
     defaultLayout $ do
         setTitle $ toHtml $ guideTitle guide
-        let madminTools = Just $ mkAdminTools $ AdminTools
-                                                getImageManager
-                                                ggManager
-                                                genNewGuide
-                                                (Just gWidget)
+        let madminTools =
+                if isAdmin then
+                    Just $ mkAdminTools $ 
+                        AdminTools
+                        getImageManager
+                        ggManager
+                        genNewGuide
+                        (Just gWidget)
+                else
+                    Nothing
             timeAgo = diffUTCTime timeNow $ guideModified guide
         $(widgetFile "guide")
 
@@ -99,7 +104,7 @@ postGuideR guideId = do
 
     -- Sections
     let sections = guideSections guide
-        sectionWidgets = map postSectionWidget sections
+        sectionWidgets = map (postSectionWidget isAdmin) sections
 
     ((nsResult, nsWidget'), nsEnctype) <- runBs4FormIdentify nsFormIdent
                                             $ sectionForm guideId Nothing
@@ -124,11 +129,16 @@ postGuideR guideId = do
 
     defaultLayout $ do
         setTitle $ toHtml $ guideTitle guide
-        let madminTools = Just $ mkAdminTools $ AdminTools
-                                                postImageManager
-                                                ggManager
-                                                runNewGuide
-                                                (Just gWidget)
+        let madminTools =
+                if isAdmin then
+                    Just $ mkAdminTools $ 
+                        AdminTools
+                        postImageManager
+                        ggManager
+                        runNewGuide
+                        (Just gWidget)
+                else
+                    Nothing
             timeAgo = diffUTCTime timeNow $ guideModified guide
         $(widgetFile "guide")
 

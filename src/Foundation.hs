@@ -114,7 +114,7 @@ instance Yesod App where
     -- Store session data on the client in encrypted cookies,
     -- default session idle timeout is 120 minutes
     makeSessionBackend :: App -> IO (Maybe SessionBackend)
-    makeSessionBackend _ = sslOnlySessions $
+    makeSessionBackend _ = --sslOnlySessions $
         Just <$> defaultClientSessionBackend
         120    -- timeout in minutes
         "config/client_session_key.aes"
@@ -141,10 +141,6 @@ instance Yesod App where
 
         -- Get the breadcrumbs, as defined in the YesodBreadcrumbs instance.
         (title, parents) <- breadcrumbs
-
-        -- Add logout if logged in
-        -- Add admin if logged in and admin
-        -- Add login if on admin page and not logged in
 
         guideGroups <- fmap (map entityVal) $
             liftHandler $ runDB $ selectList [] [Asc GuideGroupPosition]

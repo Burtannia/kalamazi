@@ -18,8 +18,8 @@ import qualified Data.Text as T (foldr)
 import Text.Julius (rawJS)
 import Yesod.Form.Bootstrap4 (BootstrapFormLayout (..), renderBootstrap4)
 
-getSectionWidget :: SectionId -> Widget
-getSectionWidget sectionId = do
+getSectionWidget :: Bool -> SectionId -> Widget
+getSectionWidget isAdmin sectionId = do
     section <- liftHandler $ runDB $ getJust sectionId
     let guideId = sectionGuideId section
     sForm <- liftHandler $ genBs4FormIdentify
@@ -28,7 +28,7 @@ getSectionWidget sectionId = do
 
     let sectionModal = mkModal "Edit" sForm
         ncWidget = genNewComponent sectionId
-        compWidgets = map (uncurry $ getCompWidget sectionId)
+        compWidgets = map (uncurry $ getCompWidget isAdmin sectionId)
             $ withIndexes $ sectionContent section
 
     mBackground <- maybe (return Nothing)
@@ -41,8 +41,8 @@ getSectionWidget sectionId = do
 
     $(widgetFile "section")
 
-postSectionWidget :: SectionId -> Widget
-postSectionWidget sectionId = do
+postSectionWidget :: Bool -> SectionId -> Widget
+postSectionWidget isAdmin sectionId = do
     section <- liftHandler $ runDB $ getJust sectionId
     let guideId = sectionGuideId section
         content = sectionContent section
@@ -56,7 +56,7 @@ postSectionWidget sectionId = do
     (ncWidget, mcomp) <- liftHandler $ runNewComponent sectionId
     
     (compWidgets, mcomps) <- liftHandler $ fmap unzip
-        $ mapM (uncurry $ postCompWidget sectionId)
+        $ mapM (uncurry $ postCompWidget isAdmin sectionId)
         $ withIndexes content
 
     let onSuccess msg = do

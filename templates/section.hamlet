@@ -1,11 +1,12 @@
 <div .section>
     <h2 ##{sectionUrl section}>#{sectionTitle section}
-    <div .controls>
-        ^{ncWidget}
-        ^{sectionModal}
-        <button .btn .btn-secondary ##{sectionUpId}>Up
-        <button .btn .btn-secondary ##{sectionDownId}>Down
-        <button .btn .btn-danger ##{sectionDelId}>Delete
+    $if isAdmin
+        <div .controls>
+            ^{ncWidget}
+            ^{sectionModal}
+            <button .btn .btn-secondary ##{sectionUpId}>Up
+            <button .btn .btn-secondary ##{sectionDownId}>Down
+            <button .btn .btn-danger ##{sectionDelId}>Delete
 
     $maybe bg <- sectionBackground section
         <img src=@{ImagesR $ mkImageUrl bg}>

@@ -12,22 +12,36 @@ import Handler.AdminTools
 
 getHomeR :: Handler Html
 getHomeR = do
+    muser <- maybeAuth
+    let isAdmin = maybe False (userIsAdmin . entityVal) muser
     defaultLayout $ do
         setTitle "Welcome To Yesod!"
-        let madminTools = Just $ mkAdminTools $ AdminTools
-                                                getImageManager
-                                                ggManager
-                                                genNewGuide
-                                                Nothing
+        let madminTools =
+                if isAdmin then
+                    Just $ mkAdminTools $ 
+                        AdminTools
+                        getImageManager
+                        ggManager
+                        genNewGuide
+                        Nothing
+                else
+                    Nothing
         $(widgetFile "homepage")        
 
 postHomeR :: Handler Html
 postHomeR = do
+    muser <- maybeAuth
+    let isAdmin = maybe False (userIsAdmin . entityVal) muser
     defaultLayout $ do
         setTitle "Welcome To Yesod!"
-        let madminTools = Just $ mkAdminTools $ AdminTools
-                                                postImageManager
-                                                ggManager
-                                                runNewGuide
-                                                Nothing
+        let madminTools =
+                if isAdmin then
+                    Just $ mkAdminTools $ 
+                        AdminTools
+                        postImageManager
+                        ggManager
+                        runNewGuide
+                        Nothing
+                else
+                    Nothing
         $(widgetFile "homepage")

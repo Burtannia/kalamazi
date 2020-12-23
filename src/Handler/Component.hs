@@ -166,8 +166,8 @@ deleteComponent (CImage _) = return ()
 deleteComponent (CVideo _) = return ()
 deleteComponent (CWeakAura _ _) = return ()
 
-getCompWidget :: SectionId -> Int -> Component -> Widget
-getCompWidget sectionId ix comp = do
+getCompWidget :: Bool -> SectionId -> Int -> Component -> Widget
+getCompWidget isAdmin sectionId ix comp = do
     compId <- newIdent
     cc <- liftHandler $ toCreateComp comp
 
@@ -182,9 +182,9 @@ getCompWidget sectionId ix comp = do
 
     $(widgetFile "component")
 
-postCompWidget :: SectionId -> Int -> Component
+postCompWidget :: Bool -> SectionId -> Int -> Component
     -> Handler (Widget, Maybe (Component, Int))
-postCompWidget sectionId ix comp = do
+postCompWidget isAdmin sectionId ix comp = do
     compId <- newIdent
     cc <- toCreateComp comp
     ((formRes, formWidget), enctype) <- liftHandler
