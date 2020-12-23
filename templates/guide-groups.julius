@@ -69,16 +69,22 @@ function moveGuideGroup(btn, dir) {
         var mvRow = $(".group-row[data-ggid='" + ggid + "']");
         var mvPos = parseInt(mvRow.first().text(), 10);
         var newPos = mvPos + posModifier;
+        var changed = false;
 
         $('.group-row th:first-child').each(function() {
             var pos = parseInt($(this).text(), 10);
             if (pos == newPos)
+            {
                 $(this).text(pos + (posModifier * -1));
+                changed = true;
+            }
         });
 
-        mvRow.find('th').first().text(newPos);
-
-        mvFunc(mvRow);
+        if (changed)
+        {
+            mvRow.find('th').first().text(newPos);
+            mvFunc(mvRow);
+        }        
     })
     .fail(function (jqXHR, textStatus, errorThrown) {
         console.log(errorThrown + ": " + jqXHR.responseText);
