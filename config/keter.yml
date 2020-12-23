@@ -19,9 +19,15 @@ stanzas:
     exec: ../dist/bin/kalamazi
 
     # Command line options passed to your application.
-    args:
+    args: []
+
+    env:
       - YESOD_IMAGE_DIR: /opt/kalamazi/images
       - YESOD_SQLITE_DATABASE: /opt/kalamazi/kalamazi.sqlite3
+
+    forward-env:
+      - KALA_YOUTUBE_SECRET
+      - KALA_GOOGLE_OAUTH_SECRET
 
     hosts:
       # You can specify one or more hostnames for your application to respond

@@ -3,9 +3,8 @@ $maybe adminTools <- madminTools
 
 <h3>Latest Video:
 <iframe #youtube-latest
-    src="" title=""
-    frameborder="0" allowfullscreen="true" scrolling="no" style="display: none"
-    height="288" width="512">
+    src=#{mkVideoUrl $ ytVideoId ytData} title=#{ytVideoTitle ytData}
+    frameborder="0" allowfullscreen="true" scrolling="no" height="288" width="512">
 
 <hr>
 
