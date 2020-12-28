@@ -27,6 +27,7 @@ stanzas:
 
     forward-env:
       - KALA_YOUTUBE_SECRET
+      - KALA_GOOGLE_OAUTH_ID
       - KALA_GOOGLE_OAUTH_SECRET
 
     hosts:

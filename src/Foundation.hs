@@ -44,6 +44,7 @@ data App = App
     , appConnPool    :: ConnectionPool -- ^ Database connection pool.
     , appHttpManager :: Manager
     , appLogger      :: Logger
+    , appGoogleAuthId :: Text
     , appGoogleAuthKey :: Text
     , appYouTubeKey :: Text
     }
@@ -306,7 +307,7 @@ instance YesodAuth App where
     authPlugins :: App -> [AuthPlugin App]
     authPlugins app = [ oauth2GoogleScoped
         ["email", "profile"]
-        "860727337620-lrju49gd97d4h0iap4k2cu2tj4489iio.apps.googleusercontent.com"
+        (appGoogleAuthId app)
         (appGoogleAuthKey app) ] ++ extraAuthPlugins
         -- Enable authDummy login if enabled.
         where extraAuthPlugins = [authDummy | appAuthDummyLogin $ appSettings app]
