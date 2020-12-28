@@ -10,6 +10,7 @@ $('##{rawJS sectionDelId}').click(function() {
         .done(() => section.remove())
         .fail(function (jqXHR, textStatus, errorThrown) {
             console.log(errorThrown + ": " + jqXHR.responseText);
+            makeAlertDanger("Something went wrong");
         });
 });
 
@@ -25,6 +26,7 @@ $('##{rawJS sectionUpId}').click(function() {
     .done(() => moveUp(section))
     .fail(function (jqXHR, textStatus, errorThrown) {
         console.log(errorThrown + ": " + jqXHR.responseText);
+        makeAlertDanger("Something went wrong");
     });
 });
 
@@ -40,6 +42,7 @@ $('##{rawJS sectionDownId}').click(function() {
     .done(() => moveDown(section))
     .fail(function (jqXHR, textStatus, errorThrown) {
         console.log(errorThrown + ": " + jqXHR.responseText);
+        makeAlertDanger("Something went wrong");
     });
 });
 

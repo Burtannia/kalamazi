@@ -23,6 +23,7 @@ function deleteGuideGroup(btn) {
     })
     .fail(function (jqXHR, textStatus, errorThrown) {
         console.log(errorThrown + ": " + jqXHR.responseText);
+        makeAlertDanger("Something went wrong");
     });
 }
 
@@ -88,6 +89,7 @@ function moveGuideGroup(btn, dir) {
     })
     .fail(function (jqXHR, textStatus, errorThrown) {
         console.log(errorThrown + ": " + jqXHR.responseText);
+        makeAlertDanger("Something went wrong");
     });
 }
 
@@ -157,6 +159,7 @@ $(function() {
         })
         .fail(function (jqXHR, textStatus, errorThrown) {
             console.log(errorThrown + ": " + jqXHR.responseText);
+            makeAlertDanger("Something went wrong");
         });
     });
 });

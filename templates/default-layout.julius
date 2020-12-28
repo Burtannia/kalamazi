@@ -3,9 +3,33 @@ $(function() {
         $('#message').fadeOut(300, function() { 
             $(this).remove();
         });
-    }, 3000);
+    }, 5000);
 });
 
-$('#message').click(function() {
-    $(this).remove();
-});
+function makeAlert(msg, alertClass) {
+    var alertDiv = $("<div class=\"alert alert-dismissable fade show " + alertClass + "\" role=\"alert\"></div>");
+    alertDiv.text(msg);
+
+    var alertBtn = $("<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button>")
+    alertDiv.append(alertBtn);
+
+    $('#msg-wrapper').append(alertDiv);
+
+    setTimeout(function() {
+        alertDiv.fadeOut(300, function() { 
+            $(this).remove();
+        });
+    }, 5000);
+}
+
+function makeAlertDanger(msg) {
+    makeAlert(msg, "alert-danger");
+}
+
+function makeAlertSuccess(msg) {
+    makeAlert(msg, "alert-success");
+}
+
+function makeAlertInfo(msg) {
+    makeAlert(msg, "alert-Info");
+}

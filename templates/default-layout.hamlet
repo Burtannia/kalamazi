@@ -21,7 +21,7 @@
 
 <!-- Page Contents -->
 
-<div .container>
+<div .container #msg-wrapper>
     $# $if not $ Just HomeR == mcurrentRoute
     $#     <ul .breadcrumb>
     $#         $forall bc <- parents
@@ -31,7 +31,9 @@
     $#         <li .active>#{title}
 
     $maybe msg <- mmsg
-      <div .alert.alert-info #message>#{msg}
+        <div .alert.alert-info.alert-dismissable.fade.show #message role="alert">#{msg}
+            <button type="button" .close #msg-close data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times
 
 <div .container>
     <div .row>

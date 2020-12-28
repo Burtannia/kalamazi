@@ -24,5 +24,6 @@ $('##{rawJS delId}').click(function() {
         })
         .fail(function (jqXHR, textStatus, errorThrown) {
             console.log(errorThrown + ": " + jqXHR.responseText);
+            makeAlertDanger("Something went wrong");
         });
 });

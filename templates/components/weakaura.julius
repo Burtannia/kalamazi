@@ -1,6 +1,6 @@
 $('##{rawJS btnId}').click(function() {
     var wa = #{unTextarea content};
-    
+
     navigator.clipboard.writeText(wa).then(function() {
         var label = $('##{rawJS btnId}').find('p');
         var prev = label.text();
@@ -13,5 +13,6 @@ $('##{rawJS btnId}').click(function() {
 
     }, function(err) {
         console.error('Could not copy text: ', err);
+        makeAlertDanger("Something went wrong");
     });
 });
