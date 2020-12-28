@@ -17,7 +17,7 @@ import Handler.Component
 import Handler.Section
 import Handler.Images
 import Handler.Modal
-import qualified Data.Text as T (append)
+import qualified Data.Text as T (foldr)
 import Data.Time.Clock (diffUTCTime)
 import Yesod.Form.Bootstrap4 (BootstrapFormLayout (..), renderBootstrap4)
 
@@ -151,11 +151,22 @@ nsFormIdent = "new-section"
 guideForm :: Maybe Guide -> AForm Handler Guide
 guideForm mg = Guide
     <$> areq textField "Title" (guideTitle <$> mg)
-    <*> fmap remSpecialChars (areq textField "Url" (guideUrl <$> mg))
+    <*> areq gUrlField "Url" (guideUrl <$> mg)
     <*> areq checkBoxField "Published" (guideIsPublished <$> mg)
     <*> lift (liftIO getCurrentTime)
     <*> areq imageSelectField "Icon" (guideIcon <$> mg)
     <*> pure (maybe [] guideSections mg)
+    where
+        gUrlField = check validateUrl textField
+        validateUrl t =
+            if isValid
+                then Right t
+                else Left err
+            where
+                err :: Text
+                err = "Please enter a value containing only letters, numbers, hyphens and underscores)."
+                isValid = T.foldr (\c b -> b && c `elem` validChars) True t
+                validChars = '-' : '_' : (['a'..'z'] ++ ['A'..'Z'] ++ ['0'..'9'])
 
 genNewGuide :: Widget
 genNewGuide = do

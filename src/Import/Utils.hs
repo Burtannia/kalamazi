@@ -11,11 +11,6 @@ import qualified Data.List as L (tail)
 import Data.Time.Clock (NominalDiffTime)
 import Yesod.Form.Bootstrap4 (BootstrapFormLayout (..), renderBootstrap4)
 
-remSpecialChars :: Text -> Text
-remSpecialChars t = pack [ c | c <- unpack t, not $ c `elem` specials ]
-    where
-        specials = ['\\', '\'', '\"', '/']
-
 formatDiffTime :: NominalDiffTime -> String
 formatDiffTime dt = go (floor $ toRational dt) incs
     where
