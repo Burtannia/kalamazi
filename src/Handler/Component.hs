@@ -25,11 +25,12 @@ import Model.Guide
 genNewComponent :: SectionId -> Widget
 genNewComponent sectionId = do
     modalId <- newIdent
-    let formWidgets = map (uncurry genForm) $ withIndexes comps
+    let formWidgets = map (uncurry $ genForm modalId) $ withIndexes comps
     $(widgetFile "components/new-component")
     where
-        genForm ix (compName, compId, cc) = do
+        genForm modalId ix (compName, compId', cc) = do
             let isFirst = ix == 0
+                compId = modalId <> "-" <> compId'
             formId <- newIdent
             (formWidget, enctype) <- liftHandler
                 $ genBs4FormIdentify (mkCreateCompId sectionId compId)
@@ -40,12 +41,13 @@ runNewComponent :: SectionId -> Handler (Widget, Maybe Component)
 runNewComponent sectionId = do
     modalId <- newIdent
     (formWidgets, mcomps) <- fmap unzip $
-            mapM (uncurry runForm) $ withIndexes comps
+            mapM (uncurry $ runForm modalId) $ withIndexes comps
     let widget = $(widgetFile "components/new-component")
     return (widget, listToMaybe $ catMaybes mcomps)
     where
-        runForm ix (compName, compId, cc) = do
+        runForm modalId ix (compName, compId', cc) = do
             let isFirst = ix == 0
+                compId = modalId <> "-" <> compId'
             formId <- newIdent
             ((formRes, formWidget), enctype) <- liftHandler
                 $ runBs4FormIdentify (mkCreateCompId sectionId compId)
@@ -149,7 +151,7 @@ createCompForm (CreateToggleImage mbrd ts) = CD_ToggleImage
 createCompForm (CreateImage mimg) = CD_Image
     <$> areq imageSelectField "Image" mimg
 createCompForm (CreateVideo murl) = CD_Video
-    <$> areq textField "Url" murl 
+    <$> areq textField "Url" murl
 createCompForm (CreateWeakAura mtitle mcontent) = CD_WeakAura
     <$> areq textField "Title" mtitle
     <*> areq textareaField "Content" mcontent
