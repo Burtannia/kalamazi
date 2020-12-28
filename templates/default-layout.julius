@@ -6,6 +6,18 @@ $(function() {
     }, 5000);
 });
 
+$(function() {
+    var err = $('.invalid-feedback');
+
+    var modal = err.parents('.modal');
+    modal.parents('.collapse').collapse('show'); // for modals inside the admin panel
+    modal.modal("show");
+
+    var tab = err.parents('.tab-pane'); // for modals with tabs
+    if ( tab.length )
+        $('#' + tab.prop('id') + '-tab').tab('show');
+});
+
 function makeAlert(msg, alertClass) {
     var alertDiv = $("<div class=\"alert alert-dismissable fade show " + alertClass + "\" role=\"alert\"></div>");
     alertDiv.text(msg);
