@@ -3,7 +3,7 @@ $maybe adminTools <- madminTools
 
 <h3>Latest Video:
 <iframe #youtube-latest
-    src=#{mkVideoUrl $ ytVideoId ytData} title=#{ytVideoTitle ytData}
+    src=#{ytUrl ytVideo} title=#{ytTitle ytVideo}
     frameborder="0" allowfullscreen="true" scrolling="no" height="288" width="512">
 
 <hr>

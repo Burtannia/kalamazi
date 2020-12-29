@@ -12,8 +12,10 @@ Image
     Primary uuid
 MarkupBlock
     content Html
--- Comment json -- Adding "json" causes ToJSON and FromJSON instances to be derived.
-    -- message Text
-    -- userId UserId Maybe
-    -- deriving Eq
-    -- deriving Show
+Cache
+    ident Text
+    values [Text]
+    expiry UTCTime
+    UniqueCacheId ident
+    Primary ident
+    deriving Show
