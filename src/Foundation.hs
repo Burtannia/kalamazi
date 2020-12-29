@@ -59,6 +59,13 @@ data MenuTypes
     = NavLink MenuItem
     | NavDrop Text Bool [MenuItem]
 
+youtubeLink, discordLink, twitterLink, patreonLink, twitchLink :: Text
+youtubeLink = ""
+discordLink = ""
+twitterLink = ""
+patreonLink = ""
+twitchLink = ""
+
 -- This is where we define all of the routes in our application. For a full
 -- explanation of the syntax, please see:
 -- http://www.yesodweb.com/book/routing-and-handlers
@@ -305,10 +312,9 @@ instance YesodAuth App where
 
     -- You can add other plugins like Google Email, email or OAuth here
     authPlugins :: App -> [AuthPlugin App]
-    authPlugins app = [ oauth2GoogleScoped
-        ["email", "profile"]
-        (appGoogleAuthId app)
-        (appGoogleAuthKey app) ] ++ extraAuthPlugins
+    authPlugins app = [ oauth2GoogleScoped ["email", "profile"]
+        (appGoogleAuthId app) (appGoogleAuthKey app) ]
+        ++ extraAuthPlugins
         -- Enable authDummy login if enabled.
         where extraAuthPlugins = [authDummy | appAuthDummyLogin $ appSettings app]
 
