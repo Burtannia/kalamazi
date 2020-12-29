@@ -1,23 +1,30 @@
 <!-- Navbar -->
-<nav .navbar .navbar-expand-lg .navbar-dark .bg-dark>
-    <button type="button" .navbar-toggler data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar" aria-label="Toggle navigation">
-        <span .navbar-toggler-icon>
+<nav .navbar .navbar-expand-lg .navbar-dark .bg-darker>
+    <div .container>
 
-    <div #navbar .collapse .navbar-collapse>
-        <ul .navbar-nav .mr-auto>
-            $forall (ix, nav) <- filteredMenuItems
-                $case nav
-                    $of NavLink (MenuItem label route _)
-                        <li .nav-item :Just route == mcurrentRoute:.active>
-                            <a .nav-link href="@{route}">#{label}
-                    $of NavDrop groupLabel _ mis
-                        <li .nav-item .dropdown>
-                            <a .nav-link .dropdown-toggle #nav-drop-#{ix} href="#"
-                                data-toggle="dropdown" aria-haspopup="true"
-                                aria-expanded="false">#{groupLabel}
-                            <div .dropdown-menu aria-labelledby="nav-drop-#{ix}">
-                                $forall MenuItem label route _ <- mis
-                                    <a .dropdown-item href=@{route}>#{label}
+        <a .navbar-brand href="/">
+            <img src=@{StaticR logo_png} .nav-logo alt="Kalamazi">
+
+        <button type="button" .navbar-toggler data-toggle="collapse" data-target="#navbar"
+            aria-expanded="false" aria-controls="navbar" aria-label="Toggle navigation">
+            <span .navbar-toggler-icon>
+
+        <div #navbar .collapse .navbar-collapse>
+            <ul .navbar-nav .ml-auto>
+                $forall (ix, nav) <- filteredMenuItems
+                    $case nav
+                        $of NavLink (MenuItem label route _)
+                            <li .nav-item :Just route == mcurrentRoute:.active>
+                                <a .nav-link href="@{route}">#{label}
+                        $of NavDrop groupLabel _ mis
+                            <li .nav-item .dropdown>
+                                <a .nav-link .dropdown-toggle #nav-drop-#{ix} href="#"
+                                    data-toggle="dropdown" aria-haspopup="true"
+                                    aria-expanded="false">#{groupLabel}
+                                <div .dropdown-menu .bg-black .border-red aria-labelledby="nav-drop-#{ix}">
+                                    $forall MenuItem label route _ <- mis
+                                        <a href=@{route} .dropdown-item .highlight-red .text-white
+                                            :Just route == mcurrentRoute:.active>#{label}
 
 <!-- Page Contents -->
 
@@ -41,7 +48,6 @@
             ^{widget}
 
 <!-- Footer -->
-<footer .footer>
-    <div .container>
-        <p .text-muted>
-            #{appCopyright $ appSettings master}
+<footer .footer .bg-darker>
+    <p .text-muted .text-center>
+        #{appCopyright $ appSettings master}

@@ -51,7 +51,7 @@ $newline never
 
     <script>
       document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/,'js');
-  <body>
+  <body .bg-black>
     ^{pageBody pc}
 
     $maybe analytics <- appAnalytics $ appSettings master
