@@ -161,7 +161,10 @@ instance Yesod App where
                 guides <- mapM (sequence . (id &&& runDB . getJust)) $ guideGroupGuides gg
                 let guideLinks = filter menuItemAccessCallback $ map mkGuideLink guides
                     shouldShow = length guideLinks > 0
-                return $ NavDrop (guideGroupName gg) shouldShow guideLinks
+                return $
+                    case guideLinks of
+                        [x] -> NavLink $ x { menuItemLabel = guideGroupName gg }
+                        _  -> NavDrop (guideGroupName gg) shouldShow guideLinks
 
         ggLinks <- mapM mkGroupNav guideGroups
 
