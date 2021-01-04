@@ -11,6 +11,13 @@ packages:
       sha256: 314407a32db4ef4a0bed6991f2b3a4ac9d4636984c5449d9e64b30c6b7961a46
   original:
     hackage: yesod-auth-oauth2-0.6.1.5@sha256:bc65e697ae622b80024ca22a7b9270bf64a8c96be8f6ac1d09ed3a1d1cbbde6e,2950
+- completed:
+    hackage: yesod-form-multi-1.7.0@sha256:f07f1bfbde8b3cd8bf489f70f9ab06378f94425f83b2c304d2851d85c3a2cf0f,1350
+    pantry-tree:
+      size: 328
+      sha256: a137174638da0699f4405856283fdd2722d014b23faf7b60aa23ee758c4666fd
+  original:
+    hackage: yesod-form-multi-1.7.0@sha256:f07f1bfbde8b3cd8bf489f70f9ab06378f94425f83b2c304d2851d85c3a2cf0f,1350
 snapshots:
 - completed:
     size: 532177

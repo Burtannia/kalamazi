@@ -18,7 +18,7 @@ data ModalSettings = ModalSettings
 mkModal :: Text -> (Widget, Enctype) -> Widget
 mkModal t f = mkModalCustom t f defs
     where
-        defs = ModalSettings [shamlet| #{t} |] "btn btn-primary"
+        defs = ModalSettings [shamlet| #{t} |] "btn btn-dark"
 
 mkModalCustom :: Text
     -> (Widget, Enctype)

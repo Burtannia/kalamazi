@@ -1,4 +1,4 @@
-<button type="button" .btn .btn-primary
+<button type="button" .btn .btn-dark
     data-toggle="modal" data-target="##{modalId}">Manage Groups
 
 <div .modal .fade ##{modalId} tabindex="-1">
@@ -14,7 +14,7 @@
                     <select multiple #gg-guides .form-control>
                         $forall g <- guides
                             <option .guide-option value=#{guideUrl g}>#{guideTitle g}
-                    <button type="submit" .btn .btn-primary>Add
+                    <button type="submit" .btn .btn-dark>Add
 
             <table .table>
                 <thead>

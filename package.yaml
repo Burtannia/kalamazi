@@ -45,7 +45,7 @@ dependencies:
 - yesod-auth-oauth2
 - wai
 - xss-sanitize
-- yesod-form-multi
+- yesod-form-multi >=1.7.0
 - yesod-form-bootstrap4
 
 # The library contains all of our application code. The executable

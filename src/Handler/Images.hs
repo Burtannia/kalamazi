@@ -130,8 +130,7 @@ uploadForm = ImageUpload
             , fsId = Nothing
             , fsName = Nothing
             , fsAttrs =
-                [
-                --("class", "form-control")
+                [ ("class", "form-control")
                 ]
             }
           fileSettings = FieldSettings
@@ -140,8 +139,8 @@ uploadForm = ImageUpload
             , fsId = Nothing
             , fsName = Nothing
             , fsAttrs =
-                [
-                    ("accept", ".jpg, .png, .gif")
+                [ ("accept", ".jpg, .png, .gif")
+                --, ("class", "form-control")
                 ]
             }
 
@@ -161,7 +160,7 @@ imageSelectField = selectFieldHelper outerView noneView otherView opts
             [whamlet|
                 $newline never
                 <div>
-                    <input type="text" ##{idAttr <> "-search"} placeholder="Search for images..."
+                    <input .form-control type="text" ##{idAttr <> "-search"} placeholder="Search for images..."
                         onkeyup="searchImages(this)" onchange="showImages(this)">
                     <div ##{idAttr}>^{inside}
             |]

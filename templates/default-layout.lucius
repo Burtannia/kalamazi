@@ -1,3 +1,5 @@
+/* Navbar */
+
 nav {
     margin-bottom: 1rem;
 }
@@ -7,9 +9,23 @@ nav {
     height: 3rem;
 }
 
+.nav-link {
+    cursor: pointer;
+}
+
+.active.nav-highlight-red, .nav-highlight-red:hover {
+    background-color: #a1232c !important;
+}
+
+.nav-link:hover {
+    color: #a1232c !important;
+}
+
 #message {
     margin-bottom: 1rem;
 }
+
+/* Footer */
 
 footer {
     padding: 0.8rem;
@@ -19,6 +35,8 @@ footer p {
     font-size: 0.8rem;
     margin: 0;
 }
+
+/* General Classes */
 
 .bg-black {
     background-color: #101010 !important;
@@ -32,15 +50,10 @@ footer p {
     border: 2px solid #a1232c !important;
 }
 
-.nav-link {
-    cursor: pointer;
-}
-
-.highlight-red:hover {
-    background-color: #a1232c !important;
-}
-
-.nav-link:hover {
-    color: #a1232c !important;
-}
 /* brighter red #bf2235 */
+
+/* Modals */
+
+.modal-header, .modal-body, .modal-footer {
+    border-color: #333333 !important;
+}

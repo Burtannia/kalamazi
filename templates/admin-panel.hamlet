@@ -1,20 +1,21 @@
 <button .btn .btn-primary type="button" data-toggle="collapse" data-target="#admin-panel">Admin Tools
 
 <div .collapse #admin-panel>
-    <div .card .card-body>
+    <div .card .card-body .bg-darker .text-white>
         <h3>Admin Tools
-        <div .row>
+        <div>
             ^{awImageManager}
             ^{awGuideGroups}
             ^{awNewGuide}
 
         $maybe guideControls <- awGuideControls
-            <div .row>
-                <div .col-8>
+            <div .row style="margin-top: 0.5rem">
+                <div .col-6>
+                    <h6>Guide Controls:
                     ^{guideControls}
 
-                <div .col-4>
-                    <label>Viewing Mode
+                <div .col-6>
+                    <h6>Viewing Mode:
                     <div .btn-group .btn-group-toggle data-toggle="buttons">
                         <label .btn .btn-secondary .active>
                             <input type="radio" name="options" #edit-mode autocomplete="off" checked>Edit Mode

@@ -23,7 +23,7 @@
                                     aria-expanded="false">#{groupLabel}
                                 <div .dropdown-menu .bg-black .border-red aria-labelledby="nav-drop-#{ix}">
                                     $forall MenuItem label route _ <- mis
-                                        <a href=@{route} .dropdown-item .highlight-red .text-white
+                                        <a href=@{route} .dropdown-item .nav-highlight-red .text-white
                                             :Just route == mcurrentRoute:.active>#{label}
 
 <!-- Page Contents -->

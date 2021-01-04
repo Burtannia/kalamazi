@@ -150,11 +150,11 @@ nsFormIdent = "new-section"
 
 guideForm :: Maybe Guide -> AForm Handler Guide
 guideForm mg = Guide
-    <$> areq textField "Title" (guideTitle <$> mg)
-    <*> areq gUrlField "Url" (guideUrl <$> mg)
+    <$> areq textField (fSettings "Title") (guideTitle <$> mg)
+    <*> areq gUrlField (fSettings "Url") (guideUrl <$> mg)
     <*> areq checkBoxField "Published" (guideIsPublished <$> mg)
     <*> lift (liftIO getCurrentTime)
-    <*> areq imageSelectField "Icon" (guideIcon <$> mg)
+    <*> areq imageSelectField (fSettings "Icon") (guideIcon <$> mg)
     <*> pure (maybe [] guideSections mg)
     where
         gUrlField = check validateUrl textField
@@ -167,6 +167,15 @@ guideForm mg = Guide
                 err = "Please enter a value containing only letters, numbers, hyphens and underscores)."
                 isValid = T.foldr (\c b -> b && c `elem` validChars) True t
                 validChars = '-' : '_' : (['a'..'z'] ++ ['A'..'Z'] ++ ['0'..'9'])
+        fSettings label = FieldSettings
+            { fsLabel = label
+            , fsTooltip = Nothing
+            , fsId = Nothing
+            , fsName = Nothing
+            , fsAttrs =
+                [ ("class", "form-control")
+                ]
+            }
 
 genNewGuide :: Widget
 genNewGuide = do
