@@ -43,9 +43,7 @@
                 <span aria-hidden="true">&times
 
 <div .container>
-    <div .row>
-        <div .col-md-12>
-            ^{widget}
+    ^{widget}
 
 <!-- Footer -->
 <footer .footer .bg-darker>

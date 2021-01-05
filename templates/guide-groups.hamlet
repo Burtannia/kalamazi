@@ -9,6 +9,7 @@
                 <button type="button" .close data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;
             <div .modal-body>
+                <p>Group displayed on homepage: #{homeGroupName}
                 <form #gg-form .form-inline>
                     <input type="text" #gg-name .form-control placeholder="Group Name" required>
                     <select multiple #gg-guides .form-control>

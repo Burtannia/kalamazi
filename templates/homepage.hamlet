@@ -1,15 +1,20 @@
 $maybe adminTools <- madminTools
     ^{adminTools}
 
-<h3>Latest Video:
-<iframe #youtube-latest
-    src=#{ytUrl ytVideo} title=#{ytTitle ytVideo}
-    frameborder="0" allowfullscreen="true" scrolling="no" height="288" width="512">
+<div .row .no-gutters>
+    $forall (gid, icon) <- guides
+        <div .col-md .home-guide-img-wrapper>
+            <a href=@{GuideR gid}>
+                <img .home-guide-img src=@{ImagesR $ mkImageUrl icon}>
 
-<hr>
-
-<h3>Stream Iframe:
-<iframe #twitch-iframe
-    src="https://player.twitch.tv/?channel=kalamazi&parent=www.kalamazi.com&parent=localhost"
-    frameborder="0" allowfullscreen="true" scrolling="no"
-    height="288" width="512">
+<div .row .no-gutters>
+    <div .col-md-6>
+        <div .iframe-wrapper>
+            <iframe #youtube-latest
+                src=#{ytUrl ytVideo} title=#{ytTitle ytVideo}
+                frameborder="0" allowfullscreen="true" scrolling="no">
+    <div .col-md-6>
+        <div .iframe-wrapper>
+            <iframe #twitch-player
+                src="https://player.twitch.tv/?channel=kalamazi&parent=www.kalamazi.com&parent=localhost"
+                frameborder="0" allowfullscreen="true" scrolling="no">

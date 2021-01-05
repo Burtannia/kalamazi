@@ -59,12 +59,16 @@ data MenuTypes
     = NavLink MenuItem
     | NavDrop Text Bool [MenuItem]
 
-youtubeLink, discordLink, twitterLink, patreonLink, twitchLink :: Text
-youtubeLink = ""
-discordLink = ""
-twitterLink = ""
-patreonLink = ""
-twitchLink = ""
+homeGroupName :: Text
+homeGroupName = "Homepage Guides"
+
+youtubeLink, discordLink, twitterLink, patreonLink, twitchLink, wagoLink :: Text
+youtubeLink = "https://www.youtube.com/kalamazigames"
+discordLink = "https://discord.gg/cyn6Zsv"
+twitterLink = "https://twitter.com/Kalamazing"
+patreonLink = "https://www.patreon.com/Kalamazi"
+twitchLink = "https://www.twitch.tv/kalamazi"
+wagoLink = "https://wago.io/p/kalamazi"
 
 -- This is where we define all of the routes in our application. For a full
 -- explanation of the syntax, please see:
@@ -179,8 +183,11 @@ instance Yesod App where
             getCallback (NavLink mi) = menuItemAccessCallback mi
             getCallback (NavDrop _ cb _) = cb
 
+            getLabel (NavLink (MenuItem l _ _)) = l
+            getLabel (NavDrop l _ _) = l
+
             filteredMenuItems =
-                let xs = [x | x <- menuItems, getCallback x]
+                let xs = [x | x <- menuItems, getCallback x, getLabel x /= homeGroupName]
                  in zip [0..length xs - 1] xs
 
         -- We break up the default layout into two components:

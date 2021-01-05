@@ -19,6 +19,14 @@ getHomeR = do
 
     ytVideo <- getLatestVideo
 
+    mGroup <- runDB $ getBy $ UniqueGuideGroupName homeGroupName
+    guides <- case mGroup of
+        Nothing -> return []
+        Just group -> do
+            flip mapM (guideGroupGuides $ entityVal group) $ \gid -> do
+                guide <- runDB $ getJust gid
+                return (gid, guideIcon guide)
+
     defaultLayout $ do
         setTitle "Welcome To Yesod!"
         let madminTools =
@@ -39,6 +47,14 @@ postHomeR = do
     let isAdmin = maybe False (userIsAdmin . entityVal) muser
 
     ytVideo <- getLatestVideo
+
+    mGroup <- runDB $ getBy $ UniqueGuideGroupName homeGroupName
+    guides <- case mGroup of
+        Nothing -> return []
+        Just group -> do
+            flip mapM (guideGroupGuides $ entityVal group) $ \gid -> do
+                guide <- runDB $ getJust gid
+                return (gid, guideIcon guide)
 
     defaultLayout $ do
         setTitle "Welcome To Yesod!"
