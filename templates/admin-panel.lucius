@@ -1,0 +1,11 @@
+@media (max-width: 767px) {
+    #admin-panel .btn {
+        margin-bottom: 0.3rem;
+    }
+}
+
+.bottom-left {
+    position: fixed;
+    bottom: 1rem;
+    left: 1rem;
+}

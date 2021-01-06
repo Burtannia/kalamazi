@@ -1,4 +1,4 @@
-$('.del-img').click(function() {
+$('.del-icon i').click(function() {
     var elem = $(this);
     if (confirm("Are you sure you want to delete this image?"))
         $.ajax({
@@ -6,7 +6,7 @@ $('.del-img').click(function() {
             contentType: "application/json",
             url: $(this).attr("data-img-url")
         })
-        .done(() => elem.parent().remove())
+        .done(() => elem.parents('.col').remove())
         .fail(function (jqXHR, textStatus, errorThrown) {
             console.log(errorThrown + ": " + jqXHR.responseText);
             makeAlertDanger("Something went wrong");

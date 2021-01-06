@@ -1,8 +1,49 @@
-.del-img:hover {
-    opacity: 0.9;
-    cursor: pointer;
+@media (min-width: 767px) {
+    #upload-form .form-control-file {
+        max-width: 30%;
+    }
 }
 
-.image-container img {
-    width: 7rem;
+.image-wrapper {
+    position: relative;
+    width: 7.5rem;
 }
+
+.del-overlay {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    width: 100%;
+    opacity: 0;
+    transition: .3s ease;
+    background-color: rgba(170, 0, 0, 0.8);
+}
+
+.image-wrapper:hover .del-overlay {
+    opacity: 1;
+}
+
+.del-icon {
+    color: white;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    text-align: center;
+    font-size: 1.8rem;
+}
+
+.del-icon:hover i {
+    color: #ffffff;
+    font-size: 2rem;
+}
+
+#image-list {
+    max-height: 60vh;
+    overflow-y: scroll;
+}
+

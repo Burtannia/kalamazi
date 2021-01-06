@@ -1,4 +1,4 @@
-<button .btn .btn-primary type="button" data-toggle="collapse" data-target="#admin-panel">Admin Tools
+<button .bottom-left .btn .btn-primary type="button" data-toggle="collapse" data-target="#admin-panel">Admin Tools
 
 <div .collapse #admin-panel>
     <div .card .card-body .bg-darker .text-white>
@@ -18,6 +18,6 @@
                     <h6>Viewing Mode:
                     <div .btn-group .btn-group-toggle data-toggle="buttons">
                         <label .btn .btn-secondary .active>
-                            <input type="radio" name="options" #edit-mode autocomplete="off" checked>Edit Mode
+                            <input type="radio" name="options" #edit-mode autocomplete="off" checked>Edit
                         <label .btn .btn-secondary>
-                            <input type="radio" name="options" #preview-mode autocomplete="off">Preview Mode
+                            <input type="radio" name="options" #preview-mode autocomplete="off">Preview

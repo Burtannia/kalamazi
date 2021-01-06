@@ -9,21 +9,22 @@ module Handler.Images where
 
 import Import
 import qualified Data.List as L (head)
-import Yesod.Form.Bootstrap4 (BootstrapFormLayout (..), renderBootstrap4)
+import Yesod.Form.Bootstrap4
 import System.Directory (removeFile, doesFileExist)
 import Data.Time.Format.ISO8601
 import Control.Arrow ((&&&))
     
 getImageManager :: Widget
 getImageManager = do
-    (formWidget, enctype) <- liftHandler $ genBs4FormIdentify "upload-image" uploadForm
+    (formWidget, enctype) <- liftHandler $
+        genBs4FormIdentify' BootstrapInlineForm "upload-image" uploadForm
     modalId <- newIdent
     $(widgetFile "image-manager")
 
 postImageManager :: Widget
 postImageManager = do
     ((result, formWidget), enctype) <- liftHandler $
-        runBs4FormIdentify "upload-image" uploadForm
+        runBs4FormIdentify' BootstrapInlineForm "upload-image" uploadForm
     modalId <- newIdent
 
     case result of
@@ -122,25 +123,26 @@ data ImageUpload = ImageUpload
 uploadForm :: AForm Handler ImageUpload
 uploadForm = ImageUpload
     <$> fileAFormReq fileSettings
-    <*> areq textField textSettings Nothing
+    <*> areq textField nameSettings Nothing
     <*> lift (liftIO getCurrentTime)
-    where textSettings = FieldSettings
-            { fsLabel = "File name"
-            , fsTooltip = Nothing
-            , fsId = Nothing
-            , fsName = Nothing
-            , fsAttrs =
-                [ ("class", "form-control")
-                ]
-            }
-          fileSettings = FieldSettings
-            { fsLabel = "File name"
+    where fileSettings = FieldSettings
+            { fsLabel = ""
             , fsTooltip = Nothing
             , fsId = Nothing
             , fsName = Nothing
             , fsAttrs =
                 [ ("accept", ".jpg, .png, .gif")
-                --, ("class", "form-control")
+                , ("class", "form-control-file mr-sm-2")
+                ]
+            }
+          nameSettings = FieldSettings
+            { fsLabel = ""
+            , fsTooltip = Nothing
+            , fsId = Nothing
+            , fsName = Nothing
+            , fsAttrs =
+                [ ("placeholder", "Enter a name...")
+                , ("class", "form-control mr-sm-2")
                 ]
             }
 

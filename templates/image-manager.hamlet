@@ -7,13 +7,14 @@
             <div .modal-header>
                 <h5 .modal-title>Image Manager
                 <button type="button" .close data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;
+                    <span aria-hidden="true" .text-white>&times;
             <div .modal-body>
-                <form #upload-form method=post enctype=#{enctype}>
+                <h6>Upload an Image:
+                <form #upload-form .form-inline method=post enctype=#{enctype}>
                     ^{formWidget}
-                    <button type="submit" .btn .btn-dark form="upload-form">Save
+                    <button type="submit" .btn .btn-dark form="upload-form">Upload
 
-                <h5>Images:
+                <h6 .mt-2>Images:
                 ^{imagesWidget}
             <div .modal-footer>
                 <button type="button" .btn .btn-secondary data-dismiss="modal">Close

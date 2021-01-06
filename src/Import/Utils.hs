@@ -92,16 +92,34 @@ boundsCheckM xs n mb
     | otherwise = liftM Right mb
     
 genBs4Form :: AForm Handler a -> Handler (Widget, Enctype)
-genBs4Form = generateFormPost . renderBootstrap4 BootstrapBasicForm
+genBs4Form = genBs4Form' BootstrapBasicForm
 
 runBs4Form :: AForm Handler a -> Handler ((FormResult a, Widget), Enctype)
-runBs4Form = runFormPost . renderBootstrap4 BootstrapBasicForm
+runBs4Form = runBs4Form' BootstrapBasicForm
+
+genBs4Form' :: BootstrapFormLayout -> AForm Handler a -> Handler (Widget, Enctype)
+genBs4Form' formType = generateFormPost . renderBootstrap4 formType
+
+runBs4Form' :: BootstrapFormLayout -> AForm Handler a -> Handler ((FormResult a, Widget), Enctype)
+runBs4Form' formType = runFormPost . renderBootstrap4 formType
 
 genBs4FormIdentify :: Text -> AForm Handler a -> Handler (Widget, Enctype)
-genBs4FormIdentify t = generateFormPost . identifyForm t . renderBootstrap4 BootstrapBasicForm
+genBs4FormIdentify = genBs4FormIdentify' BootstrapBasicForm
 
 runBs4FormIdentify :: Text -> AForm Handler a -> Handler ((FormResult a, Widget), Enctype)
-runBs4FormIdentify t = runFormPost . identifyForm t . renderBootstrap4 BootstrapBasicForm
+runBs4FormIdentify = runBs4FormIdentify' BootstrapBasicForm
+
+genBs4FormIdentify' :: BootstrapFormLayout
+    -> Text
+    -> AForm Handler a
+    -> Handler (Widget, Enctype)
+genBs4FormIdentify' formType t = generateFormPost . identifyForm t . renderBootstrap4 formType
+
+runBs4FormIdentify' :: BootstrapFormLayout
+    -> Text
+    -> AForm Handler a
+    -> Handler ((FormResult a, Widget), Enctype)
+runBs4FormIdentify' formType t = runFormPost . identifyForm t . renderBootstrap4 formType
 
 convertFieldPair :: (c -> a)
     -> (c -> b)
