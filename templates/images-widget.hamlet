@@ -1,10 +1,10 @@
-<input type="text" #imageSearch placeholder="Search for images...">
-<div .row .mt-2 #image-list>
+<input type="text" #imageSearch .form-control placeholder="Search for images...">
+<div .row .mt-3 .image-list>
     $forall i <- imgs
-        <div .col>
-            <p .mb-0>#{imageName $ entityVal i}
+        <div .col-3 .searchable-image>
             <div .image-wrapper>
                 <img .image-thumbnail .img-fluid src=@{ImagesR $ mkImageUrl $ entityKey i}>
                 <div .del-overlay>
                     <a href="#" .del-icon>
                         <i .fas .fa-trash-alt data-img-url=@{ImageR $ entityKey i}>
+            <p .text-center>#{imageName $ entityVal i}

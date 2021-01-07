@@ -150,11 +150,11 @@ nsFormIdent = "new-section"
 
 guideForm :: Maybe Guide -> AForm Handler Guide
 guideForm mg = Guide
-    <$> areq textField (fSettings "Title") (guideTitle <$> mg)
-    <*> areq gUrlField (fSettings "Url") (guideUrl <$> mg)
-    <*> areq checkBoxField "Published" (guideIsPublished <$> mg)
+    <$> areq textField (fSettings "Title" Nothing) (guideTitle <$> mg)
+    <*> areq gUrlField (fSettings "Url" $ Just urlTip) (guideUrl <$> mg)
+    <*> areq checkBoxField pubSettings (guideIsPublished <$> mg)
     <*> lift (liftIO getCurrentTime)
-    <*> areq imageSelectField (fSettings "Icon") (guideIcon <$> mg)
+    <*> areq imageSelectField (fSettings "Icon" $ Just iconTip) (guideIcon <$> mg)
     <*> pure (maybe [] guideSections mg)
     where
         gUrlField = check validateUrl textField
@@ -167,15 +167,24 @@ guideForm mg = Guide
                 err = "Please enter a value containing only letters, numbers, hyphens and underscores)."
                 isValid = T.foldr (\c b -> b && c `elem` validChars) True t
                 validChars = '-' : '_' : (['a'..'z'] ++ ['A'..'Z'] ++ ['0'..'9'])
-        fSettings label = FieldSettings
+        fSettings label mtt = FieldSettings
             { fsLabel = label
-            , fsTooltip = Nothing
+            , fsTooltip = mtt
             , fsId = Nothing
             , fsName = Nothing
             , fsAttrs =
-                [ ("class", "form-control")
-                ]
+                [ ("class", "form-control") ]
             }
+        pubSettings = FieldSettings
+            { fsLabel = "Published"
+            , fsTooltip = Just "Guides that are not published will only be viewable by admins."
+            , fsId = Nothing
+            , fsName = Nothing
+            , fsAttrs =
+                [ ("style", "display: block; width: 1.5rem; height: 1.5rem;") ]
+            }
+        urlTip = "The guide url will be kalamazi.com/guides/<url>. Only letters, numbers, hyphens and underscores are permitted."
+        iconTip = "This image will be used as a thumbnail if the guide is displayed on the homepage."
 
 genNewGuide :: Widget
 genNewGuide = do

@@ -52,8 +52,19 @@ footer p {
 
 /* brighter red #bf2235 */
 
+@media (max-width: 767px) {
+    .mb-ltsmall {
+        margin-bottom: 0.5rem;
+    }
+}
+
 /* Modals */
 
 .modal-header, .modal-body, .modal-footer {
     border-color: #333333 !important;
+}
+
+.image-list {
+    max-height: 60vh;
+    overflow-y: scroll;
 }

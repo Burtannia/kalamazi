@@ -17,7 +17,7 @@ $('.del-icon i').click(function() {
 $(document).ready(function() {
     $("#imageSearch").on("keyup", function() {
         var value = $(this).val().toLowerCase();
-        $(".image-container p").filter(function() {
+        $(".searchable-image p").filter(function() {
             $(this).parent().toggle($(this).text().toLowerCase().indexOf(value) > -1)
         });
     });

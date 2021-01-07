@@ -132,7 +132,7 @@ uploadForm = ImageUpload
             , fsName = Nothing
             , fsAttrs =
                 [ ("accept", ".jpg, .png, .gif")
-                , ("class", "form-control-file mr-sm-2")
+                , ("class", "form-control-file mr-sm-2 mb-ltsmall")
                 ]
             }
           nameSettings = FieldSettings
@@ -142,7 +142,7 @@ uploadForm = ImageUpload
             , fsName = Nothing
             , fsAttrs =
                 [ ("placeholder", "Enter a name...")
-                , ("class", "form-control mr-sm-2")
+                , ("class", "form-control mr-sm-2 mb-ltsmall")
                 ]
             }
 
@@ -161,10 +161,9 @@ imageSelectField = selectFieldHelper outerView noneView otherView opts
         outerView = \idAttr nameAttr attrs inside -> do
             [whamlet|
                 $newline never
-                <div>
-                    <input .form-control type="text" ##{idAttr <> "-search"} placeholder="Search for images..."
-                        onkeyup="searchImages(this)" onchange="showImages(this)">
-                    <div ##{idAttr}>^{inside}
+                <input .form-control type="text" ##{idAttr <> "-search"} placeholder="Search for images..."
+                    onkeyup="searchImages(this)" onchange="showImages(this)">
+                <div ##{idAttr} .row .image-list .mt-3 style="padding-top: 3px">^{inside}
             |]
             toWidget
                 [julius|
@@ -178,49 +177,47 @@ imageSelectField = selectFieldHelper outerView noneView otherView opts
                     function searchImages(e) {
                         var value = $(e).val().toLowerCase();
                         $(e).next().find(".radioImageContainer p").filter(function() {
-                            $(this).parent().parent().toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                            $(this).parent().parent().parent().toggle($(this).text().toLowerCase().indexOf(value) > -1)
                         });
                     }
                 |]
         noneView = \idAttr nameAttr isSel ->
             [whamlet|
                 $newline never
-                <label .radio for=#{idAttr}-none>
-                    <div>
-                        <input id=#{idAttr}-none type=radio name=#{nameAttr} value=none :isSel:checked>
-                        _{MsgSelectNone}
+                <div .col-3>
+                    <label .radio .mb-0 for=#{idAttr}-none>
+                        <div>
+                            <input id=#{idAttr}-none type=radio name=#{nameAttr} value=none :isSel:checked>
+                            _{MsgSelectNone}
             |]
         otherView = \idAttr nameAttr attrs value isSel text -> do
             opts' <- liftHandler opts
             let mimgId = (olReadExternal opts') value
             [whamlet|
                 $newline never
-                <label .radio for=#{idAttr}-#{value}>
-                    <div .radioImageContainer>
-                        <input .radioForImage id=#{idAttr}-#{value} type=radio name=#{nameAttr} value=#{value} :isSel:checked *{attrs}>
-                        $maybe imgId <- mimgId
-                            <img .radioImage src=@{ImagesR $ mkImageUrl imgId}>
-                        <p>#{text}
+                <div .col-3>
+                    <label .radio .mb-0 for=#{idAttr}-#{value}>
+                        <div .radioImageContainer>
+                            <input .radioForImage id=#{idAttr}-#{value} type=radio name=#{nameAttr} value=#{value} :isSel:checked *{attrs}>
+                            $maybe imgId <- mimgId
+                                <img .img-fluid src=@{ImagesR $ mkImageUrl imgId}>
+                            <p .text-center>#{text}
             |]
             toWidget
                 [lucius|
-                    .radioImage {
-                        max-width: 120px;
+                    .radioImageContainer img {
+                        cursor: pointer;
                     }
-                    
+
                     .radioForImage { 
                         position: absolute;
                         opacity: 0;
                         width: 0;
                         height: 0;
                     }
-    
-                    .radioImage {
-                        cursor: pointer;
-                    }
 
                     .radioForImage:checked + img {
-                        outline: 2px solid #f00;
+                        outline: 2px solid #a1232c;
                     }
                 |]
         opts = do
