@@ -19,7 +19,7 @@ import Handler.Images
 import Handler.Modal
 import qualified Data.Text as T (foldr)
 import Data.Time.Clock (diffUTCTime)
-import Yesod.Form.Bootstrap4 (BootstrapFormLayout (..), renderBootstrap4)
+import Yesod.Form.Bootstrap4 (BootstrapFormLayout (..), renderBootstrap4, bfs)
 
 getGuideR :: GuideId -> Handler Html
 getGuideR guideId = do
@@ -53,7 +53,7 @@ getGuideR guideId = do
                     Just $ mkAdminTools $ 
                         AdminTools
                         getImageManager
-                        ggManager
+                        getGroupManager
                         genNewGuide
                         (Just gWidget)
                 else
@@ -134,7 +134,7 @@ postGuideR guideId = do
                     Just $ mkAdminTools $ 
                         AdminTools
                         postImageManager
-                        ggManager
+                        postGroupManager
                         runNewGuide
                         (Just gWidget)
                 else
@@ -150,7 +150,7 @@ nsFormIdent = "new-section"
 
 guideForm :: Maybe Guide -> AForm Handler Guide
 guideForm mg = Guide
-    <$> areq textField (fSettings "Title" Nothing) (guideTitle <$> mg)
+    <$> areq textField titleSettings (guideTitle <$> mg)
     <*> areq gUrlField (fSettings "Url" $ Just urlTip) (guideUrl <$> mg)
     <*> areq checkBoxField pubSettings (guideIsPublished <$> mg)
     <*> lift (liftIO getCurrentTime)
@@ -167,6 +167,14 @@ guideForm mg = Guide
                 err = "Please enter a value containing only letters, numbers, hyphens and underscores)."
                 isValid = T.foldr (\c b -> b && c `elem` validChars) True t
                 validChars = '-' : '_' : (['a'..'z'] ++ ['A'..'Z'] ++ ['0'..'9'])
+        titleSettings = FieldSettings
+            { fsLabel = "Guide Title"
+            , fsTooltip = Nothing
+            , fsId = Nothing
+            , fsName = Nothing
+            , fsAttrs =
+                [ ("class", "form-control mb-1") ]
+            }
         fSettings label mtt = FieldSettings
             { fsLabel = label
             , fsTooltip = mtt
@@ -233,23 +241,73 @@ removeFromGroups guideId = do
         when (guideId `elem` ggGuides) $
             runDB $ update (entityKey entgg) [GuideGroupGuides =. ggGuides -=! guideId]
 
-ggManager :: Widget
-ggManager = do
-    ggs' <- fmap (map entityVal) $
-        liftHandler $ runDB $ selectList [] [Asc GuideGroupPosition]
-    guides' <- liftHandler $ runDB $ selectList [] [Asc GuideTitle]
-    let guides = map entityVal guides'
-    ggs <- liftHandler $
-        mapM (sequence . (id &&& runDB . getMany . guideGroupGuides)) ggs'
+guideGroupForm :: AForm Handler GuideGroup
+guideGroupForm = GuideGroup
+    <$> areq textField groupNameSettings Nothing
+    <*> pure 0 -- not used
+    <*> amulti (selectField guideOptions) (bfs ("Guides" :: Text)) [] 1 bs4FASettings
+    where
+        guideOptions = optionsPersistKey [] [Asc GuideTitle] guideTitle
+        groupNameSettings = FieldSettings
+            { fsLabel = "Group Name"
+            , fsTooltip = Just $ fromString $
+                            "This name will show as the link text when on the navbar."
+                            ++ " Guides in the group \"" ++ unpack homeGroupName ++ "\" will be"
+                            ++ " displayed as images on the homepage and not linked on the"
+                            ++ " navbar. Creating a group with a name that is already in"
+                            ++ " use will replace the existing group."
+            , fsId = Nothing
+            , fsName = Nothing
+            , fsAttrs =
+                [ ("class", "form-control") ]
+            }
+
+getGroupManager :: Widget
+getGroupManager = do
+    (ggFormWidget, ggEnctype) <- liftHandler $ genBs4FormIdentify ggFormIdent $ guideGroupForm
+
+    ggs <- liftHandler ggHelper
+
     modalId <- newIdent
     $(widgetFile "guide-groups")
 
-postGroupManagerR :: Handler Value
-postGroupManagerR = do
-    gg' <- requireCheckJsonBody :: Handler GuideGroup
-    numGroups <- runDB $ count ([] :: [Filter GuideGroup])
-    gg <- runDB $ insertEntity (gg' {guideGroupPosition = numGroups + 1})
-    returnJson gg
+postGroupManager :: Widget
+postGroupManager = do
+    ((ggRes, ggFormWidget), ggEnctype) <- liftHandler $ runBs4FormIdentify ggFormIdent $ guideGroupForm
+    liftHandler $ liftIO $ print ggRes
+    case ggRes of
+        FormSuccess gg -> do
+            mg <- liftHandler $ runDB $ getBy $ UniqueGuideGroupName $ guideGroupName gg
+            numGroups <- liftHandler $ runDB $ count ([] :: [Filter GuideGroup])
+            case mg of
+                Nothing -> do
+                    _ <- liftHandler $ runDB $
+                        insert (gg {guideGroupPosition = numGroups + 1})
+                    return ()
+                Just entGG -> do
+                    _ <- liftHandler $ runDB $
+                        replace (entityKey entGG) (gg {guideGroupPosition = guideGroupPosition $ entityVal entGG})
+                    return ()
+            mcr <- getCurrentRoute
+            for_ mcr $ \cr -> redirect cr
+
+        FormMissing -> return ()
+
+        FormFailure errs -> do
+            liftIO $ putStrLn "postGroupManager ggRes"
+            print errs
+
+    ggs <- liftHandler ggHelper
+
+    modalId <- newIdent
+    $(widgetFile "guide-groups")
+
+ggHelper :: Handler [(GuideGroup, Map (Key Guide) Guide)]
+ggHelper = do
+    ggs' <- fmap (map entityVal) $
+        runDB $ selectList [] [Asc GuideGroupPosition]
+
+    mapM (sequence . (id &&& runDB . getMany . guideGroupGuides)) ggs'
 
 patchGuideGroupR :: GuideGroupId -> Handler ()
 patchGuideGroupR ggid = do

@@ -34,7 +34,7 @@ getHomeR = do
                     Just $ mkAdminTools $ 
                         AdminTools
                         getImageManager
-                        ggManager
+                        getGroupManager
                         genNewGuide
                         Nothing
                 else
@@ -63,7 +63,7 @@ postHomeR = do
                     Just $ mkAdminTools $ 
                         AdminTools
                         postImageManager
-                        ggManager
+                        postGroupManager
                         runNewGuide
                         Nothing
                 else

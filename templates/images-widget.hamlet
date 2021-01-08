@@ -1,5 +1,5 @@
 <input type="text" #imageSearch .form-control placeholder="Search for images...">
-<div .row .mt-3 .image-list>
+<div .row .mt-3 .image-list .max-h-60>
     $forall i <- imgs
         <div .col-3 .searchable-image>
             <div .image-wrapper>

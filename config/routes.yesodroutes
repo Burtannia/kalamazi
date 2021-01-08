@@ -13,7 +13,6 @@
 /admin/images/#ImageId ImageR DELETE
 
 /guides/#GuideId GuideR GET POST DELETE
-/guidegroup GroupManagerR POST
 /guidegroup/#GuideGroupId GuideGroupR PATCH DELETE
 
 /section/#SectionId SectionR PATCH DELETE

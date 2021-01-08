@@ -163,7 +163,7 @@ imageSelectField = selectFieldHelper outerView noneView otherView opts
                 $newline never
                 <input .form-control type="text" ##{idAttr <> "-search"} placeholder="Search for images..."
                     onkeyup="searchImages(this)" onchange="showImages(this)">
-                <div ##{idAttr} .row .image-list .mt-3 style="padding-top: 3px">^{inside}
+                <div ##{idAttr} .row .image-list .max-h-60 .mt-3 style="padding-top: 3px">^{inside}
             |]
             toWidget
                 [julius|

@@ -224,7 +224,6 @@ instance Yesod App where
     isAuthorized (GuideR _) False = return Authorized
     isAuthorized (GuideR _) True = isAuthenticated
     
-    isAuthorized GroupManagerR _ = isAuthenticated
     isAuthorized (GuideGroupR _) _ = isAuthenticated
 
     isAuthorized (SectionR _) _ = isAuthenticated

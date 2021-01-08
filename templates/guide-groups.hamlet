@@ -1,42 +1,43 @@
 <button type="button" .btn .btn-dark
     data-toggle="modal" data-target="##{modalId}">Manage Groups
 
-<div .modal .fade ##{modalId} tabindex="-1">
+<div .modal .fade ##{modalId} tabindex="-1" .text-white>
     <div .modal-dialog .modal-lg>
-        <div .modal-content>
+        <div .modal-content .bg-darker>
             <div .modal-header>
                 <h5 .modal-title>Guide Group Manager
                 <button type="button" .close data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;
+                    <span aria-hidden="true" .text-white>&times;
             <div .modal-body>
-                <p>Group displayed on homepage: #{homeGroupName}
-                <form #gg-form .form-inline>
-                    <input type="text" #gg-name .form-control placeholder="Group Name" required>
-                    <select multiple #gg-guides .form-control>
-                        $forall g <- guides
-                            <option .guide-option value=#{guideUrl g}>#{guideTitle g}
-                    <button type="submit" .btn .btn-dark>Add
+                <form #gg-form method=post enctype=#{ggEnctype}>
+                    ^{ggFormWidget}
+                
+                <button type="submit" .btn .btn-dark .mt-2 form="gg-form">Add Group
 
-            <table .table>
-                <thead>
-                    <tr>
-                        <th scope="col">#
-                        <th scope="col">Name
-                        <th scope="col">Guides
-                        <th scope="col">#
-                        <th scope="col">#
-                <tbody #group-rows>
-                    $forall (gg, guides) <- ggs
-                        <tr .group-row data-ggid=#{guideGroupName gg}>
-                            <th scope="row">#{guideGroupPosition gg}
-                            <td>#{guideGroupName gg}
-                            <td>
-                                $forall guide <- guides
-                                    <p>#{guideTitle guide}                       
-                            <td>
-                                <button .btn .btn-danger .del-gg type="button">Delete
-                            <td>
-                                <button .btn .btn-secondary .up-gg type="button">Up
-                                <button .btn .btn-secondary .down-gg type="button">Down
+                <div .max-h-60 .mt-3>
+                    <table .table .text-white>
+                        <thead>
+                            <tr>
+                                <th scope="col">#
+                                <th scope="col">Name
+                                <th scope="col">Guides
+                                <th scope="col">#
+                                <th scope="col">#
+                        <tbody #group-rows>
+                            $forall (gg, guides) <- ggs
+                                <tr .group-row data-ggid=#{guideGroupName gg}>
+                                    <th scope="row">#{guideGroupPosition gg}
+                                    <td>#{guideGroupName gg}
+                                    <td>
+                                        $forall guide <- guides
+                                            <p>#{guideTitle guide}                       
+                                    <td>
+                                        <button type="button" .btn .btn-danger .del-gg
+                                            :guideGroupName gg == homeGroupName:.disabled
+                                            :guideGroupName gg == homeGroupName:disabled="disabled">Delete
+                                    <td>
+                                        <button .btn .btn-secondary .up-gg type="button">Up
+                                        <button .btn .btn-secondary .down-gg type="button">Down
+
             <div .modal-footer>
                 <button type="button" .btn .btn-secondary data-dismiss="modal">Close

@@ -58,13 +58,21 @@ footer p {
     }
 }
 
+.disabled {
+    cursor: not-allowed !important;
+}
+
+.form-text {
+    margin-bottom: 0.5rem;
+}
+
 /* Modals */
 
 .modal-header, .modal-body, .modal-footer {
     border-color: #333333 !important;
 }
 
-.image-list {
+.max-h-60 {
     max-height: 60vh;
     overflow-y: scroll;
 }
