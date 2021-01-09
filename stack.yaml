@@ -29,7 +29,6 @@ resolver: lts-16.19
 #   - auto-update
 #   - wai
 packages:
-- /mnt/c/Projects/yesod/yesod-form-multi
 - .
 
 # Dependency packages to be pulled from upstream that are not in the resolver.
@@ -43,7 +42,7 @@ packages:
 #
 extra-deps:
 - yesod-auth-oauth2-0.6.1.5@sha256:bc65e697ae622b80024ca22a7b9270bf64a8c96be8f6ac1d09ed3a1d1cbbde6e,2950
-#- yesod-form-multi-1.7.0@sha256:f07f1bfbde8b3cd8bf489f70f9ab06378f94425f83b2c304d2851d85c3a2cf0f,1350
+- yesod-form-multi-1.7.0.1@sha256:058ec201f32a506862a2481a55d22e400a3230acd8dd2c028ae33e6c817c4a90,1352
 
 # Override default flag values for local packages and extra-deps
 # flags: {}
