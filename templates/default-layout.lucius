@@ -68,11 +68,35 @@ footer p {
 
 /* Modals */
 
-.modal-header, .modal-body, .modal-footer {
-    border-color: #333333 !important;
-}
-
 .max-h-60 {
     max-height: 60vh;
     overflow-y: scroll;
+}
+
+.modal-content {
+    background-color: #222222 !important;
+    color: white !important;
+}
+
+.modal-header button {
+    color: white !important;
+}
+
+.nav-tabs a {
+    color: rgba(255,255,255,.5) !important;
+}
+
+.nav-tabs .nav-item > .active,
+.nav-tabs a:hover {
+    border-color: #a1232c !important;
+    color: white !important;
+}
+
+.nav-tabs .nav-item > .active {
+    background-color: #222222 !important;
+}
+
+.modal-header, .modal-body, .modal-footer,
+.modal-content .nav {
+    border-color: #333333 !important;
 }

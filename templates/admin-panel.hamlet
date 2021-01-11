@@ -1,6 +1,6 @@
 <button .bottom-left .btn .btn-primary type="button" data-toggle="collapse" data-target="#admin-panel">Admin Tools
 
-<div .collapse #admin-panel>
+<div .collapse #admin-panel .mb-2>
     <div .card .card-body .bg-darker .text-white>
         <h3>Admin Tools
         <div>

@@ -1,13 +1,13 @@
 <button type="button" .btn .btn-dark
     data-toggle="modal" data-target="##{modalId}">Image Manager
 
-<div .modal .fade ##{modalId} tabindex="-1" .text-white>
+<div .modal .fade ##{modalId} tabindex="-1">
     <div .modal-dialog .modal-lg>
-        <div .modal-content .bg-darker>
+        <div .modal-content>
             <div .modal-header>
                 <h5 .modal-title>Image Manager
                 <button type="button" .close data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true" .text-white>&times;
+                    <span aria-hidden="true">&times;
             <div .modal-body>
                 <h6>Upload an Image:
                 <form #upload-form .form-inline method=post enctype=#{enctype}>

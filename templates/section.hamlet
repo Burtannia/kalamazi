@@ -1,7 +1,7 @@
 <div .section>
-    <h2 ##{sectionUrl section}>#{sectionTitle section}
+    <h3 ##{sectionUrl section} .mb-3 .text-center>#{sectionTitle section}
     $if isAdmin
-        <div .controls>
+        <div .controls .mb-3>
             ^{ncWidget}
             ^{sectionModal}
             <button .btn .btn-secondary ##{sectionUpId}>Up

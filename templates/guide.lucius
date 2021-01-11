@@ -1,0 +1,49 @@
+.note-editable {
+    background-color: #101010 !important;
+    border-color: #222222 !important;
+    color: white !important;
+}
+
+.note-editor {
+    background-color: #101010 !important;
+    border-color: #222222 !important;
+    color: white !important;
+}
+
+.note-btn {
+    background-color: #222222 !important;
+    border-color: #222222 !important;
+    color: #eeeeee !important;
+}
+
+.note-dropdown-menu {
+    background-color: #222222 !important;
+}
+
+.dropdown-item {
+    color: white !important;
+}
+
+.dropdown-item:hover {
+    background-color: #111111 !important;
+}
+
+.note-palette {
+    color: white !important;
+}
+
+.note-palette .note-color-reset,
+.note-palette .note-color-select {
+    background-color: #333333 !important;
+    color: white !important;
+}
+
+.controls {
+    display: flex;
+    justify-content: center;
+}
+
+.controls button {
+    margin-left: 0.15rem;
+    margin-right: 0.15rem;
+}
