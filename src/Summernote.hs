@@ -56,7 +56,10 @@ snField' f = Field
                             ['style', ['style', 'bold', 'italic', 'underline', 'clear']],
                             ['fontsize', ['fontsize']],
                             ['color', ['color']],
-                            ['para', ['ul', 'ol', 'paragraph']]
+                            ['para', ['ul', 'ol', 'paragraph']],
+                            ['table', ['table']],
+                            ['insert', ['link']],
+                            ['view', ['fullscreen']]
                         ]
                     });
                 });
