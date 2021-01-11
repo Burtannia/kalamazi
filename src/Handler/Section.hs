@@ -177,13 +177,22 @@ removeSectionFromGuide sectionId guideId = do
 
 sectionForm :: GuideId -> Maybe Section -> AForm Handler Section
 sectionForm guideId msection = Section
-    <$> areq textField "Title" (sectionTitle <$> msection)
-    <*> areq secUrlField "Url" (sectionUrl <$> msection)
-    <*> aopt (selectField images) "Background Image" (sectionBackground <$> msection)
+    <$> areq textField (withClass "mb-1" $ fs "Title" Nothing) (sectionTitle <$> msection)
+    <*> areq secUrlField (fs "Url" urlTip) (sectionUrl <$> msection)
+    <*> aopt imageSelectField (fs "Background Image" bgTip) (sectionBackground <$> msection)
     <*> pure guideId
     <*> pure (maybe [] sectionContent msection)
     where
-        images = optionsPersistKey [] [Asc ImageCreated] imageName
+        urlTip = Just "This will be used to link to the specific section within the guide. Only letters, numbers, hyphens and underscores are permitted."
+        bgTip = Just "This will appear faded in the background of the section."
+        fs label mtt = FieldSettings
+            { fsLabel = label
+            , fsTooltip = mtt
+            , fsId = Nothing
+            , fsName = Nothing
+            , fsAttrs =
+                [ ("class", "form-control") ]
+            }
         secUrlField = check validateUrl textField
         validateUrl t =
             if isValid

@@ -11,6 +11,9 @@ import qualified Data.List as L (tail)
 import Data.Time.Clock (NominalDiffTime)
 import Yesod.Form.Bootstrap4 (BootstrapFormLayout (..), renderBootstrap4)
 
+withClass :: Text -> FieldSettings App -> FieldSettings App
+withClass t fs = fs {fsAttrs = addClass t $ fsAttrs fs}
+
 formatDiffTime :: NominalDiffTime -> String
 formatDiffTime dt = go (floor $ toRational dt) incs
     where
