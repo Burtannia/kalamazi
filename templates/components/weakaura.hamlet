@@ -1,4 +1,3 @@
-<div .weakaura>
-    <button .btn .btn-primary ##{btnId}>
-        #{title}
-        <p .small>Click to copy
+<div .weakaura .text-center ##{waId}>
+    #{title}
+    <p .small .mb-0>Click to copy

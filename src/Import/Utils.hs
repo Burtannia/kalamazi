@@ -129,8 +129,9 @@ convertFieldPair :: (c -> a)
     -> (a -> b -> c)
     -> Field Handler a
     -> Field Handler b
+    -> Text
     -> Field Handler c
-convertFieldPair toA toB toC fa fb = Field
+convertFieldPair toA toB toC fa fb wrapClass = Field
     { fieldParse = \rawVals fileVals -> do
         let parseA = fieldParse fa
             parseB = fieldParse fb
@@ -144,7 +145,7 @@ convertFieldPair toA toB toC fa fb = Field
         let viewA = fieldView fa
             viewB = fieldView fb
         [whamlet|
-            <div ##{ti}>
+            <div ##{ti} class=#{wrapClass}>
                 ^{viewA (ti <> "-A") tn as (fmap toA eRes) req}
                 ^{viewB (ti <> "-B") tn as (fmap toB eRes) req}
         |]

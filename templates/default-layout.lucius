@@ -66,6 +66,14 @@ footer p {
     margin-bottom: 0.5rem;
 }
 
+.minh-12rem {
+    min-height: 12rem;
+}
+
+.w-100 {
+    width: 100%;
+}
+
 /* Modals */
 
 .max-h-60 {

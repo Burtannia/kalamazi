@@ -1,8 +1,8 @@
-$('##{rawJS btnId}').click(function() {
+$('##{rawJS waId}').click(function() {
     var wa = #{unTextarea content};
 
     navigator.clipboard.writeText(wa).then(function() {
-        var label = $('##{rawJS btnId}').find('p');
+        var label = $('##{rawJS waId}').find('p');
         var prev = label.text();
 
         label.text('Copied!');

@@ -132,29 +132,38 @@ mkComponent (CD_WeakAura title content) = return $ CWeakAura title content
 
 createCompForm :: CreateComponent -> AForm Handler ComponentData
 createCompForm (CreateMarkup mhtml) = CD_Markup
-    <$> areq snFieldUnsanitized "Content" mhtml
+    <$> areq snFieldUnsanitized (bfs ("Content" :: Text)) mhtml
 createCompForm (CreateToggleText msc ts) = CD_ToggleText
-    <$> areq (radioFieldList spaceChars) "Space Character" msc
-    <*> amulti toggleField (bfs ("Sections" :: Text)) ts 0 bs4FASettings
+    <$> areq (radioFieldList spaceChars) (withClass "mx-1" $ "Space Character") msc
+    <*> amulti toggleField groupSettings ts 0 bs4FASettings
     where
-        spaceChars = [ ("Vertical Line |" :: Text, SpaceLine)
-                     , ("Chevron >", SpaceChev)
+        spaceChars = [ ("| - Vertical Bar" :: Text, SpaceLine)
+                     , ("> - Chevron", SpaceChev)
                      ]
         toggleField = convertFieldPair
-            fst snd (,) textField snFieldUnsanitized
+            fst snd (,) textField snFieldUnsanitized "w-100"
+        groupSettings = FieldSettings
+            { fsLabel = "Groups"
+            , fsTooltip = Nothing
+            , fsId = Nothing
+            , fsName = Nothing
+            , fsAttrs =
+                [ ("class", "form-control mb-2")
+                , ("placeholder", "Group Label") ]
+            }
 createCompForm (CreateToggleImage mbrd ts) = CD_ToggleImage
-    <$> areq imageSelectField "Border Image" mbrd
-    <*> amulti toggleField (bfs ("Sections" :: Text)) ts 0 bs4FASettings
+    <$> areq imageSelectField (bfs ("Border Image" :: Text)) mbrd
+    <*> amulti toggleField (bfs ("Groups" :: Text)) ts 0 bs4FASettings
     where
         toggleField = convertFieldPair
-            fst snd (,) imageSelectField snFieldUnsanitized
+            fst snd (,) imageSelectField snFieldUnsanitized "image-group"
 createCompForm (CreateImage mimg) = CD_Image
-    <$> areq imageSelectField "Image" mimg
+    <$> areq imageSelectField (bfs ("Image" :: Text)) mimg
 createCompForm (CreateVideo murl) = CD_Video
-    <$> areq textField "Url" murl
+    <$> areq textField (bfs ("Url" :: Text)) murl
 createCompForm (CreateWeakAura mtitle mcontent) = CD_WeakAura
-    <$> areq textField "Title" mtitle
-    <*> areq textareaField "Content" mcontent
+    <$> areq textField (withClass "mb-1" $ bfs ("Title" :: Text)) mtitle
+    <*> areq textareaField (withClass "minh-12rem" $ bfs ("Content" :: Text)) mcontent
 
 deleteComponent :: Component -> Handler ()
 deleteComponent (CMarkup markupId) = runDB $ delete markupId
@@ -246,7 +255,7 @@ displayComponent sectionId cIx compId = displayComponent'
             [whamlet|<iframe .video-comp src=#{url}>|]
 
         displayComponent' (CWeakAura title content) = do
-            btnId <- newIdent
+            waId <- newIdent
             $(widgetFile "components/weakaura")
 
         mkImageSnippet imgId = withUrlRenderer

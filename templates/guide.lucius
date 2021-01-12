@@ -47,3 +47,26 @@
     margin-left: 0.15rem;
     margin-right: 0.15rem;
 }
+
+.radio {
+    display: block;
+}
+
+.weakaura {
+    color: #bf2235;
+    border: solid 2px #bf2235;
+    background-color: #222222;
+    font-weight: 550;
+    padding: 0.75rem;
+}
+
+.weakaura p {
+    color: white;
+}
+
+.weakaura:hover {
+    cursor: pointer;
+    color: white;
+    background-color: #a1232c;
+    border-color: #a1232c;
+}

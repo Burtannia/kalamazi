@@ -45,3 +45,35 @@ function makeAlertSuccess(msg) {
 function makeAlertInfo(msg) {
     makeAlert(msg, "alert-Info");
 }
+
+var summernoteSettings = {
+    minHeight: 200,
+    dialogsInBody: true,
+    colors: [
+        // Rarity Colours
+        ['#9d9d9d', '#ffffff', '#1eff00', '#0070dd', '#a335ee', '#ff8000', '#e6cc80', '#00ccff'],
+        // Class Colours
+        ['#C41E3A', '#A330C9', '#FF7C0A', '#AAD372', '#3FC7EB', '#00FF98', '#F48CBA', '#FFFFFF'],
+        ['#FFF468', '#0070DD', '#8788EE', '#C69B6D']
+    ],
+    colorsName: [
+        ["Poor", "Common", "Uncommon", "Rare", "Epic", "Legendary", "Artifact", "Heirloom"],
+        ["Death Knight", "Demon Hunter", "Druid", "Hunter", "Mage", "Monk", "Paladin", "Priest"],
+        ["Rogue", "Shaman", "Warlock", "Warrior"]
+    ],
+    styleTags: [
+        { title: 'Header', tag: 'h3', className: 'comp-header', value: 'h3' },
+        { title: 'Sub-Header', tag: 'h5', className: 'comp-sub-header', value: 'h5' },
+        { title: 'Content', tag: 'p', className: 'comp-content', value: 'p' },
+        { title: 'Footnote', tag: 'p', className: 'comp-footnote', value: 'p' }
+    ],
+    toolbar: [
+        ['style', ['style', 'bold', 'italic', 'underline', 'clear']],
+        ['fontsize', ['fontsize']],
+        ['color', ['color']],
+        ['para', ['ul', 'ol', 'paragraph']],
+        ['table', ['table']],
+        ['insert', ['link']],
+        ['view', ['fullscreen']]
+    ]
+}
