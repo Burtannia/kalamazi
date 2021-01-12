@@ -1,10 +1,16 @@
-<div .toggleHeaders>
-    $forall (ix, val) <- withIndexes headers
-        $with isFirst <- ix == 0
-            <div .toggleHeader :isFirst:.active data-toggle-ix=#{compId}-#{ix}>
-                #{val}
+<div .toggle-group>
+    <div .toggle-headers>
+        $forall (ix, val) <- withIndexes headers
+            $with isFirst <- ix == 0
+                $if not isFirst
+                    $maybe sc <- mSpaceChar
+                        <div .toggle-spacer>#{sc}
+                <div .toggle-header .#{headerClass} :isFirst:.active data-carousel-id=#{toggleId} data-toggle-ix=#{ix}>
+                    #{val}
 
-<div .toggleContents>
-    $forall (ix, (_, markup)) <- withIndexes ts
-        <div .toggleContent data-toggle-ix=#{compId}-#{ix}>
-            ^{displayMarkup markup}
+    <div .toggle-contents .carousel .slide ##{toggleId}>
+        <div .carousel-inner>
+            $forall (ix, (_, markup)) <- withIndexes ts
+                $with isFirst <- ix == 0
+                    <div .carousel-item :isFirst:.active data-toggle-ix=#{ix}>
+                        ^{displayMarkup markup}

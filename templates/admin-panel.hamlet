@@ -16,7 +16,7 @@
 
                 <div .col-6>
                     <h6>Viewing Mode:
-                    <div .btn-group .btn-group-toggle data-toggle="buttons">
+                    <div .btn-group .btn-group-toggle .view-mode data-toggle="buttons">
                         <label .btn .btn-secondary .active>
                             <input type="radio" name="options" #edit-mode autocomplete="off" checked>Edit
                         <label .btn .btn-secondary>

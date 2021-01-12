@@ -10,3 +10,8 @@
     left: 1rem;
     z-index: 100;
 }
+
+.view-mode .focus {
+    outline: none !important;
+    box-shadow: none !important;
+}

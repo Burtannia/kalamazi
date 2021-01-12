@@ -239,6 +239,11 @@ displayComponent sectionId cIx compId = displayComponent'
                                 . sequence
                                 . fmap (runDB . getJust)
             let headers = map (preEscapedToMarkup . fst) ts
+                mSpaceChar = Just $ case sc of
+                    SpaceLine -> ("|" :: Text)
+                    SpaceChev -> ">"
+            toggleId <- newIdent
+            headerClass <- newIdent
             $(widgetFile "components/toggle")
 
         displayComponent' (CToggle (ToggleImages bg ts')) = do
@@ -246,6 +251,9 @@ displayComponent sectionId cIx compId = displayComponent'
                                 . bisequence
                                 . bimap mkImageSnippet (runDB . getJust)
             let headers = map fst ts
+                mSpaceChar = Nothing :: Maybe Text
+            toggleId <- newIdent
+            headerClass <- newIdent
             $(widgetFile "components/toggle")
         
         displayComponent' (CImage imgId) =
@@ -259,6 +267,6 @@ displayComponent sectionId cIx compId = displayComponent'
             $(widgetFile "components/weakaura")
 
         mkImageSnippet imgId = withUrlRenderer
-            [hamlet|<img src=@{ImagesR $ mkImageUrl imgId}>|]
+            [hamlet|<img .toggle-image .img-fluid src=@{ImagesR $ mkImageUrl imgId}>|]
 
         displayMarkup markup = $(widgetFile "components/markup")

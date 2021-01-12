@@ -70,3 +70,28 @@
     background-color: #a1232c;
     border-color: #a1232c;
 }
+
+/* Toggle Groups */
+
+.toggle-spacer {
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+}
+
+.toggle-header:hover {
+    cursor: pointer;
+}
+
+.toggle-headers {
+    display: flex;
+    justify-content: center;
+}
+
+.toggle-image {
+    max-height: 50px;
+}
+
+.toggle-image {
+    margin-left: 0.25rem;
+    margin-right: 0.25rem;
+}

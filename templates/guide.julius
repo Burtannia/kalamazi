@@ -17,3 +17,10 @@ $('#delete-guide').click(function() {
             makeAlertDanger("Something went wrong");
         });
 });
+
+$('.toggle-header').click(function() {
+    var ix = $(this).data('toggle-ix');
+    var carouselId = $(this).data('carousel-id');
+
+    $('#' + carouselId).carousel(ix).carousel('dispose');
+});
