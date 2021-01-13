@@ -1,3 +1,3 @@
-<div .controls>
+<div .controls .mt-2>
     ^{editWidget}
     <button ##{delId} type="button" .btn .btn-danger>Delete

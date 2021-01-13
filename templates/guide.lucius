@@ -1,3 +1,60 @@
+.section:not(:last-child),
+.component:not(:last-child) {
+    margin-bottom: 0.5rem;
+}
+
+.component {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.5rem;
+}
+
+.highlight-comp {
+    border: dashed 2px #a1232c; 
+}
+
+.controls {
+    display: flex;
+    justify-content: center;
+}
+
+.controls button {
+    margin-left: 0.15rem;
+    margin-right: 0.15rem;
+}
+
+.radio {
+    display: block;
+}
+
+.weakaura {
+    color: #bf2235;
+    border: solid 2px #bf2235;
+    background-color: #222222;
+    font-weight: 550;
+    padding: 0.75rem;
+}
+
+@media (min-width: 767px) {
+    .weakaura {
+        width: 80%;
+    }
+}
+
+.weakaura p {
+    color: white;
+}
+
+.weakaura:hover {
+    cursor: pointer;
+    color: white;
+    background-color: #a1232c;
+    border-color: #a1232c;
+}
+
+/* Summernote */
+
 .note-editable {
     background-color: #101010 !important;
     border-color: #222222 !important;
@@ -38,40 +95,11 @@
     color: white !important;
 }
 
-.controls {
-    display: flex;
-    justify-content: center;
-}
-
-.controls button {
-    margin-left: 0.15rem;
-    margin-right: 0.15rem;
-}
-
-.radio {
-    display: block;
-}
-
-.weakaura {
-    color: #bf2235;
-    border: solid 2px #bf2235;
-    background-color: #222222;
-    font-weight: 550;
-    padding: 0.75rem;
-}
-
-.weakaura p {
-    color: white;
-}
-
-.weakaura:hover {
-    cursor: pointer;
-    color: white;
-    background-color: #a1232c;
-    border-color: #a1232c;
-}
-
 /* Toggle Groups */
+
+.toggle-group {
+    width: 100%;
+}
 
 .toggle-spacer {
     margin-left: 0.5rem;
@@ -94,8 +122,4 @@
 .toggle-image {
     margin-left: 0.25rem;
     margin-right: 0.25rem;
-}
-
-.comp-wrapper:not(:last-child) {
-    margin-bottom: 0.5rem;
 }

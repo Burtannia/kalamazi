@@ -1,4 +1,4 @@
-<div ##{compId} .component data-comp-index=#{ix}>
+<div ##{compId} .component :isAdmin:.highlight-comp data-comp-index=#{ix}>
     ^{compWidget}
     $if isAdmin
         ^{controls}
