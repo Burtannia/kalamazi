@@ -57,3 +57,15 @@ function moveDown(section) {
     if (el.not(':last-child'))
         el.next().after(el);
 }
+
+$('##{rawJS secUrl}').click(function() {
+    var url = "https://www.kalamazi.com/guides/"
+            + "#{rawJS $ guideUrl guide}" + "#" + "#{rawJS secUrl}";
+
+    navigator.clipboard.writeText(url).then(function() {
+        makeAlertSuccess("Link copied");
+    }, function(err) {
+        console.error('Could not copy text: ', err);
+        makeAlertDanger("Something went wrong");
+    });
+});

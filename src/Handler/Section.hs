@@ -18,12 +18,13 @@ import qualified Data.Text as T (foldr)
 import Text.Julius (rawJS)
 import Yesod.Form.Bootstrap4 (BootstrapFormLayout (..), renderBootstrap4)
 
-getSectionWidget :: Bool -> SectionId -> Widget
-getSectionWidget isAdmin sectionId = do
+getSectionWidget :: Bool -> Guide -> SectionId -> Widget
+getSectionWidget isAdmin guide sectionId = do
     section <- liftHandler $ runDB $ getJust sectionId
     let guideId = sectionGuideId section
+        secUrl = sectionUrl section
     sForm <- liftHandler $ genBs4FormIdentify
-                (sFormIdent $ sectionUrl section)
+                (sFormIdent secUrl)
                 (sectionForm guideId $ Just section)
 
     let sectionModal = mkModal "Edit" sForm
@@ -41,14 +42,15 @@ getSectionWidget isAdmin sectionId = do
 
     $(widgetFile "section")
 
-postSectionWidget :: Bool -> SectionId -> Widget
-postSectionWidget isAdmin sectionId = do
+postSectionWidget :: Bool -> Guide -> SectionId -> Widget
+postSectionWidget isAdmin guide sectionId = do
     section <- liftHandler $ runDB $ getJust sectionId
     let guideId = sectionGuideId section
+        secUrl = sectionUrl section
         content = sectionContent section
 
     ((sRes, sWidget), sEnctype) <- liftHandler $ runBs4FormIdentify
-                                        (sFormIdent $ sectionUrl section)
+                                        (sFormIdent secUrl)
                                         (sectionForm guideId $ Just section)
 
     let sectionModal = mkModal "Edit" (sWidget, sEnctype)

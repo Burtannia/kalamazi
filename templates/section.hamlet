@@ -1,5 +1,5 @@
 <div .section>
-    <h3 ##{sectionUrl section} .mb-3 .text-center>#{sectionTitle section}
+    <h3 ##{secUrl} .mb-3 .text-center>#{sectionTitle section}
     $if isAdmin
         <div .controls .mb-3>
             ^{ncWidget}

@@ -38,7 +38,7 @@ getGuideR guideId = do
             |] 
 
     -- Sections    
-    let sectionWidgets = map (getSectionWidget isAdmin) $ guideSections guide
+    let sectionWidgets = map (getSectionWidget isAdmin guide) $ guideSections guide
 
     
     nsForm <- genBs4FormIdentify nsFormIdent $ sectionForm guideId Nothing
@@ -104,7 +104,7 @@ postGuideR guideId = do
 
     -- Sections
     let sections = guideSections guide
-        sectionWidgets = map (postSectionWidget isAdmin) sections
+        sectionWidgets = map (postSectionWidget isAdmin guide) sections
 
     ((nsResult, nsWidget'), nsEnctype) <- runBs4FormIdentify nsFormIdent
                                             $ sectionForm guideId Nothing
