@@ -1,2 +1,2 @@
-<div .markupWrapper>
+<div .markup-wrapper>
     #{markupBlockContent markup}

@@ -39,6 +39,7 @@ getSectionWidget isAdmin guide sectionId = do
     sectionUpId <- newIdent
     sectionDownId <- newIdent
     sectionDelId <- newIdent
+    sectionCopyId <- newIdent
 
     $(widgetFile "section")
 
@@ -97,6 +98,7 @@ postSectionWidget isAdmin guide sectionId = do
     sectionUpId <- newIdent
     sectionDownId <- newIdent
     sectionDelId <- newIdent
+    sectionCopyId <- newIdent
 
     $(widgetFile "section")
 

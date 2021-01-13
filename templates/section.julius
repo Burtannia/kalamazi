@@ -58,12 +58,35 @@ function moveDown(section) {
         el.next().after(el);
 }
 
+var #{rawJS sectionCopyId} = false;
+
 $('##{rawJS secUrl}').click(function() {
+    if (#{rawJS sectionCopyId})
+        return;
+    else
+        #{rawJS sectionCopyId} = true;
+
     var url = "https://www.kalamazi.com/guides/"
             + "#{rawJS $ guideUrl guide}" + "#" + "#{rawJS secUrl}";
+    
+    var elThis = $(this);
 
     navigator.clipboard.writeText(url).then(function() {
-        makeAlertSuccess("Link copied");
+        var icon = $(elThis).find('i');
+        icon.removeClass('fas');
+        icon.removeClass('fa-link');
+        icon.removeClass('section-link');
+        icon.addClass('section-copied');
+        icon.text('Link Copied!');
+
+        setTimeout(() => {
+            icon.removeClass('section-copied');
+            icon.addClass('fas');
+            icon.addClass('fa-link');
+            icon.addClass('section-link');
+            icon.text('');
+            #{rawJS sectionCopyId} = false;
+        }, 2000);
     }, function(err) {
         console.error('Could not copy text: ', err);
         makeAlertDanger("Something went wrong");

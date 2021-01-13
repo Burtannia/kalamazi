@@ -1,5 +1,6 @@
 <div .section>
     <h3 ##{secUrl} .mb-3 .text-center>#{sectionTitle section}
+        <i .fas .fa-link .section-link>
     $if isAdmin
         <div .controls .mb-3>
             ^{ncWidget}

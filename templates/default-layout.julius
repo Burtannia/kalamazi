@@ -62,10 +62,10 @@ var summernoteSettings = {
         ["Rogue", "Shaman", "Warlock", "Warrior"]
     ],
     styleTags: [
-        { title: 'Header', tag: 'h3', className: 'comp-header', value: 'h3' },
-        { title: 'Sub-Header', tag: 'h5', className: 'comp-sub-header', value: 'h5' },
-        { title: 'Content', tag: 'p', className: 'comp-content', value: 'p' },
-        { title: 'Footnote', tag: 'p', className: 'comp-footnote', value: 'p' }
+        { title: 'Header', tag: 'h3', className: 'markup-header', value: 'h3' },
+        { title: 'Sub-Header', tag: 'h4', className: 'markup-sub-header', value: 'h4' },
+        { title: 'Content', tag: 'p', className: 'markup-content', value: 'p' },
+        { title: 'Footnote', tag: 'p', className: 'markup-footnote', value: 'p' }
     ],
     toolbar: [
         ['style', ['style', 'bold', 'italic', 'underline', 'clear']],
