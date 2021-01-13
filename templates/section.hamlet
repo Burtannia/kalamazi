@@ -13,4 +13,5 @@
 
     <div .sectionContent>
         $forall cw <- compWidgets
-            ^{cw}
+            <div .comp-wrapper>
+                ^{cw}
