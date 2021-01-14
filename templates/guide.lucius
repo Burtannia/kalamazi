@@ -6,7 +6,7 @@
 }
 
 .section-link {
-    margin-top: 0.85rem;
+    margin-top: 0.7rem;
     color: dimgrey;
 }
 
@@ -16,7 +16,7 @@
 }
 
 .section-copied {
-    margin-top: 0.75rem;
+    margin-top: 0.6rem;
     color: white;
     opacity: 0.9;
     font-style: normal;
@@ -175,6 +175,11 @@
 
 .toggle-header:hover {
     cursor: pointer;
+    color: #a1232c;
+}
+
+.toggle-header.active {
+    color: #a1232c;
 }
 
 .toggle-headers {

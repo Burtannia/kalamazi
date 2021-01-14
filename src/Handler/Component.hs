@@ -238,7 +238,7 @@ displayComponent sectionId cIx compId = displayComponent'
             ts <- flip mapM ts' $ liftHandler
                                 . sequence
                                 . fmap (runDB . getJust)
-            let headers = map (preEscapedToMarkup . fst) ts
+            let headers = map (mkTextSnippet . preEscapedToMarkup . fst) ts
                 mSpaceChar = Just $ case sc of
                     SpaceLine -> ("|" :: Text)
                     SpaceChev -> ">"
@@ -265,6 +265,8 @@ displayComponent sectionId cIx compId = displayComponent'
         displayComponent' (CWeakAura title content) = do
             waId <- newIdent
             $(widgetFile "components/weakaura")
+
+        mkTextSnippet mu = [shamlet| <h6>#{mu} |]
 
         mkImageSnippet imgId = withUrlRenderer
             [hamlet|<img .toggle-image .img-fluid src=@{ImagesR $ mkImageUrl imgId}>|]

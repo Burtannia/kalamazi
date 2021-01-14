@@ -4,7 +4,7 @@
             $with isFirst <- ix == 0
                 $if not isFirst
                     $maybe sc <- mSpaceChar
-                        <div .toggle-spacer>#{sc}
+                        <h6 .toggle-spacer>#{sc}
                 <div .toggle-header .#{headerClass} :isFirst:.active data-carousel-id=#{toggleId} data-toggle-ix=#{ix}>
                     #{val}
 
