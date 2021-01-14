@@ -54,16 +54,19 @@ var summernoteSettings = {
         ['#9d9d9d', '#ffffff', '#1eff00', '#0070dd', '#a335ee', '#ff8000', '#e6cc80', '#00ccff'],
         // Class Colours
         ['#C41E3A', '#A330C9', '#FF7C0A', '#AAD372', '#3FC7EB', '#00FF98', '#F48CBA', '#FFFFFF'],
-        ['#FFF468', '#0070DD', '#8788EE', '#C69B6D']
+        ['#FFF468', '#0070DD', '#8788EE', '#C69B6D'],
+        // Other Colours
+        ['#a1232c']
     ],
     colorsName: [
         ["Poor", "Common", "Uncommon", "Rare", "Epic", "Legendary", "Artifact", "Heirloom"],
         ["Death Knight", "Demon Hunter", "Druid", "Hunter", "Mage", "Monk", "Paladin", "Priest"],
-        ["Rogue", "Shaman", "Warlock", "Warrior"]
+        ["Rogue", "Shaman", "Warlock", "Warrior"],
+        ["Kalamazi"]
     ],
     styleTags: [
-        { title: 'Header', tag: 'h3', className: 'markup-header', value: 'h3' },
-        { title: 'Sub-Header', tag: 'h4', className: 'markup-sub-header', value: 'h4' },
+        { title: 'Header', tag: 'h5', className: 'markup-header', value: 'h5' },
+        { title: 'Sub-Header', tag: 'h6', className: 'markup-sub-header', value: 'h6' },
         { title: 'Content', tag: 'p', className: 'markup-content', value: 'p' },
         { title: 'Footnote', tag: 'p', className: 'markup-footnote', value: 'p' }
     ],
