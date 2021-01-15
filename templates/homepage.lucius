@@ -14,11 +14,6 @@
     border-right: #cccccc solid 1px;
 }
 
-.iframe-wrapper {
-    position: relative;
-    padding-top: 56.25%;
-}
-
 #youtube-latest, #twitch-player {
     position: absolute;
     top: 0;

@@ -116,6 +116,13 @@
     border-color: #a1232c;
 }
 
+/* Video */
+
+.video-comp {
+    width: 100%;
+    max-width: 500px;
+}
+
 /* Summernote */
 
 .note-editable {

@@ -260,7 +260,11 @@ displayComponent sectionId cIx compId = displayComponent'
             [whamlet|<img src=@{ImagesR $ mkImageUrl imgId}>|]
 
         displayComponent' (CVideo url) =
-            [whamlet|<iframe .video-comp src=#{url}>|]
+            [whamlet|
+                <div .video-comp>
+                    <div .iframe-wrapper>
+                        <iframe src=#{url} frameborder="0" allowfullscreen="true" scrolling="no">
+            |]
 
         displayComponent' (CWeakAura title content) = do
             waId <- newIdent
