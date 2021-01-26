@@ -16,3 +16,5 @@
 /guidegroup/#GuideGroupId GuideGroupR PATCH DELETE
 
 /section/#SectionId SectionR PATCH DELETE
+
+/privacy PrivacyR GET DELETE

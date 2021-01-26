@@ -1,0 +1,14 @@
+<h3 .text-white>Privacy Policy (GDPR)
+
+<p .text-white>
+    We don't directly store any data about you however elements embedded from external sources
+    such as YouTube videos may track you according to their privacy policies.
+
+$if loggedIn
+    <p .text-white>
+        Logging into the site uses Google OAuth which involves Google providing us with a token
+        after you login with your Google account. This token is then stored in our database.
+        We do not have access to your Google account password. If you would like us to remove
+        your token then click the button below.
+
+    <button #forgetButton .btn .btn-primary >Forget Me!
