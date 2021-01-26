@@ -10,7 +10,7 @@
 / HomeR GET POST
 
 /images ImagesR Static appImages
-/admin/images/#ImageId ImageR DELETE
+/image/#ImageId ImageR DELETE
 
 /guides/#GuideId GuideR GET POST DELETE
 /guidegroup/#GuideGroupId GuideGroupR PATCH DELETE
@@ -18,3 +18,5 @@
 /section/#SectionId SectionR PATCH DELETE
 
 /privacy PrivacyR GET DELETE
+
+/login LoginRedirectR GET
