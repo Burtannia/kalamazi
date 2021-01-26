@@ -6,7 +6,7 @@ $('.del-icon i').click(function() {
             contentType: "application/json",
             url: $(this).attr("data-img-url")
         })
-        .done(() => elem.parents('.col').remove())
+        .done(() => elem.parents('.col-3').remove())
         .fail(function (jqXHR, textStatus, errorThrown) {
             console.log(errorThrown + ": " + jqXHR.responseText);
             makeAlertDanger("Something went wrong: " + jqXHR.responseText);
