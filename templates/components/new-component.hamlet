@@ -8,7 +8,7 @@
                 <button type="button" .close data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;
 
-            <div #comp-create-nav>
+            <div .comp-create-nav>
                 <ul .nav .nav-tabs role="tablist">
                     $forall (ix, (compName, compId, cc)) <- withIndexes comps
                         $with isFirst <- ix == 0

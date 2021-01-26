@@ -1,4 +1,4 @@
-#comp-create-nav {
+.comp-create-nav {
     margin-top: 0.5rem;
 }
 

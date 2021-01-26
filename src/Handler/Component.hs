@@ -134,7 +134,7 @@ createCompForm :: CreateComponent -> AForm Handler ComponentData
 createCompForm (CreateMarkup mhtml) = CD_Markup
     <$> areq snFieldUnsanitized (bfs ("Content" :: Text)) mhtml
 createCompForm (CreateToggleText msc ts) = CD_ToggleText
-    <$> areq (radioFieldList spaceChars) (withClass "mx-1" $ "Space Character") msc
+    <$> areq (radioFieldList spaceChars) (withClass "mx-1 lg-radio" $ "Space Character") msc
     <*> amulti toggleField groupSettings ts 0 bs4FASettings
     where
         spaceChars = [ ("| - Vertical Bar" :: Text, SpaceLine)

@@ -189,9 +189,9 @@ guideForm mg = Guide
             , fsId = Nothing
             , fsName = Nothing
             , fsAttrs =
-                [ ("style", "display: block; width: 1.5rem; height: 1.5rem;") ]
+                [ ("class", "lg-checkbox") ]
             }
-        urlTip = "The guide url will be kalamazi.com/guides/<url>. Only letters, numbers, hyphens and underscores are permitted."
+        urlTip = "The guide will be at kalamazi.com/guides/<url>. Only letters, numbers, hyphens and underscores are permitted."
         iconTip = "This image will be used as a thumbnail if the guide is displayed on the homepage."
 
 genNewGuide :: Widget
