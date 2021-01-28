@@ -32,10 +32,6 @@ getSectionWidget isAdmin guide sectionId = do
         compWidgets = map (uncurry $ getCompWidget isAdmin sectionId)
             $ withIndexes $ sectionContent section
 
-    mBackground <- maybe (return Nothing)
-                    (liftHandler . runDB . get)
-                    (sectionBackground section)
-
     sectionUpId <- newIdent
     sectionDownId <- newIdent
     sectionDelId <- newIdent
@@ -85,7 +81,6 @@ postSectionWidget isAdmin guide sectionId = do
             liftHandler $ runDB $ update sectionId
                 [ SectionTitle =. sectionTitle newSection
                 , SectionUrl =. sectionUrl newSection
-                , SectionBackground =. sectionBackground newSection
                 ]
             onSuccess "Section updated successfully"
 
@@ -101,6 +96,18 @@ postSectionWidget isAdmin guide sectionId = do
     sectionCopyId <- newIdent
 
     $(widgetFile "section")
+
+-- sectionBgWidget :: Maybe ImageId -> Text -> Widget
+-- sectionBgWidget mImgId secUrl =
+--     for_ mImgId $ \bg -> toWidget
+--         [lucius|
+--             ##{secUrl}-wrapper {
+--                 background-image: url('@{ImagesR $ mkImageUrl bg}');
+--                 background-repeat: no-repeat;
+--                 background-position: center;
+--                 background-size: auto 70%;
+--             }
+--         |]
 
 data SectionUpdate
     = DeleteComp Int
@@ -183,7 +190,6 @@ sectionForm :: GuideId -> Maybe Section -> AForm Handler Section
 sectionForm guideId msection = Section
     <$> areq textField (withClass "mb-1" $ fs "Title" Nothing) (sectionTitle <$> msection)
     <*> areq secUrlField (fs "Url" urlTip) (sectionUrl <$> msection)
-    <*> aopt imageSelectField (fs "Background Image" bgTip) (sectionBackground <$> msection)
     <*> pure guideId
     <*> pure (maybe [] sectionContent msection)
     where

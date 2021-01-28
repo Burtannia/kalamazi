@@ -97,8 +97,7 @@ guideUsesImg imgId g = do
 
 sectionUsesImg :: ImageId -> Section -> Bool
 sectionUsesImg imgId s = or $
-    (Just imgId == sectionBackground s)
-    : map (componentUsesImg imgId) (sectionContent s)
+    map (componentUsesImg imgId) (sectionContent s)
 
 componentUsesImg :: ImageId -> Component -> Bool
 componentUsesImg imgId (CToggle (ToggleImages bg ts)) =

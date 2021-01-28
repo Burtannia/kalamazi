@@ -18,7 +18,6 @@ Guide
 Section
     title Text
     url Text
-    background ImageId Maybe
     guideId GuideId
     content [Component]
     UniqueGuideSection guideId url

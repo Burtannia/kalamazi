@@ -1,4 +1,4 @@
-<div .section>
+<div .section ##{secUrl}-wrapper>
     <h4 ##{secUrl} .mb-3 .text-center>#{sectionTitle section}
         <i .fas .fa-link .section-link>
     $if isAdmin
@@ -8,9 +8,6 @@
             <button .btn .btn-secondary ##{sectionUpId}>Up
             <button .btn .btn-secondary ##{sectionDownId}>Down
             <button .btn .btn-danger ##{sectionDelId}>Delete
-
-    $maybe bg <- sectionBackground section
-        <img src=@{ImagesR $ mkImageUrl bg}>
 
     <div .sectionContent>
         $forall cw <- compWidgets
