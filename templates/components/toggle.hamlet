@@ -5,12 +5,11 @@
                 $if not isFirst
                     $maybe sc <- mSpaceChar
                         <h6 .toggle-spacer>#{sc}
-                <div .toggle-header .#{headerClass} :isFirst:.active data-carousel-id=#{toggleId} data-toggle-ix=#{ix}>
+                <div .toggle-header .#{headerClass} :isFirst:.active data-toggle-id=#{toggleId} data-toggle-ix=#{ix}>
                     #{val}
 
-    <div .toggle-contents .carousel .slide ##{toggleId}>
-        <div .carousel-inner>
-            $forall (ix, (_, markup)) <- withIndexes ts
-                $with isFirst <- ix == 0
-                    <div .carousel-item :isFirst:.active data-toggle-ix=#{ix}>
-                        ^{displayMarkup markup}
+    <div ##{toggleId} .toggle-content-wrapper>
+        $forall (ix, (_, markup)) <- withIndexes ts
+            $with isFirst <- ix == 0
+                <div .toggle-content :isFirst:.active data-toggle-ix=#{ix}>
+                    ^{displayMarkup markup}

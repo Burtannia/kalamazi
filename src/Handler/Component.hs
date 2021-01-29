@@ -239,11 +239,11 @@ displayComponent sectionId cIx compId = displayComponent'
                                 . sequence
                                 . fmap (runDB . getJust)
             let headers = map (mkTextSnippet . preEscapedToMarkup . fst) ts
+                headerClass = "toggle-text" :: Text
                 mSpaceChar = Just $ case sc of
                     SpaceLine -> ("|" :: Text)
                     SpaceChev -> ">"
             toggleId <- newIdent
-            headerClass <- newIdent
             $(widgetFile "components/toggle")
 
         displayComponent' (CToggle (ToggleImages bg ts')) = do
@@ -251,9 +251,9 @@ displayComponent sectionId cIx compId = displayComponent'
                                 . bisequence
                                 . bimap mkImageSnippet (runDB . getJust)
             let headers = map fst ts
+                headerClass = "toggle-image" :: Text
                 mSpaceChar = Nothing :: Maybe Text
             toggleId <- newIdent
-            headerClass <- newIdent
             $(widgetFile "components/toggle")
         
         displayComponent' (CImage imgId) =
@@ -273,6 +273,6 @@ displayComponent sectionId cIx compId = displayComponent'
         mkTextSnippet mu = [shamlet| <h6>#{mu} |]
 
         mkImageSnippet imgId = withUrlRenderer
-            [hamlet|<img .toggle-image .img-fluid src=@{ImagesR $ mkImageUrl imgId}>|]
+            [hamlet|<img .img-fluid src=@{ImagesR $ mkImageUrl imgId}>|]
 
         displayMarkup markup = $(widgetFile "components/markup")

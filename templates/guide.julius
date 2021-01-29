@@ -20,7 +20,11 @@ $('#delete-guide').click(function() {
 
 $('.toggle-header').click(function() {
     var ix = $(this).data('toggle-ix');
-    var carouselId = $(this).data('carousel-id');
+    var toggleSelector = '#' + $(this).data('toggle-id');
 
-    $('#' + carouselId).carousel(ix).carousel('dispose');
+    $(this).siblings('.toggle-header').removeClass('active');
+    $(this).addClass('active');
+    
+    $(toggleSelector).find('.active').removeClass('active');
+    $(toggleSelector).find('[data-toggle-ix=' + ix + ']').addClass('active');
 });
