@@ -123,18 +123,23 @@ footer p {
     color: white !important;
 }
 
+/* Nav Tabs */
+
 .nav-tabs a {
     color: rgba(255,255,255,.5) !important;
 }
 
-.nav-tabs .nav-item > .active,
-.nav-tabs a:hover {
-    border-color: #a1232c !important;
-    color: white !important;
-}
-
 .nav-tabs .nav-item > .active {
     background-color: #222222 !important;
+}
+
+.nav-tabs .nav-link.active {
+    color: white !important;
+    border-color: #333333 #333333 #222222 #333333 !important;
+}
+
+.nav-tabs .nav-link:hover {
+    border: 1px solid #333333 !important;
 }
 
 .modal-header, .modal-body, .modal-footer,
