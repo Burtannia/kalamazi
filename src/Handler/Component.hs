@@ -77,7 +77,7 @@ mkEditCompId sectionId t = mkFormId ["edit", t, toPathPiece sectionId]
 data CreateComponent
     = CreateMarkup (Maybe Html)
     | CreateToggleText (Maybe SpaceChar) [(Text, Html)]
-    | CreateToggleImage (Maybe ImageId) [(ImageId, Html)]
+    | CreateToggleImage [(ImageId, Html)]
     | CreateImage (Maybe ImageId)
     | CreateVideo (Maybe Text)
     | CreateWeakAura (Maybe Text) (Maybe Textarea)
@@ -86,7 +86,7 @@ comps :: [(Text, Text, CreateComponent)]
 comps =
     [ ("Markup", "markup", CreateMarkup Nothing)
     , ("Toggle Texts", "toggletext", CreateToggleText Nothing [])
-    , ("Toggle Images", "toggleimage", CreateToggleImage Nothing [])
+    , ("Toggle Images", "toggleimage", CreateToggleImage [])
     , ("Image", "image", CreateImage Nothing)
     , ("Video", "video", CreateVideo Nothing)
     , ("WeakAura", "weakaura", CreateWeakAura Nothing Nothing)
@@ -98,9 +98,8 @@ toCreateComp (CMarkup mId) = CreateMarkup
 toCreateComp (CToggle (ToggleTexts sc ts)) = CreateToggleText
     <$> pure (Just sc)
     <*> mapM getMarkup ts
-toCreateComp (CToggle (ToggleImages bg ts)) = CreateToggleImage
-    <$> pure (Just bg)
-    <*> mapM getMarkup ts
+toCreateComp (CToggle (ToggleImages ts)) = CreateToggleImage
+    <$> mapM getMarkup ts
 toCreateComp (CImage imgId) = return $ CreateImage $ Just imgId
 toCreateComp (CVideo url) = return $ CreateVideo $ Just url
 toCreateComp (CWeakAura title content) = return $ CreateWeakAura (Just title) (Just content)
@@ -111,7 +110,7 @@ getMarkup = sequence . fmap (fmap markupBlockContent . runDB . getJust)
 data ComponentData
     = CD_Markup Html
     | CD_ToggleText SpaceChar [(Text, Html)]
-    | CD_ToggleImage ImageId [(ImageId, Html)]
+    | CD_ToggleImage [(ImageId, Html)]
     | CD_Image ImageId
     | CD_Video Text
     | CD_WeakAura Text Textarea
@@ -123,9 +122,9 @@ mkComponent (CD_Markup m) = do
 mkComponent (CD_ToggleText sc ts') = do
     ts <- mapM (traverse (runDB . insert . MarkupBlock)) ts'
     return $ CToggle $ ToggleTexts sc ts
-mkComponent (CD_ToggleImage bg ts') = do
+mkComponent (CD_ToggleImage ts') = do
     ts <- mapM (traverse (runDB . insert . MarkupBlock)) ts'
-    return $ CToggle $ ToggleImages bg ts
+    return $ CToggle $ ToggleImages ts
 mkComponent (CD_Image imgId) = return $ CImage imgId
 mkComponent (CD_Video url) = return $ CVideo url
 mkComponent (CD_WeakAura title content) = return $ CWeakAura title content
@@ -151,9 +150,8 @@ createCompForm (CreateToggleText msc ts) = CD_ToggleText
                 [ ("class", "form-control mb-2")
                 , ("placeholder", "Group Label") ]
             }
-createCompForm (CreateToggleImage mbrd ts) = CD_ToggleImage
-    <$> areq imageSelectField (bfs ("Border Image" :: Text)) mbrd
-    <*> amulti toggleField (bfs ("Groups" :: Text)) ts 0 bs4FASettings
+createCompForm (CreateToggleImage ts) = CD_ToggleImage
+    <$> amulti toggleField (bfs ("Groups" :: Text)) ts 0 bs4FASettings
     where
         toggleField = convertFieldPair
             fst snd (,) imageSelectField snFieldUnsanitized "image-group"
@@ -169,7 +167,7 @@ deleteComponent :: Component -> Handler ()
 deleteComponent (CMarkup markupId) = runDB $ delete markupId
 deleteComponent (CToggle t) = case t of
     ToggleTexts _ toggles -> deleteToggles toggles
-    ToggleImages _ toggles -> deleteToggles toggles
+    ToggleImages toggles -> deleteToggles toggles
     where
         deleteToggles :: [ToggleOption a] -> Handler ()
         deleteToggles = mapM_ $ runDB . delete . snd
@@ -246,7 +244,7 @@ displayComponent sectionId cIx compId = displayComponent'
             toggleId <- newIdent
             $(widgetFile "components/toggle")
 
-        displayComponent' (CToggle (ToggleImages bg ts')) = do
+        displayComponent' (CToggle (ToggleImages ts')) = do
             ts <- flip mapM ts' $ liftHandler
                                 . bisequence
                                 . bimap mkImageSnippet (runDB . getJust)

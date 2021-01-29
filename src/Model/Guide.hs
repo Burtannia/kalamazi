@@ -33,7 +33,7 @@ type ToggleOption selector = (selector, MarkupBlockId)
 
 data ToggleGroup
     = ToggleTexts SpaceChar [ToggleOption Text]
-    | ToggleImages ImageId [ToggleOption ImageId]
+    | ToggleImages [ToggleOption ImageId]
     deriving (Show, Read)
 
 type Grid = [Row]

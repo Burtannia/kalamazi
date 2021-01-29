@@ -100,8 +100,8 @@ sectionUsesImg imgId s = or $
     map (componentUsesImg imgId) (sectionContent s)
 
 componentUsesImg :: ImageId -> Component -> Bool
-componentUsesImg imgId (CToggle (ToggleImages bg ts)) =
-    or $ map (imgId ==) (bg : map fst ts)
+componentUsesImg imgId (CToggle (ToggleImages ts)) =
+    or $ map (\x -> imgId == fst x) ts
 componentUsesImg _ _ = False
 
 getAllImages :: DB [Entity Image]
