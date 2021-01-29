@@ -134,7 +134,7 @@ createCompForm (CreateMarkup mhtml) = CD_Markup
     <$> areq snFieldUnsanitized (bfs ("Content" :: Text)) mhtml
 createCompForm (CreateToggleText msc ts) = CD_ToggleText
     <$> areq (radioFieldList spaceChars) (withClass "mx-1 lg-radio" $ "Space Character") msc
-    <*> amulti toggleField groupSettings ts 0 bs4FASettings
+    <*> amulti toggleField groupSettings ts 0 bs4FontistoSettings
     where
         spaceChars = [ ("| - Vertical Bar" :: Text, SpaceLine)
                      , ("> - Chevron", SpaceChev)
@@ -151,7 +151,7 @@ createCompForm (CreateToggleText msc ts) = CD_ToggleText
                 , ("placeholder", "Group Label") ]
             }
 createCompForm (CreateToggleImage ts) = CD_ToggleImage
-    <$> amulti toggleField (bfs ("Groups" :: Text)) ts 0 bs4FASettings
+    <$> amulti toggleField (bfs ("Groups" :: Text)) ts 0 bs4FontistoSettings
     where
         toggleField = convertFieldPair
             fst snd (,) imageSelectField snFieldUnsanitized "image-group"

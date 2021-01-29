@@ -6,5 +6,5 @@
                 <img .image-thumbnail .img-fluid src=@{ImagesR $ mkImageUrl $ entityKey i}>
                 <div .del-overlay>
                     <a href="#" .del-icon>
-                        <i .fas .fa-trash-alt data-img-url=@{ImageR $ entityKey i}>
+                        <i .fi .fi-trash data-img-url=@{ImageR $ entityKey i}>
             <p .text-center>#{imageName $ entityVal i}

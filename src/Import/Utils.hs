@@ -9,7 +9,23 @@ import Import.NoFoundation
 import Foundation
 import qualified Data.List as L (tail)
 import Data.Time.Clock (NominalDiffTime)
+import Yesod.Form.MultiInput (MultiSettings (..))
 import Yesod.Form.Bootstrap4 (BootstrapFormLayout (..), renderBootstrap4)
+
+bs4FontistoSettings :: MultiSettings App
+bs4FontistoSettings = MultiSettings
+    "btn btn-secondary"
+    "btn btn-danger"
+    "form-text text-muted"
+    "has-error"
+    addIcon delIcon (Just errW)
+    where
+        addIcon = Just [shamlet|<i class="fi fi-plus-a">|]
+        delIcon = Just [shamlet|<i class="fi fi-trash">|]
+        errW err =
+            [whamlet|
+                <div .invalid-feedback>#{err}
+            |]
 
 withClass :: Text -> FieldSettings App -> FieldSettings App
 withClass t fs = fs {fsAttrs = addClass t $ fsAttrs fs}
