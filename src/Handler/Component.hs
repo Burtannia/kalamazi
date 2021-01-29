@@ -158,7 +158,7 @@ createCompForm (CreateToggleImage ts) = CD_ToggleImage
 createCompForm (CreateImage mimg) = CD_Image
     <$> areq imageSelectField (bfs ("Image" :: Text)) mimg
 createCompForm (CreateVideo murl) = CD_Video
-    <$> areq textField (withTooltip vidTip $ bfs ("Url" :: Text)) murl
+    <$> areq urlField (withTooltip vidTip $ bfs ("Url" :: Text)) murl
     where
         vidTip = fromString $
             "In order to embed videos from YouTube, the URL must have the following format:"
