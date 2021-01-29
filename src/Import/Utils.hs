@@ -30,6 +30,9 @@ bs4FontistoSettings = MultiSettings
 withClass :: Text -> FieldSettings App -> FieldSettings App
 withClass t fs = fs {fsAttrs = addClass t $ fsAttrs fs}
 
+withTooltip :: SomeMessage App -> FieldSettings App -> FieldSettings App
+withTooltip tt fs = fs {fsTooltip = Just tt}
+
 formatDiffTime :: NominalDiffTime -> String
 formatDiffTime dt = go (floor $ toRational dt) incs
     where
