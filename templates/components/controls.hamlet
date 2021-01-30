@@ -1,3 +1,4 @@
 <div .controls .mt-2>
     ^{editWidget}
-    <button ##{delId} type="button" .btn .btn-danger>Delete
+    <button ##{delId} type="button" .btn .btn-danger>
+        <i .lnir .lnir-trash-can>

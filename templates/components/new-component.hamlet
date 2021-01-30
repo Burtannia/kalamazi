@@ -1,4 +1,5 @@
-<button type="button" .btn .btn-primary data-toggle="modal" data-target="##{modalId}">New Component
+<button type="button" .btn .btn-dark data-toggle="modal" data-target="##{modalId}">
+    <i .lnir .lnir-plus>
 
 <div .modal .fade ##{modalId} tabindex="-1">
     <div .modal-dialog .modal-lg>

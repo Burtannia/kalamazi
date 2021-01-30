@@ -33,8 +33,9 @@ getGuideR guideId = do
     gForm <- genBs4FormIdentify gFormIdent $ guideForm $ Just guide
     let gWidget =
             [whamlet|
-                ^{mkModal "Edit" gForm}
-                <button #delete-guide .btn .btn-danger type="button">Delete
+                ^{mkModalEdit "Edit" gForm}
+                <button #delete-guide .btn .btn-danger type="button">
+                    <i .lnir .lnir-trash-can .lnir-lg>
             |] 
 
     -- Sections    
@@ -74,8 +75,9 @@ postGuideR guideId = do
                                         $ guideForm $ Just guide
     let gWidget =
             [whamlet|
-                ^{mkModal "Edit" (gWidget', gEnctype)}
-                <button #delete-guide .btn .btn-danger type="button">Delete
+                ^{mkModalEdit "Edit" (gWidget', gEnctype)}
+                <button #delete-guide .btn .btn-danger type="button">
+                    <i .lnir .lnir-trash-can .lnir-lg>
             |]
 
     case gResult of

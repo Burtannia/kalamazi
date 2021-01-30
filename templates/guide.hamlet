@@ -13,4 +13,4 @@ $maybe adminTools <- madminTools
             ^{sWidget}
 
 <a href="#" #scrollTop .btn .btn-dark .btn-lg role="button">
-    <i .fi .fi-angle-up>
+    <i .lnir .lnir-chevron-up>

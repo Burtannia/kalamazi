@@ -134,7 +134,7 @@ createCompForm (CreateMarkup mhtml) = CD_Markup
     <$> areq snFieldUnsanitized (bfs ("Content" :: Text)) mhtml
 createCompForm (CreateToggleText msc ts) = CD_ToggleText
     <$> areq (radioFieldList spaceChars) (withClass "mx-1 lg-radio" $ "Space Character") msc
-    <*> amulti toggleField groupSettings ts 0 bs4FontistoSettings
+    <*> amulti toggleField groupSettings ts 0 bs4LISettings
     where
         spaceChars = [ ("| - Vertical Bar" :: Text, SpaceLine)
                      , ("> - Chevron", SpaceChev)
@@ -151,7 +151,7 @@ createCompForm (CreateToggleText msc ts) = CD_ToggleText
                 , ("placeholder", "Group Label") ]
             }
 createCompForm (CreateToggleImage ts) = CD_ToggleImage
-    <$> amulti toggleField (bfs ("Groups" :: Text)) ts 0 bs4FontistoSettings
+    <$> amulti toggleField (bfs ("Groups" :: Text)) ts 0 bs4LISettings
     where
         toggleField = convertFieldPair
             fst snd (,) imageSelectField snFieldUnsanitized "image-group"
@@ -225,8 +225,7 @@ postCompWidget isAdmin sectionId ix comp = do
 compControls :: SectionId -> Int -> Text -> (Widget, Enctype) -> Widget
 compControls sectionId cIx compId f = do
     delId <- newIdent
-    let editWidget = mkModalCustom "Edit Component" f $
-            ModalSettings [shamlet| Edit |] "btn btn-primary"
+    let editWidget = mkModalEdit "Edit Component" f
     $(widgetFile "components/controls")
 
 displayComponent :: SectionId -> Int -> Text -> Component -> Widget

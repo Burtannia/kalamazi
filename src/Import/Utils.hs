@@ -12,16 +12,16 @@ import Data.Time.Clock (NominalDiffTime)
 import Yesod.Form.MultiInput (MultiSettings (..))
 import Yesod.Form.Bootstrap4 (BootstrapFormLayout (..), renderBootstrap4)
 
-bs4FontistoSettings :: MultiSettings App
-bs4FontistoSettings = MultiSettings
+bs4LISettings :: MultiSettings App
+bs4LISettings = MultiSettings
     "btn btn-secondary"
     "btn btn-danger"
     "form-text text-muted"
     "has-error"
     addIcon delIcon (Just errW)
     where
-        addIcon = Just [shamlet|<i class="fi fi-plus-a">|]
-        delIcon = Just [shamlet|<i class="fi fi-trash">|]
+        addIcon = Just [shamlet|<i .lnir .lnir-plus>|]
+        delIcon = Just [shamlet|<i .lnir .lnir-trash-can>|]
         errW err =
             [whamlet|
                 <div .invalid-feedback>#{err}

@@ -27,7 +27,7 @@ getSectionWidget isAdmin guide sectionId = do
                 (sFormIdent secUrl)
                 (sectionForm guideId $ Just section)
 
-    let sectionModal = mkModal "Edit" sForm
+    let sectionModal = mkModalEdit "Edit" sForm
         ncWidget = genNewComponent sectionId
         compWidgets = map (uncurry $ getCompWidget isAdmin sectionId)
             $ withIndexes $ sectionContent section
@@ -50,7 +50,7 @@ postSectionWidget isAdmin guide sectionId = do
                                         (sFormIdent secUrl)
                                         (sectionForm guideId $ Just section)
 
-    let sectionModal = mkModal "Edit" (sWidget, sEnctype)
+    let sectionModal = mkModalEdit "Edit" (sWidget, sEnctype)
     
     (ncWidget, mcomp) <- liftHandler $ runNewComponent sectionId
     

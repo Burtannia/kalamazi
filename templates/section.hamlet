@@ -5,9 +5,12 @@
         <div .controls .mb-3>
             ^{ncWidget}
             ^{sectionModal}
-            <button .btn .btn-secondary ##{sectionUpId}>Up
-            <button .btn .btn-secondary ##{sectionDownId}>Down
-            <button .btn .btn-danger ##{sectionDelId}>Delete
+            <button .btn .btn-secondary ##{sectionUpId}>
+                <i .lnir .lnir-chevron-up>
+            <button .btn .btn-secondary ##{sectionDownId}>
+                <i .lnir .lnir-chevron-down>
+            <button .btn .btn-danger ##{sectionDelId}>
+                <i .lnir .lnir-trash-can>
 
     <div .sectionContent>
         $forall cw <- compWidgets
