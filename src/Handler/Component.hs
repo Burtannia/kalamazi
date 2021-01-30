@@ -158,14 +158,17 @@ createCompForm (CreateToggleImage ts) = CD_ToggleImage
 createCompForm (CreateImage mimg) = CD_Image
     <$> areq imageSelectField (bfs ("Image" :: Text)) mimg
 createCompForm (CreateVideo murl) = CD_Video
-    <$> areq urlField (withTooltip vidTip $ bfs ("Url" :: Text)) murl
+    <$> areq urlField (withPlaceholder ph $ withTooltip vidTip $ bfs ("Url" :: Text)) murl
     where
+        ph = "https://youtube.com/embed/<video-id>"
         vidTip = fromString $
             "In order to embed videos from YouTube, the URL must have the following format:"
             <> " https://youtube.com/embed/<video-id>"
 createCompForm (CreateWeakAura mtitle mcontent) = CD_WeakAura
-    <$> areq textField (withClass "mb-1" $ bfs ("Title" :: Text)) mtitle
-    <*> areq textareaField (withClass "minh-12rem" $ bfs ("Content" :: Text)) mcontent
+    <$> areq textField (withPlaceholder "My WeakAura" $ withClass "mb-1" $ bfs ("Title" :: Text)) mtitle
+    <*> areq textareaField (withPlaceholder ph $ withClass "minh-12rem" $ bfs ("Content" :: Text)) mcontent
+    where
+        ph = "Paste WeakAura, addon profile or macro content..."
 
 deleteComponent :: Component -> Handler ()
 deleteComponent (CMarkup markupId) = runDB $ delete markupId

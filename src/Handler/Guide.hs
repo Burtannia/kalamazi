@@ -153,7 +153,7 @@ nsFormIdent = "new-section"
 guideForm :: Maybe Guide -> AForm Handler Guide
 guideForm mg = Guide
     <$> areq textField titleSettings (guideTitle <$> mg)
-    <*> areq gUrlField (fSettings "Url" $ Just urlTip) (guideUrl <$> mg)
+    <*> areq gUrlField (withPlaceholder "my-new-guide" $ fSettings "Url" $ Just urlTip) (guideUrl <$> mg)
     <*> areq checkBoxField pubSettings (guideIsPublished <$> mg)
     <*> lift (liftIO getCurrentTime)
     <*> areq imageSelectField (fSettings "Icon" $ Just iconTip) (guideIcon <$> mg)
@@ -175,7 +175,8 @@ guideForm mg = Guide
             , fsId = Nothing
             , fsName = Nothing
             , fsAttrs =
-                [ ("class", "form-control mb-1") ]
+                [ ("class", "form-control mb-1")
+                , ("placeholder", "My New Guide") ]
             }
         fSettings label mtt = FieldSettings
             { fsLabel = label
@@ -261,7 +262,8 @@ guideGroupForm = GuideGroup
             , fsId = Nothing
             , fsName = Nothing
             , fsAttrs =
-                [ ("class", "form-control") ]
+                [ ("class", "form-control")
+                , ("placeholder", "My Group Name") ]
             }
 
 getGroupManager :: Widget

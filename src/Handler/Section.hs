@@ -188,8 +188,8 @@ removeSectionFromGuide sectionId guideId = do
 
 sectionForm :: GuideId -> Maybe Section -> AForm Handler Section
 sectionForm guideId msection = Section
-    <$> areq textField (withClass "mb-1" $ fs "Title" Nothing) (sectionTitle <$> msection)
-    <*> areq secUrlField (fs "Url" urlTip) (sectionUrl <$> msection)
+    <$> areq textField (withPlaceholder "My New Section" $ withClass "mb-1" $ fs "Title" Nothing) (sectionTitle <$> msection)
+    <*> areq secUrlField (withPlaceholder "my-new-section" $ fs "Url" urlTip) (sectionUrl <$> msection)
     <*> pure guideId
     <*> pure (maybe [] sectionContent msection)
     where

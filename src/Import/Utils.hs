@@ -46,6 +46,9 @@ bs4LISettings = MultiSettings
 withClass :: Text -> FieldSettings App -> FieldSettings App
 withClass t fs = fs {fsAttrs = addClass t $ fsAttrs fs}
 
+withPlaceholder :: Text -> FieldSettings App -> FieldSettings App
+withPlaceholder t fs = fs {fsAttrs = ("placeholder", t) : fsAttrs fs}
+
 withTooltip :: SomeMessage App -> FieldSettings App -> FieldSettings App
 withTooltip tt fs = fs {fsTooltip = Just tt}
 

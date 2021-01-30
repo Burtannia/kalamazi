@@ -170,7 +170,7 @@ uploadForm = ImageUpload
             , fsId = Nothing
             , fsName = Nothing
             , fsAttrs =
-                [ ("placeholder", "Enter a name...")
+                [ ("placeholder", "Image Name")
                 , ("class", "form-control mr-sm-2 mb-ltsmall")
                 ]
             }
