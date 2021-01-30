@@ -14,7 +14,15 @@
                     ^{formWidget}
                     <button type="submit" .btn .btn-dark form="upload-form">Upload
 
-                <h6 .mt-2>Images:
+                <h6 .mt-3>Mass Upload Images:
+                <form #mass-upload-form .form-inline method=post enctype=#{massEnctype}>
+                    ^{massFormWidget}
+                    <button type="submit" .btn .btn-dark form="mass-upload-form">Upload
+
+                <small .form-text .text-muted>
+                    When using mass upload please ensure that the images have the desired names prior to uploading.
+
+                <h6 .mt-3>Images:
                 ^{imagesWidget}
             <div .modal-footer>
                 <button type="button" .btn .btn-secondary data-dismiss="modal">Close

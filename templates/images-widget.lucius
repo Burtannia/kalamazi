@@ -1,5 +1,6 @@
 @media (min-width: 767px) {
-    #upload-form .form-control-file {
+    #upload-form .form-control-file,
+    #mass-upload-form .form-control-file {
         max-width: 30%;
     }
 }

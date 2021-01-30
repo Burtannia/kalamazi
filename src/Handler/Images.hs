@@ -13,44 +13,57 @@ import Yesod.Form.Bootstrap4
 import System.Directory (removeFile, doesFileExist)
 import Data.Time.Format.ISO8601
 import Control.Arrow ((&&&))
+import Yesod.Core.Types (HandlerContents (..))
     
 getImageManager :: Widget
 getImageManager = do
     (formWidget, enctype) <- liftHandler $
-        genBs4FormIdentify' BootstrapInlineForm "upload-image" uploadForm
+        genBs4FormIdentify' BootstrapInlineForm imageFormId uploadForm
+
+    (massFormWidget, massEnctype) <- liftHandler $
+        genBs4FormIdentify' BootstrapInlineForm massImageFormId massImageForm
+
     modalId <- newIdent
     $(widgetFile "image-manager")
 
 postImageManager :: Widget
 postImageManager = do
     ((result, formWidget), enctype) <- liftHandler $
-        runBs4FormIdentify' BootstrapInlineForm "upload-image" uploadForm
+        runBs4FormIdentify' BootstrapInlineForm imageFormId uploadForm
+
+    ((massFormResult, massFormWidget), massEnctype) <- liftHandler $
+        runBs4FormIdentify' BootstrapInlineForm massImageFormId massImageForm
+
     modalId <- newIdent
 
     case result of
-        FormSuccess uploadImg -> do
-            app <- getYesod
-
-            let file = iuFile uploadImg
-                mExt = parseExt $ fileContentType file
-                dir = appImageDir $ appSettings app
-            
-            case mExt of
-                Nothing -> liftHandler $ msgRedirect "Unsupported file type"
-                Just ext -> do
-                    let uuid = (iso8601Show $ iuTime uploadImg) <> "." <> (pack $ toLower $ show ext)
-                        newImg = Image (pack uuid) (iuName uploadImg) ext (iuTime uploadImg)
-                    liftIO $ fileMove (iuFile uploadImg) (mkImagePath dir newImg)
-                    _ <- liftHandler $ runDB $ insert newImg
-                    liftHandler $ msgRedirect "Image uploaded successfully"
+        FormSuccess iu -> liftHandler $ do
+            uploadImage (Just $ iuName iu) (iuFile iu)
+            msgRedirect "Image uploaded successfully"
 
         FormMissing -> return ()
         
         FormFailure errs -> do
-            liftIO $ putStrLn "postImageManager"
+            liftIO $ putStrLn "postImageManager: Image Upload"
             print errs
     
+    case massFormResult of
+        FormSuccess _ -> liftHandler $
+            msgRedirect "Images uploaded successfully"
+        
+        FormMissing -> return ()
+
+        FormFailure errs -> do
+            liftIO $ putStrLn "postImageManager: Mass Image Upload"
+            print errs
+
     $(widgetFile "image-manager")
+
+imageFormId :: Text
+imageFormId = "upload-image"
+
+massImageFormId :: Text
+massImageFormId = "mass-upload-image"
 
 imagesWidget :: Widget
 imagesWidget = do
@@ -116,14 +129,31 @@ mkImageUrl imgId = StaticRoute [toPathPiece imgId] []
 data ImageUpload = ImageUpload
     { iuFile :: FileInfo
     , iuName :: Text
-    , iuTime :: UTCTime
     }
+
+uploadImage :: Maybe Text -> FileInfo -> Handler ImageId
+uploadImage mName file = do
+    app <- getYesod
+
+    now <- liftIO getCurrentTime
+
+    let mExt = parseExt $ fileContentType file
+        dir = appImageDir $ appSettings app
+    
+    case mExt of
+        Nothing -> liftIO $ throwIO $ HCError $ InvalidArgs ["Unsupported file type"]
+        Just ext -> do
+            let uuid = (iso8601Show now) <> "." <> (pack $ toLower $ show ext)
+                imgName = fromMaybe (dropExt $ fileName file) mName
+                newImg = Image (pack uuid) imgName ext now
+            liftIO $ fileMove file $ mkImagePath dir newImg
+            imgId <- liftHandler $ runDB $ insert newImg
+            return imgId
 
 uploadForm :: AForm Handler ImageUpload
 uploadForm = ImageUpload
     <$> fileAFormReq fileSettings
     <*> areq textField nameSettings Nothing
-    <*> lift (liftIO getCurrentTime)
     where fileSettings = FieldSettings
             { fsLabel = ""
             , fsTooltip = Nothing
@@ -223,3 +253,32 @@ imageSelectField = selectFieldHelper outerView noneView otherView opts
             images <- runDB getAllImages
             let imageList = map (imageName . entityVal &&& entityKey) images
             return $ mkOptions "image" imageList
+
+massImageForm :: AForm Handler [ImageId]
+massImageForm = areq multiImageField fs Nothing
+    where
+        fs = FieldSettings
+            { fsLabel = ""
+            , fsTooltip = Nothing
+            , fsId = Nothing
+            , fsName = Nothing
+            , fsAttrs =
+                [ ("accept", ".jpg, .png, .gif")
+                , ("class", "form-control-file mr-sm-2 mb-ltsmall")
+                ]
+            }
+
+multiImageField :: Field Handler [ImageId]
+multiImageField = Field
+    { fieldParse = \_ files ->
+        if null files
+            then return $ Right Nothing
+            else do
+                imgs <- mapM (uploadImage Nothing) files
+                return $ Right $ Just imgs
+    , fieldView = \id' name attrs _ isReq ->
+        [whamlet|
+            <input ##{id'} name=#{name} *{attrs} type=file :isReq:required multiple>
+        |]
+    , fieldEnctype = Multipart
+    }

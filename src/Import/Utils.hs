@@ -2,6 +2,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE QuasiQuotes #-}
+{-# LANGUAGE FlexibleContexts #-}
 
 module Import.Utils where
 
@@ -11,6 +12,21 @@ import qualified Data.List as L (tail)
 import Data.Time.Clock (NominalDiffTime)
 import Yesod.Form.MultiInput (MultiSettings (..))
 import Yesod.Form.Bootstrap4 (BootstrapFormLayout (..), renderBootstrap4)
+import qualified Data.List as L (init)
+
+dropExt :: Text -> Text
+dropExt = pack . go . splitDots . unpack
+    where
+        go xs
+            | length xs < 3 = concat xs
+            | otherwise = concat $ L.init $ L.init xs
+
+splitDots :: String -> [String]
+splitDots = go ""
+    where
+        go _ "" = [""]
+        go buffer ('.' : cs) = (reverse buffer) : "." : go "" cs
+        go buffer (c:cs) = go (c : buffer) cs
 
 bs4LISettings :: MultiSettings App
 bs4LISettings = MultiSettings
