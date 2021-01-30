@@ -150,6 +150,10 @@ footer p {
     border: 1px solid #333333 !important;
 }
 
+.nav-tabs .nav-link.active:hover {
+    border-color: #333333 #333333 #222222 #333333 !important;
+}
+
 .modal-header, .modal-body, .modal-footer,
 .modal-content .nav {
     border-color: #333333 !important;
