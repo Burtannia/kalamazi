@@ -35,7 +35,7 @@ getGuideR guideId = do
             [whamlet|
                 ^{mkModalEdit "Edit" gForm}
                 <button #delete-guide .btn .btn-danger type="button">
-                    <i .lnir .lnir-trash-can .lnir-lg>
+                    <i .lnir .lnir-trash-can>
             |] 
 
     -- Sections    
@@ -77,7 +77,7 @@ postGuideR guideId = do
             [whamlet|
                 ^{mkModalEdit "Edit" (gWidget', gEnctype)}
                 <button #delete-guide .btn .btn-danger type="button">
-                    <i .lnir .lnir-trash-can .lnir-lg>
+                    <i .lnir .lnir-trash-can>
             |]
 
     case gResult of
