@@ -87,7 +87,7 @@ moveBackward x (y:z:ys)
     | otherwise = y : moveBackward x (z:ys)
 
 mkFormId :: [Text] -> Text
-mkFormId ts = foldr (<>) "" $ intersperse "" ts
+mkFormId ts = foldr (<>) "" $ intersperse "-" ts
 
 safeTail :: [a] -> [a]
 safeTail [] = []

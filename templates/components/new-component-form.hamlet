@@ -1,4 +1,4 @@
-<div ##{compId} .tab-pane .fade :isFirst:.show :isFirst:.active role="tabpanel" data-toggle-index=#{ix}>
+<div ##{compId}-create .tab-pane .fade :isFirst:.show :isFirst:.active role="tabpanel" data-toggle-index=#{ix}>
     <div .modal-body>
         <form ##{formId} method=post enctype=#{enctype}>
             ^{formWidget}

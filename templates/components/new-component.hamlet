@@ -14,7 +14,7 @@
                     $forall (ix, (compName, compId, cc)) <- withIndexes comps
                         $with isFirst <- ix == 0
                             <li .nav-item role="presentation">
-                                <a href=##{modalId}-#{compId} ##{modalId}-#{compId}-tab
+                                <a href=##{compId}-create
                                     .nav-link :isFirst:.active role="tab" data-toggle="tab">#{compName}
 
             <div .tab-content>

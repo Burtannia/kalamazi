@@ -28,9 +28,8 @@ genNewComponent sectionId = do
     let formWidgets = map (uncurry $ genForm modalId) $ withIndexes comps
     $(widgetFile "components/new-component")
     where
-        genForm modalId ix (compName, compId', cc) = do
+        genForm modalId ix (compName, compId, cc) = do
             let isFirst = ix == 0
-                compId = modalId <> "-" <> compId'
             formId <- newIdent
             (formWidget, enctype) <- liftHandler
                 $ genBs4FormIdentify (mkCreateCompId sectionId compId)
@@ -45,9 +44,8 @@ runNewComponent sectionId = do
     let widget = $(widgetFile "components/new-component")
     return (widget, listToMaybe $ catMaybes mcomps)
     where
-        runForm modalId ix (compName, compId', cc) = do
+        runForm modalId ix (compName, compId, cc) = do
             let isFirst = ix == 0
-                compId = modalId <> "-" <> compId'
             formId <- newIdent
             ((formRes, formWidget), enctype) <- liftHandler
                 $ runBs4FormIdentify (mkCreateCompId sectionId compId)
