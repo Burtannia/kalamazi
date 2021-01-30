@@ -86,7 +86,7 @@ postGuideR guideId = do
                 urlChanged = not $ guideUrl guide == newUrl
             theId <-
                 if urlChanged then do
-                    newId <- runDB $ insert newGuide
+                    newId <- runDB $ insert400 newGuide
                     runDB $ delete guideId
                     flip mapM_ (guideSections newGuide) $
                         \sId -> runDB $ update sId [SectionGuideId =. newId]
@@ -115,7 +115,7 @@ postGuideR guideId = do
     -- New Section
     case nsResult of
         FormSuccess newSection -> do
-            newSectionId <- runDB $ insert newSection
+            newSectionId <- runDB $ insert400 newSection
             runDB $ update guideId [GuideSections =. sections ++ [newSectionId]]
             updateGuideModified guideId
             setMessage "Section created successfully"
@@ -207,7 +207,7 @@ runNewGuide = do
         runBs4FormIdentify ngFormIdent $ guideForm Nothing
     case result of
         FormSuccess guide -> do
-            guideId <- liftHandler $ runDB $ insert guide
+            guideId <- liftHandler $ runDB $ insert400 guide
             liftHandler $ setMessage "Guide created successfully"
             redirect $ GuideR guideId
 
@@ -284,7 +284,7 @@ postGroupManager = do
             case mg of
                 Nothing -> do
                     _ <- liftHandler $ runDB $
-                        insert (gg {guideGroupPosition = numGroups + 1})
+                        insert400 (gg {guideGroupPosition = numGroups + 1})
                     return ()
                 Just entGG -> do
                     _ <- liftHandler $ runDB $
