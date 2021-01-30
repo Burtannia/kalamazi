@@ -73,17 +73,15 @@ $('##{rawJS secUrl}').click(function() {
 
     navigator.clipboard.writeText(url).then(function() {
         var icon = $(elThis).find('i');
-        icon.removeClass('fas');
-        icon.removeClass('fa-link');
+        icon.removeClass('lnir');
+        icon.removeClass('lnir-share');
         icon.removeClass('section-link');
         icon.addClass('section-copied');
         icon.text('Link Copied!');
 
         setTimeout(() => {
             icon.removeClass('section-copied');
-            icon.addClass('fas');
-            icon.addClass('fa-link');
-            icon.addClass('section-link');
+            icon.addClass('lnir lnir-share section-link');
             icon.text('');
             #{rawJS sectionCopyId} = false;
         }, 2000);

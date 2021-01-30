@@ -1,6 +1,6 @@
 <div .section ##{secUrl}-wrapper>
     <h4 ##{secUrl} .mb-3 .text-center>#{sectionTitle section}
-        <i .fas .fa-link .section-link>
+        <i .lnir .lnir-share .section-link>
     $if isAdmin
         <div .controls .mb-3>
             ^{ncWidget}
