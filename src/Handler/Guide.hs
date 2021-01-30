@@ -247,7 +247,7 @@ guideGroupForm :: AForm Handler GuideGroup
 guideGroupForm = GuideGroup
     <$> areq textField groupNameSettings Nothing
     <*> pure 0 -- not used
-    <*> amulti (selectField guideOptions) (bfs ("Guides" :: Text)) [] 1 bs4FASettings
+    <*> amulti (selectField guideOptions) (bfs ("Guides" :: Text)) [] 1 bs4LISettings
     where
         guideOptions = optionsPersistKey [] [Asc GuideTitle] guideTitle
         groupNameSettings = FieldSettings

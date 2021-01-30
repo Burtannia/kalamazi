@@ -12,7 +12,7 @@
                 <form #gg-form method=post enctype=#{ggEnctype}>
                     ^{ggFormWidget}
                 
-                <button type="submit" .btn .btn-dark .mt-2 form="gg-form">Add Group
+                <button type="submit" .btn .btn-dark .mt-2 form="gg-form">Save Group
 
                 <div .max-h-60 .mt-3>
                     <table .table .text-white>
@@ -34,10 +34,13 @@
                                     <td>
                                         <button type="button" .btn .btn-danger .del-gg
                                             :guideGroupName gg == homeGroupName:.disabled
-                                            :guideGroupName gg == homeGroupName:disabled="disabled">Delete
+                                            :guideGroupName gg == homeGroupName:disabled="disabled">
+                                            <i .lnir .lnir-trash-can>
                                     <td>
-                                        <button .btn .btn-secondary .up-gg type="button">Up
-                                        <button .btn .btn-secondary .down-gg type="button">Down
+                                        <button .btn .btn-secondary .up-gg type="button">
+                                            <i .lnir .lnir-chevron-up>
+                                        <button .btn .btn-secondary .down-gg type="button">
+                                            <i .lnir .lnir-chevron-down>
 
             <div .modal-footer>
                 <button type="button" .btn .btn-secondary data-dismiss="modal">Close
