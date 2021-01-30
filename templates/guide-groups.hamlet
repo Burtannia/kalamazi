@@ -9,12 +9,14 @@
                 <button type="button" .close data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;
             <div .modal-body>
+                <h6>Create Group:
                 <form #gg-form method=post enctype=#{ggEnctype}>
                     ^{ggFormWidget}
                 
                 <button type="submit" .btn .btn-dark .mt-2 form="gg-form">Save Group
 
-                <div .max-h-60 .mt-3>
+                <h6 .mt-3>Groups:
+                <div .max-h-60 .mt-1>
                     <table .table .text-white>
                         <thead>
                             <tr>
