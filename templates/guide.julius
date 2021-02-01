@@ -28,3 +28,15 @@ $('.toggle-header').click(function() {
     $(toggleSelector).find('.active').removeClass('active');
     $(toggleSelector).find('[data-toggle-ix=' + ix + ']').addClass('active');
 });
+
+function moveUp(x) {
+    var el = $(x)
+    if (el.not(':first-child'))
+        el.prev().before(el);
+}
+
+function moveDown(x) {
+    var el = $(x)
+    if (el.not(':last-child'))
+        el.next().after(el);
+}

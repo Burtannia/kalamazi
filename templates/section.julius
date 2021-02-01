@@ -46,18 +46,6 @@ $('##{rawJS sectionDownId}').click(function() {
     });
 });
 
-function moveUp(section) {
-    var el = $(section)
-    if (el.not(':first-child'))
-        el.prev().before(el);
-}
-
-function moveDown(section) {
-    var el = $(section)
-    if (el.not(':last-child'))
-        el.next().after(el);
-}
-
 var #{rawJS sectionCopyId} = false;
 
 $('##{rawJS secUrl}').click(function() {
