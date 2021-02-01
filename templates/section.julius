@@ -54,8 +54,7 @@ $('##{rawJS secUrl}').click(function() {
     else
         #{rawJS sectionCopyId} = true;
 
-    var url = "https://www.kalamazi.com/guides/"
-            + "#{rawJS $ guideUrl guide}" + "#" + "#{rawJS secUrl}";
+    var url = takeUntil(window.location.href, '#') + "#" + "#{rawJS secUrl}";
     
     var elThis = $(this);
 

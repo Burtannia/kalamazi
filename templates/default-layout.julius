@@ -97,3 +97,9 @@ $(function(){
         return false;
     });
 });
+
+function takeUntil(str, char) {
+    var breakAt = str.indexOf(char);
+    var ix = breakAt == -1 ? str.length : breakAt;
+    return str.substring(0, ix);
+}

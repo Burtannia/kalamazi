@@ -19,8 +19,7 @@
 
 .section-copied {
     margin-top: 0.6rem;
-    color: white;
-    opacity: 0.9;
+    color: grey;
     font-style: normal;
     font-weight: 400;
 }
