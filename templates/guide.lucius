@@ -250,3 +250,11 @@
 .toggle-content.active {
     opacity: 1;
 }
+
+/* Dividers */
+
+.divider-vertical {
+    height: 1px;
+    width: 100%;
+    border-top: solid 1px white;
+}

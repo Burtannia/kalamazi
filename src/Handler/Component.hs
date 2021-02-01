@@ -79,6 +79,7 @@ data CreateComponent
     | CreateImage (Maybe ImageId)
     | CreateVideo (Maybe Text)
     | CreateWeakAura (Maybe Text) (Maybe Textarea)
+    | CreateDivider (Maybe Axis) (Maybe Bool)
 
 comps :: [(Text, Text, CreateComponent)]
 comps =
@@ -88,6 +89,7 @@ comps =
     , ("Image", "image", CreateImage Nothing)
     , ("Video", "video", CreateVideo Nothing)
     , ("WeakAura", "weakaura", CreateWeakAura Nothing Nothing)
+    , ("Divider", "divider", CreateDivider Nothing Nothing)
     ]
 
 toCreateComp :: Component -> Handler CreateComponent
@@ -101,6 +103,7 @@ toCreateComp (CToggle (ToggleImages ts)) = CreateToggleImage
 toCreateComp (CImage imgId) = return $ CreateImage $ Just imgId
 toCreateComp (CVideo url) = return $ CreateVideo $ Just url
 toCreateComp (CWeakAura title content) = return $ CreateWeakAura (Just title) (Just content)
+toCreateComp (CDivider axis visible) = return $ CreateDivider (Just axis) (Just visible)
 
 getMarkup :: (a, MarkupBlockId) -> Handler (a, Html)
 getMarkup = sequence . fmap (fmap markupBlockContent . runDB . getJust)
@@ -112,6 +115,7 @@ data ComponentData
     | CD_Image ImageId
     | CD_Video Text
     | CD_WeakAura Text Textarea
+    | CD_Divider Axis Bool
 
 mkComponent :: ComponentData -> Handler Component
 mkComponent (CD_Markup m) = do
@@ -126,12 +130,13 @@ mkComponent (CD_ToggleImage ts') = do
 mkComponent (CD_Image imgId) = return $ CImage imgId
 mkComponent (CD_Video url) = return $ CVideo url
 mkComponent (CD_WeakAura title content) = return $ CWeakAura title content
+mkComponent (CD_Divider axis visible) = return $ CDivider axis visible
 
 createCompForm :: CreateComponent -> AForm Handler ComponentData
 createCompForm (CreateMarkup mhtml) = CD_Markup
     <$> areq snFieldUnsanitized (bfs ("Content" :: Text)) mhtml
 createCompForm (CreateToggleText msc ts) = CD_ToggleText
-    <$> areq (radioFieldList spaceChars) (withClass "mx-1 lg-radio" $ "Space Character") msc
+    <$> areq (radioFieldList spaceChars) (withClass "mr-2 lg-radio" $ "Space Character") msc
     <*> amulti toggleField groupSettings ts 0 bs4LISettings
     where
         spaceChars = [ ("| - Vertical Bar" :: Text, SpaceLine)
@@ -167,6 +172,14 @@ createCompForm (CreateWeakAura mtitle mcontent) = CD_WeakAura
     <*> areq textareaField (withPlaceholder ph $ withClass "minh-12rem" $ bfs ("Content" :: Text)) mcontent
     where
         ph = "Paste WeakAura, addon profile or macro content..."
+createCompForm (CreateDivider maxis mvisible) = CD_Divider
+    <$> areq (radioFieldList axisOpts) (withClass "mr-2 lg-radio" $ "Axis") maxis
+    <*> areq checkBoxField (withTooltip visTip $ withClass "lg-checkbox" "Visible") mvisible
+    where
+        axisOpts = [ ("Vertical" :: Text, Vertical)
+                   , ("Horizontal", Horizontal)
+                   ]
+        visTip = "If visible then the divider will show as a line rather than just affecting the layout."
 
 deleteComponent :: Component -> Handler ()
 deleteComponent (CMarkup markupId) = runDB $ delete markupId
@@ -179,6 +192,7 @@ deleteComponent (CToggle t) = case t of
 deleteComponent (CImage _) = return ()
 deleteComponent (CVideo _) = return ()
 deleteComponent (CWeakAura _ _) = return ()
+deleteComponent (CDivider _ _) = return ()
 
 getCompWidget :: Bool -> SectionId -> Int -> Component -> Widget
 getCompWidget isAdmin sectionId ix comp = do
@@ -271,6 +285,8 @@ displayComponent sectionId cIx compId = displayComponent'
         displayComponent' (CWeakAura title content) = do
             waId <- newIdent
             $(widgetFile "components/weakaura")
+
+        displayComponent' (CDivider axis visible) = [whamlet| <div .divider-vertical> |]
 
         mkTextSnippet mu = [shamlet| <h6>#{mu} |]
 

@@ -18,12 +18,16 @@ import Database.Persist.Quasi
 
 import Model.Core
 
+data Axis = Vertical | Horizontal
+    deriving (Show, Read, Eq)
+
 data Component
     = CMarkup MarkupBlockId
     | CToggle ToggleGroup
     | CImage ImageId
     | CVideo Text
     | CWeakAura Text Textarea
+    | CDivider Axis Bool
     deriving (Show, Read)
 
 data SpaceChar = SpaceLine | SpaceChev
@@ -40,6 +44,7 @@ type Grid = [Row]
 type Row = [Column]
 type Column = [Component]
 
+derivePersistField "Axis"
 derivePersistField "SpaceChar"
 derivePersistField "ToggleGroup"
 derivePersistField "Component"
