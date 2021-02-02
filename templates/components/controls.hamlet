@@ -1,4 +1,11 @@
 <div .controls .mt-2>
     ^{editWidget}
+    
+    $if canMove
+        <button ##{upId} type="button" .btn .btn-secondary>
+            <i .lnir .lnir-chevron-up>
+        <button ##{downId} type="button" .btn .btn-secondary>
+            <i .lnir .lnir-chevron-down>
+
     <button ##{delId} type="button" .btn .btn-danger>
         <i .lnir .lnir-trash-can>

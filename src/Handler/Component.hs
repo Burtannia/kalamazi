@@ -176,8 +176,8 @@ createCompForm (CreateDivider maxis mvisible) = CD_Divider
     <$> areq (radioFieldList axisOpts) (withClass "mr-2 lg-radio" $ "Axis") maxis
     <*> areq checkBoxField (withTooltip visTip $ withClass "lg-checkbox" "Visible") mvisible
     where
-        axisOpts = [ ("Vertical" :: Text, Vertical)
-                   , ("Horizontal", Horizontal)
+        axisOpts = [ ("Column" :: Text, Column)
+                   , ("Row", Row)
                    ]
         visTip = "If visible then the divider will show as a line rather than just affecting the layout."
 
@@ -205,7 +205,8 @@ getCompWidget isAdmin sectionId ix comp = do
         $ createCompForm cc
 
     -- generate controls and display widget
-    let controls = compControls sectionId ix compId form
+    let canMove = compCanMove comp
+        controls = compControls sectionId ix compId canMove form
         compWidget = displayComponent sectionId ix compId comp
 
     $(widgetFile "component")
@@ -218,7 +219,8 @@ postCompWidget isAdmin sectionId ix comp = do
     ((formRes, formWidget), enctype) <- liftHandler
         $ runBs4FormIdentify (mkEditCompId sectionId $ tshow ix)
         $ createCompForm cc
-    let controls = compControls sectionId ix compId (formWidget, enctype)
+    let canMove = compCanMove comp
+        controls = compControls sectionId ix compId canMove (formWidget, enctype)
         compWidget = displayComponent sectionId ix compId comp
 
     mr <- case formRes of
@@ -237,9 +239,14 @@ postCompWidget isAdmin sectionId ix comp = do
     let widget = $(widgetFile "component")
     return (widget, mr)
 
-compControls :: SectionId -> Int -> Text -> (Widget, Enctype) -> Widget
-compControls sectionId cIx compId f = do
+compCanMove :: Component -> Bool
+compCanMove x = not $ isDivCol x || isDivRow x
+
+compControls :: SectionId -> Int -> Text -> Bool -> (Widget, Enctype) -> Widget
+compControls sectionId cIx compId canMove f = do
     delId <- newIdent
+    upId <- newIdent
+    downId <- newIdent
     let editWidget = mkModalEdit "Edit Component" f
     $(widgetFile "components/controls")
 
@@ -286,7 +293,7 @@ displayComponent sectionId cIx compId = displayComponent'
             waId <- newIdent
             $(widgetFile "components/weakaura")
 
-        displayComponent' (CDivider axis visible) = [whamlet| <div .divider-vertical> |]
+        displayComponent' (CDivider axis visible) = $(widgetFile "components/divider")
 
         mkTextSnippet mu = [shamlet| <h6>#{mu} |]
 
@@ -294,3 +301,25 @@ displayComponent sectionId cIx compId = displayComponent'
             [hamlet|<img .img-fluid src=@{ImagesR $ mkImageUrl imgId}>|]
 
         displayMarkup markup = $(widgetFile "components/markup")
+
+type CompCol = [Component]
+type CompRow = [CompCol]
+
+isDivType :: Axis -> Component -> Bool
+isDivType ax (CDivider ax' _) = ax == ax'
+isDivType _ _ = False
+
+isDivCol :: Component -> Bool
+isDivCol = isDivType Column
+
+isDivRow :: Component -> Bool
+isDivRow = isDivType Row
+
+layoutComps :: [Component] -> [CompRow]
+layoutComps xs = rows
+    where
+        isRow [x] = isDivRow x
+        isRow _ = False
+
+        rows = splitWhenKeep isRow cols
+        cols = splitWhenKeep isDivCol xs

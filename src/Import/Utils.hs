@@ -13,6 +13,39 @@ import Data.Time.Clock (NominalDiffTime)
 import Yesod.Form.MultiInput (MultiSettings (..))
 import Yesod.Form.Bootstrap4 (BootstrapFormLayout (..), renderBootstrap4)
 import qualified Data.List as L (init)
+import Control.Monad.Trans.State.Strict (State, evalState)
+import qualified Control.Monad.Trans.State.Strict as ST (get, put)
+import Control.Arrow ((&&&))
+
+splitWhenKeep :: (a -> Bool) -> [a] -> [[a]]
+splitWhenKeep _ [] = []
+splitWhenKeep f (x:xs) =
+    case splitWhenKeep f xs of
+        [] -> [[x]]
+        (ys:yss)
+            | f x || all f ys -> [x] : ys : yss
+            | otherwise -> (x : ys) : yss
+
+withIndexes3 :: [[[a]]] -> [[[(Int, a)]]]
+withIndexes3 = flip evalState 0 . indexLists
+    where
+        indexLists :: [[[a]]] -> State Int [[[(Int, a)]]]
+        indexLists = mapM3 $ \x -> do
+            ix <- ST.get
+            ST.put $ ix + 1
+            return (ix, x)
+
+fmap3 :: (Functor f, Functor g, Functor h) => (a -> b) -> f (g (h a)) -> f (g (h b))
+fmap3 = fmap . fmap . fmap
+
+map3 :: (a -> b) -> [[[a]]] -> [[[b]]]
+map3 = map . map . map
+
+map2 :: (a -> b) -> [[a]] -> [[b]]
+map2 = map . map
+
+mapM3 :: Monad m => (a -> m b) -> [[[a]]] -> m [[[b]]]
+mapM3 = mapM . mapM . mapM
 
 dropExt :: Text -> Text
 dropExt = pack . go . splitDots . unpack
@@ -85,6 +118,24 @@ moveBackward _ [x] = [x]
 moveBackward x (y:z:ys)
     | x == z    = z : y : ys
     | otherwise = y : moveBackward x (z:ys)
+
+moveIxRight :: Int -> [a] -> [a]
+moveIxRight n = map snd . go . withIndexes
+    where
+        go [] = []
+        go [x] = [x]
+        go (x@(m, _) : y : xs)
+            | n == m = y : x : xs
+            | otherwise = x : go (y:xs)
+
+moveIxLeft :: Int -> [a] -> [a]
+moveIxLeft n = map snd . go . withIndexes
+    where
+        go [] = []
+        go [x] = [x]
+        go (x : y@(m, _) : xs)
+            | n == m = y : x : xs
+            | otherwise = x : go (y:xs)
 
 mkFormId :: [Text] -> Text
 mkFormId ts = foldr (<>) "" $ intersperse "-" ts

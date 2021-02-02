@@ -30,13 +30,13 @@ $('.toggle-header').click(function() {
 });
 
 function moveUp(x) {
-    var el = $(x)
+    var el = $(x);
     if (el.not(':first-child'))
         el.prev().before(el);
 }
 
 function moveDown(x) {
-    var el = $(x)
+    var el = $(x);
     if (el.not(':last-child'))
         el.next().after(el);
 }

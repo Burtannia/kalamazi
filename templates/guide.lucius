@@ -252,8 +252,14 @@
 
 /* Dividers */
 
-.divider-vertical {
+.divider-row {
     height: 1px;
     width: 100%;
     border-top: solid 1px white;
+}
+
+.divider-column {
+    height: 100%;
+    width: 1px;
+    border-right: solid 1px white;
 }

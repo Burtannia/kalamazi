@@ -13,5 +13,9 @@
                 <i .lnir .lnir-trash-can>
 
     <div .sectionContent>
-        $forall cw <- compWidgets
-            ^{cw}
+        $forall compRow <- compWidgets
+            <div .row>
+                $forall compCol <- compRow
+                    <div .col>
+                        $forall comp <- compCol
+                            ^{comp}

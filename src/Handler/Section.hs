@@ -29,8 +29,8 @@ getSectionWidget isAdmin guide sectionId = do
 
     let sectionModal = mkModalEdit "Edit" sForm
         ncWidget = genNewComponent sectionId
-        compWidgets = map (uncurry $ getCompWidget isAdmin sectionId)
-            $ withIndexes $ sectionContent section
+        compWidgets = map3 (uncurry $ getCompWidget isAdmin sectionId)
+            $ withIndexes3 $ layoutComps $ sectionContent section
 
     sectionUpId <- newIdent
     sectionDownId <- newIdent
@@ -54,16 +54,17 @@ postSectionWidget isAdmin guide sectionId = do
     
     (ncWidget, mcomp) <- liftHandler $ runNewComponent sectionId
     
-    (compWidgets, mcomps) <- liftHandler $ fmap unzip
-        $ mapM (uncurry $ postCompWidget isAdmin sectionId)
-        $ withIndexes content
+    (compWidgets, mcomps) <- liftHandler
+        $ fmap (map3 fst &&& map3 snd)
+        $ mapM3 (uncurry $ postCompWidget isAdmin sectionId)
+        $ withIndexes3 $ layoutComps content
 
     let onSuccess msg = do
             liftHandler $ updateGuideModified $ sectionGuideId section
             setMessage msg
             redirect $ GuideR guideId
         
-    for_ (listToMaybe $ catMaybes mcomps) $ \c@(_, ix) -> do
+    for_ (listToMaybe $ catMaybes $ concat $ concat mcomps) $ \c@(_, ix) -> do
         when (ix < 0 || ix >= length content) $ do
             setMessage "Error updating component: index out of bounds"
             redirect $ GuideR guideId
@@ -113,6 +114,8 @@ data SectionUpdate
     = DeleteComp Int
     | SectionUp
     | SectionDown
+    | CompUp Int
+    | CompDown Int
     deriving (Show, Read, Generic)
 
 instance ToJSON SectionUpdate where
@@ -153,6 +156,12 @@ patchSectionR sectionId = do
                 runDB $ update guideId [GuideSections =. newSections]
                 updateGuideModified guideId
                 sendResponse ("Section moved" :: Text)
+            CompUp ix -> do
+                let newComps = moveIxLeft ix cs
+                runDB $ update sectionId [SectionContent =. newComps]
+            CompDown ix -> do
+                let newComps = moveIxRight ix cs
+                runDB $ update sectionId [SectionContent =. newComps]
                 
 deleteSectionR :: SectionId -> Handler ()
 deleteSectionR sectionId = do

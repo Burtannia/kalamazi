@@ -18,7 +18,7 @@ import Database.Persist.Quasi
 
 import Model.Core
 
-data Axis = Vertical | Horizontal
+data Axis = Column | Row
     deriving (Show, Read, Eq)
 
 data Component
