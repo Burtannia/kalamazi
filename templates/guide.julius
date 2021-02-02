@@ -40,3 +40,35 @@ function moveDown(x) {
     if (el.not(':last-child'))
         el.next().after(el);
 }
+
+function moveCompUp(x, movingIx) {
+    var toMove = $(x);
+
+    $('.component').each(function() {
+        var ix = $(this).data('comp-index');
+        
+        if (ix == movingIx - 1)
+        {
+            $(this).data('comp-index', movingIx);
+            toMove.data('comp-index', ix);
+            
+            $(this).before(toMove);
+        }
+    });
+}
+
+function moveCompDown(x, movingIx) {
+    var toMove = $(x);
+
+    $('.component').each(function() {
+        var ix = $(this).data('comp-index');
+        
+        if (ix == movingIx + 1)
+        {
+            $(this).data('comp-index', movingIx);
+            toMove.data('comp-index', ix);
+            
+            $(this).after(toMove);
+        }
+    });
+}
