@@ -316,10 +316,6 @@ isDivRow :: Component -> Bool
 isDivRow = isDivType Row
 
 layoutComps :: [Component] -> [CompRow]
-layoutComps xs = rows
+layoutComps xs = map (splitWhenKeep isDivCol) rows
     where
-        isRow [x] = isDivRow x
-        isRow _ = False
-
-        rows = splitWhenKeep isRow cols
-        cols = splitWhenKeep isDivCol xs
+        rows = splitWhenKeep isDivRow xs

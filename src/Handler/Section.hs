@@ -32,6 +32,8 @@ getSectionWidget isAdmin guide sectionId = do
         compWidgets = map3 (uncurry $ getCompWidget isAdmin sectionId)
             $ withIndexes3 $ layoutComps $ sectionContent section
 
+    liftIO $ print $ layoutComps $ sectionContent section
+
     sectionUpId <- newIdent
     sectionDownId <- newIdent
     sectionDelId <- newIdent
