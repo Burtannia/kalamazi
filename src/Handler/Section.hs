@@ -29,8 +29,9 @@ getSectionWidget isAdmin guide sectionId = do
 
     let sectionModal = mkModalEdit "Edit" sForm
         ncWidget = genNewComponent sectionId
-        compWidgets = map3 (uncurry $ getCompWidget isAdmin sectionId)
+        compWidgets' = map3 (uncurry $ getCompWidget isAdmin sectionId)
             $ withIndexes3 $ layoutComps $ sectionContent section
+        compWidgets = markDivs compWidgets'
 
     liftIO $ print $ layoutComps $ sectionContent section
 
@@ -56,12 +57,13 @@ postSectionWidget isAdmin guide sectionId = do
     
     (ncWidget, mcomp) <- liftHandler $ runNewComponent sectionId
     
-    (compWidgets, mcomps) <- liftHandler
+    (compWidgets', mcomps) <- liftHandler
         $ fmap (map3 fst &&& map3 snd)
         $ mapM3 (uncurry $ postCompWidget isAdmin sectionId)
         $ withIndexes3 $ layoutComps content
 
-    let onSuccess msg = do
+    let compWidgets = markDivs compWidgets'
+        onSuccess msg = do
             liftHandler $ updateGuideModified $ sectionGuideId section
             setMessage msg
             redirect $ GuideR guideId

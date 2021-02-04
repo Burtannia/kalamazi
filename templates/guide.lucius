@@ -263,3 +263,7 @@
     width: 1px;
     border-right: solid 1px white;
 }
+
+.no-border .highlight-comp {
+    border: none;
+}

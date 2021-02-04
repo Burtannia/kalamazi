@@ -2,8 +2,6 @@ $# maybe move to css grid to get even widths
 $if visible
     $case axis
         $of Column
-            Column
             <div .divider-column>
         $of Row
-            Row
             <div .divider-row>

@@ -13,9 +13,10 @@
                 <i .lnir .lnir-trash-can>
 
     <div .sectionContent>
-        $forall compRow <- compWidgets
-            <div .row>
-                $forall compCol <- compRow
-                    <div .col>
-                        $forall comp <- compCol
-                            ^{comp}
+        $forall (compRow, rowIsDiv) <- compWidgets
+            <div :not rowIsDiv:.row :not rowIsDiv:.no-gutters>
+                $forall (compCol, colIsDiv) <- compRow
+                    $with isDiv <- rowIsDiv || colIsDiv
+                        <div :not isDiv:.col :isDiv:.no-border>
+                            $forall comp <- compCol
+                                ^{comp}

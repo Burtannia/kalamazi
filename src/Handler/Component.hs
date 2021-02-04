@@ -208,6 +208,7 @@ getCompWidget isAdmin sectionId ix comp = do
     let canMove = compCanMove comp
         controls = compControls sectionId ix compId canMove form
         compWidget = displayComponent sectionId ix compId comp
+        isCol = isDivCol comp
 
     $(widgetFile "component")
 
@@ -222,6 +223,7 @@ postCompWidget isAdmin sectionId ix comp = do
     let canMove = compCanMove comp
         controls = compControls sectionId ix compId canMove (formWidget, enctype)
         compWidget = displayComponent sectionId ix compId comp
+        isCol = isDivCol comp
 
     mr <- case formRes of
         FormSuccess compData -> do
@@ -319,3 +321,9 @@ layoutComps :: [Component] -> [CompRow]
 layoutComps xs = map (splitWhenKeep isDivCol) rows
     where
         rows = splitWhenKeep isDivRow xs
+
+markDivs :: [[[Widget]]] -> [( [( [Widget] , Bool )] , Bool )]
+markDivs xs = zip ys alts
+    where
+        alts = intersperse True $ repeat False
+        ys = map (flip zip alts) xs
