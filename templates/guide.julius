@@ -157,22 +157,15 @@ function placeBefore(placeThis, beforeThis, leapfrogs) {
     $(leapfrogs).each(function () {
         var ix = $(this).data('comp-index');
         $(this).data('comp-index', ix + leapfrogDiff);
-        $(this).attr('data-comp-index', ix + leapfrogDiff);
     });
 
     if (leapfrogDiff == 1)
     {
         $(beforeThis).data('comp-index', beforeIx + 1);
-        $(beforeThis).attr('data-comp-index', beforeIx + 1);
-
         $(placeThis).data('comp-index', beforeIx);
-        $(placeThis).attr('data-comp-index', beforeIx);
     }
     else // -1 or 0
-    {
         $(placeThis).data('comp-index', beforeIx + leapfrogDiff);
-        $(placeThis).attr('data-comp-index', beforeIx + leapfrogDiff);
-    }
 
     $(beforeThis).before(placeThis);
 }
@@ -185,21 +178,14 @@ function placeAfter(placeThis, afterThis, leapfrogs) {
     $(leapfrogs).each(function () {
         var ix = $(this).data('comp-index');
         $(this).data('comp-index', ix + leapfrogDiff);
-        $(this).attr('data-comp-index', ix + leapfrogDiff);
     });
 
     if (leapfrogDiff == 1)
-    {
         $(placeThis).data('comp-index', afterIx + 1);
-        $(placeThis).attr('data-comp-index', afterIx + 1);
-    }
     else // -1 or 0
     {
         $(afterThis).data('comp-index', afterIx + leapfrogDiff);
-        $(afterThis).attr('data-comp-index', afterIx + leapfrogDiff);
-
         $(placeThis).data('comp-index', afterIx);
-        $(placeThis).attr('data-comp-index', afterIx);
     }
 
     $(afterThis).after(placeThis);
