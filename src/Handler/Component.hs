@@ -22,8 +22,8 @@ import Yesod.Form.Bootstrap4 (BootstrapFormLayout (..), bfs, renderBootstrap4)
 
 import Model.Guide
 
-genNewComponent :: SectionId -> Widget
-genNewComponent sectionId = do
+genNewComponent :: [Entity Image] -> SectionId -> Widget
+genNewComponent imgs sectionId = do
     modalId <- newIdent
     let formWidgets = map (uncurry $ genForm modalId) $ withIndexes comps
     $(widgetFile "components/new-component")
@@ -33,11 +33,11 @@ genNewComponent sectionId = do
             formId <- newIdent
             (formWidget, enctype) <- liftHandler
                 $ genBs4FormIdentify (mkCreateCompId sectionId compId)
-                $ createCompForm cc
+                $ createCompForm imgs cc
             $(widgetFile "components/new-component-form")
 
-runNewComponent :: SectionId -> Handler (Widget, Maybe Component)
-runNewComponent sectionId = do
+runNewComponent :: [Entity Image] -> SectionId -> Handler (Widget, Maybe Component)
+runNewComponent imgs sectionId = do
     modalId <- newIdent
     (formWidgets, mcomps) <- fmap unzip $
             mapM (uncurry $ runForm modalId) $ withIndexes comps
@@ -49,7 +49,7 @@ runNewComponent sectionId = do
             formId <- newIdent
             ((formRes, formWidget), enctype) <- liftHandler
                 $ runBs4FormIdentify (mkCreateCompId sectionId compId)
-                $ createCompForm cc
+                $ createCompForm imgs cc
 
             mr <- case formRes of
                 FormSuccess compData ->
@@ -132,10 +132,10 @@ mkComponent (CD_Video url) = return $ CVideo url
 mkComponent (CD_WeakAura title content) = return $ CWeakAura title content
 mkComponent (CD_Divider axis visible) = return $ CDivider axis visible
 
-createCompForm :: CreateComponent -> AForm Handler ComponentData
-createCompForm (CreateMarkup mhtml) = CD_Markup
+createCompForm :: [Entity Image] -> CreateComponent -> AForm Handler ComponentData
+createCompForm _ (CreateMarkup mhtml) = CD_Markup
     <$> areq snFieldUnsanitized (bfs ("Content" :: Text)) mhtml
-createCompForm (CreateToggleText msc ts) = CD_ToggleText
+createCompForm _ (CreateToggleText msc ts) = CD_ToggleText
     <$> areq (radioFieldList spaceChars) (withClass "mr-2 lg-radio" $ "Space Character") msc
     <*> amulti toggleField groupSettings ts 0 bs4LISettings
     where
@@ -153,26 +153,26 @@ createCompForm (CreateToggleText msc ts) = CD_ToggleText
                 [ ("class", "form-control mb-2")
                 , ("placeholder", "Group Label") ]
             }
-createCompForm (CreateToggleImage ts) = CD_ToggleImage
+createCompForm imgs (CreateToggleImage ts) = CD_ToggleImage
     <$> amulti toggleField (bfs ("Groups" :: Text)) ts 0 bs4LISettings
     where
         toggleField = convertFieldPair
-            fst snd (,) imageSelectField snFieldUnsanitized "image-group"
-createCompForm (CreateImage mimg) = CD_Image
-    <$> areq imageSelectField (bfs ("Image" :: Text)) mimg
-createCompForm (CreateVideo murl) = CD_Video
+            fst snd (,) (imageSelectField imgs) snFieldUnsanitized "image-group"
+createCompForm imgs (CreateImage mimg) = CD_Image
+    <$> areq (imageSelectField imgs) (bfs ("Image" :: Text)) mimg
+createCompForm _ (CreateVideo murl) = CD_Video
     <$> areq urlField (withPlaceholder ph $ withTooltip vidTip $ bfs ("Url" :: Text)) murl
     where
         ph = "https://youtube.com/embed/<video-id>"
         vidTip = fromString $
             "In order to embed videos from YouTube, the URL must have the following format:"
             <> " https://youtube.com/embed/<video-id>"
-createCompForm (CreateWeakAura mtitle mcontent) = CD_WeakAura
+createCompForm _ (CreateWeakAura mtitle mcontent) = CD_WeakAura
     <$> areq textField (withPlaceholder "My WeakAura" $ withClass "mb-1" $ bfs ("Title" :: Text)) mtitle
     <*> areq textareaField (withPlaceholder ph $ withClass "minh-12rem" $ bfs ("Content" :: Text)) mcontent
     where
         ph = "Paste WeakAura, addon profile or macro content..."
-createCompForm (CreateDivider maxis mvisible) = CD_Divider
+createCompForm _ (CreateDivider maxis mvisible) = CD_Divider
     <$> areq (radioFieldList axisOpts) (withClass "mr-2 lg-radio" $ "Axis") maxis
     <*> areq checkBoxField (withTooltip visTip $ withClass "lg-checkbox" "Visible") mvisible
     where
@@ -194,15 +194,15 @@ deleteComponent (CVideo _) = return ()
 deleteComponent (CWeakAura _ _) = return ()
 deleteComponent (CDivider _ _) = return ()
 
-getCompWidget :: Bool -> SectionId -> Int -> Component -> Widget
-getCompWidget isAdmin sectionId ix comp = do
+getCompWidget :: [Entity Image] -> Bool -> SectionId -> Int -> Component -> Widget
+getCompWidget imgs isAdmin sectionId ix comp = do
     compId <- newIdent
     cc <- liftHandler $ toCreateComp comp
 
     -- generate edit form
     form <- liftHandler
         $ genBs4FormIdentify (mkEditCompId sectionId $ tshow ix)
-        $ createCompForm cc
+        $ createCompForm imgs cc
 
     -- generate controls and display widget
     let canMove = compCanMove comp
@@ -210,17 +210,17 @@ getCompWidget isAdmin sectionId ix comp = do
         compWidget = displayComponent sectionId ix compId comp
         isCol = isDivCol comp
         isRow = isDivRow comp
-        
+
     $(widgetFile "component")
 
-postCompWidget :: Bool -> SectionId -> Int -> Component
+postCompWidget :: [Entity Image] -> Bool -> SectionId -> Int -> Component
     -> Handler (Widget, Maybe (Component, Int))
-postCompWidget isAdmin sectionId ix comp = do
+postCompWidget imgs isAdmin sectionId ix comp = do
     compId <- newIdent
     cc <- toCreateComp comp
     ((formRes, formWidget), enctype) <- liftHandler
         $ runBs4FormIdentify (mkEditCompId sectionId $ tshow ix)
-        $ createCompForm cc
+        $ createCompForm imgs cc
     let canMove = compCanMove comp
         controls = compControls sectionId ix compId canMove (formWidget, enctype)
         compWidget = displayComponent sectionId ix compId comp

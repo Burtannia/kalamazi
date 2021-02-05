@@ -184,8 +184,8 @@ parseExt _ = Nothing
 instance Eq Image where
     (==) i1 i2 = (==) (imageUuid i1) (imageUuid i2)
 
-imageSelectField :: Field Handler ImageId
-imageSelectField = selectFieldHelper outerView noneView otherView opts
+imageSelectField :: [Entity Image] -> Field Handler ImageId
+imageSelectField images = selectFieldHelper outerView noneView otherView (return opts)
     where
         outerView = \idAttr nameAttr attrs inside -> do
             [whamlet|
@@ -220,8 +220,7 @@ imageSelectField = selectFieldHelper outerView noneView otherView opts
                             _{MsgSelectNone}
             |]
         otherView = \idAttr nameAttr attrs value isSel text -> do
-            opts' <- liftHandler opts
-            let mimgId = (olReadExternal opts') value
+            let mimgId = (olReadExternal opts) value
             [whamlet|
                 $newline never
                 <div .col-3>
@@ -249,10 +248,12 @@ imageSelectField = selectFieldHelper outerView noneView otherView opts
                         outline: 2px solid #a1232c;
                     }
                 |]
-        opts = do
-            images <- runDB getAllImages
-            let imageList = map (imageName . entityVal &&& entityKey) images
-            return $ mkOptions "image" imageList
+        opts = mkImageOpts images
+
+mkImageOpts :: [Entity Image] -> OptionList ImageId
+mkImageOpts images = mkOptions "image" imageList
+    where
+        imageList = map (imageName . entityVal &&& entityKey) images
 
 massImageForm :: AForm Handler [ImageId]
 massImageForm = areq multiImageField fs Nothing

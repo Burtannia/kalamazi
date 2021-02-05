@@ -29,8 +29,10 @@ getGuideR guideId = do
         published = guideIsPublished guide
     when (not isAdmin && not published) notFound
 
+    imgs <- runDB getAllImages
+
     -- Guide Form
-    gForm <- genBs4FormIdentify gFormIdent $ guideForm $ Just guide
+    gForm <- genBs4FormIdentify gFormIdent $ guideForm imgs $ Just guide
     let gWidget =
             [whamlet|
                 ^{mkModalEdit "Edit" gForm}
@@ -39,7 +41,7 @@ getGuideR guideId = do
             |] 
 
     -- Sections    
-    let sectionWidgets = map (getSectionWidget isAdmin guide) $ guideSections guide
+    let sectionWidgets = map (getSectionWidget imgs isAdmin guide) $ guideSections guide
 
     
     nsForm <- genBs4FormIdentify nsFormIdent $ sectionForm guideId Nothing
@@ -55,7 +57,7 @@ getGuideR guideId = do
                         AdminTools
                         getImageManager
                         getGroupManager
-                        genNewGuide
+                        (genNewGuide imgs)
                         (Just gWidget)
                 else
                     Nothing
@@ -70,9 +72,11 @@ postGuideR guideId = do
         published = guideIsPublished guide
     when (not isAdmin && not published) notFound
 
+    imgs <- runDB getAllImages
+
     -- Guide Form
     ((gResult, gWidget'), gEnctype) <- runBs4FormIdentify gFormIdent
-                                        $ guideForm $ Just guide
+                                        $ guideForm imgs $ Just guide
     let gWidget =
             [whamlet|
                 ^{mkModalEdit "Edit" (gWidget', gEnctype)}
@@ -106,7 +110,7 @@ postGuideR guideId = do
 
     -- Sections
     let sections = guideSections guide
-        sectionWidgets = map (postSectionWidget isAdmin guide) sections
+        sectionWidgets = map (postSectionWidget imgs isAdmin guide) sections
 
     ((nsResult, nsWidget'), nsEnctype) <- runBs4FormIdentify nsFormIdent
                                             $ sectionForm guideId Nothing
@@ -137,7 +141,7 @@ postGuideR guideId = do
                         AdminTools
                         postImageManager
                         postGroupManager
-                        runNewGuide
+                        (runNewGuide imgs)
                         (Just gWidget)
                 else
                     Nothing
@@ -150,13 +154,13 @@ gFormIdent = "guide"
 nsFormIdent :: Text
 nsFormIdent = "new-section"
 
-guideForm :: Maybe Guide -> AForm Handler Guide
-guideForm mg = Guide
+guideForm :: [Entity Image] -> Maybe Guide -> AForm Handler Guide
+guideForm imgs mg = Guide
     <$> areq textField titleSettings (guideTitle <$> mg)
     <*> areq gUrlField (withPlaceholder "my-new-guide" $ fSettings "Url" $ Just urlTip) (guideUrl <$> mg)
     <*> areq checkBoxField pubSettings (guideIsPublished <$> mg)
     <*> lift (liftIO getCurrentTime)
-    <*> areq imageSelectField (fSettings "Icon" $ Just iconTip) (guideIcon <$> mg)
+    <*> areq (imageSelectField imgs) (fSettings "Icon" $ Just iconTip) (guideIcon <$> mg)
     <*> pure (maybe [] guideSections mg)
     where
         gUrlField = check validateUrl textField
@@ -197,15 +201,15 @@ guideForm mg = Guide
         urlTip = "The guide will be at kalamazi.com/guides/<url>. Only letters, numbers, hyphens and underscores are permitted."
         iconTip = "This image will be used as a thumbnail if the guide is displayed on the homepage."
 
-genNewGuide :: Widget
-genNewGuide = do
-    form <- liftHandler $ genBs4FormIdentify ngFormIdent $ guideForm Nothing
+genNewGuide :: [Entity Image] -> Widget
+genNewGuide imgs = do
+    form <- liftHandler $ genBs4FormIdentify ngFormIdent $ guideForm imgs Nothing
     mkModal "New Guide" form
 
-runNewGuide :: Widget
-runNewGuide = do
+runNewGuide :: [Entity Image] -> Widget
+runNewGuide imgs = do
     ((result, formWidget), enctype) <- liftHandler $
-        runBs4FormIdentify ngFormIdent $ guideForm Nothing
+        runBs4FormIdentify ngFormIdent $ guideForm imgs Nothing
     case result of
         FormSuccess guide -> do
             guideId <- liftHandler $ runDB $ insert400 guide

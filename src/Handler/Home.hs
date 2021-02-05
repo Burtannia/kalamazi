@@ -17,6 +17,7 @@ getHomeR = do
     muser <- maybeAuth
     let isAdmin = maybe False (userIsAdmin . entityVal) muser
 
+    imgs <- runDB getAllImages
     ytVideo <- getLatestVideo
 
     mGroup <- runDB $ getBy $ UniqueGuideGroupName homeGroupName
@@ -35,7 +36,7 @@ getHomeR = do
                         AdminTools
                         getImageManager
                         getGroupManager
-                        genNewGuide
+                        (genNewGuide imgs)
                         Nothing
                 else
                     Nothing
@@ -46,6 +47,7 @@ postHomeR = do
     muser <- maybeAuth
     let isAdmin = maybe False (userIsAdmin . entityVal) muser
 
+    imgs <- runDB getAllImages
     ytVideo <- getLatestVideo
 
     mGroup <- runDB $ getBy $ UniqueGuideGroupName homeGroupName
@@ -64,7 +66,7 @@ postHomeR = do
                         AdminTools
                         postImageManager
                         postGroupManager
-                        runNewGuide
+                        (runNewGuide imgs)
                         Nothing
                 else
                     Nothing

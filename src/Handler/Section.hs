@@ -18,8 +18,8 @@ import qualified Data.Text as T (foldr)
 import Text.Julius (rawJS)
 import Yesod.Form.Bootstrap4 (BootstrapFormLayout (..), renderBootstrap4)
 
-getSectionWidget :: Bool -> Guide -> SectionId -> Widget
-getSectionWidget isAdmin guide sectionId = do
+getSectionWidget :: [Entity Image] -> Bool -> Guide -> SectionId -> Widget
+getSectionWidget imgs isAdmin guide sectionId = do
     section <- liftHandler $ runDB $ getJust sectionId
     let guideId = sectionGuideId section
         secUrl = sectionUrl section
@@ -28,8 +28,8 @@ getSectionWidget isAdmin guide sectionId = do
                 (sectionForm guideId $ Just section)
 
     let sectionModal = mkModalEdit "Edit" sForm
-        ncWidget = genNewComponent sectionId
-        compWidgets' = map3 (uncurry $ getCompWidget isAdmin sectionId)
+        ncWidget = genNewComponent imgs sectionId
+        compWidgets' = map3 (uncurry $ getCompWidget imgs isAdmin sectionId)
             $ withIndexes3 $ layoutComps $ sectionContent section
         compWidgets = markDivs compWidgets'
 
@@ -42,8 +42,8 @@ getSectionWidget isAdmin guide sectionId = do
 
     $(widgetFile "section")
 
-postSectionWidget :: Bool -> Guide -> SectionId -> Widget
-postSectionWidget isAdmin guide sectionId = do
+postSectionWidget :: [Entity Image] -> Bool -> Guide -> SectionId -> Widget
+postSectionWidget imgs isAdmin guide sectionId = do
     section <- liftHandler $ runDB $ getJust sectionId
     let guideId = sectionGuideId section
         secUrl = sectionUrl section
@@ -55,11 +55,11 @@ postSectionWidget isAdmin guide sectionId = do
 
     let sectionModal = mkModalEdit "Edit" (sWidget, sEnctype)
     
-    (ncWidget, mcomp) <- liftHandler $ runNewComponent sectionId
+    (ncWidget, mcomp) <- liftHandler $ runNewComponent imgs sectionId
     
     (compWidgets', mcomps) <- liftHandler
         $ fmap (map3 fst &&& map3 snd)
-        $ mapM3 (uncurry $ postCompWidget isAdmin sectionId)
+        $ mapM3 (uncurry $ postCompWidget imgs isAdmin sectionId)
         $ withIndexes3 $ layoutComps content
 
     let compWidgets = markDivs compWidgets'
