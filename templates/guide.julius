@@ -42,9 +42,9 @@ function moveDown(x) {
 }
 
 function moveCompUp(x, moveToIx, leapfrogs) {
-    console.log(leapfrogs);
     var toMove = $(x);
     var movingIx = toMove.data('comp-index');
+    var compFound = false;
 
     $('.component').each(function() {
         var ix = $(this).data('comp-index');
@@ -65,15 +65,21 @@ function moveCompUp(x, moveToIx, leapfrogs) {
                     placeAfter(toMove, this, leapfrogs);
             }
 
+            compFound = true;
             return false; // stop iterating
         }
     });
+
+    if (!compFound && leapfrogs.length > 0)
+        newRowOrColumn(toMove, leapfrogs);
+
+    gridCleanup();
 }
 
 function moveCompDown(x, moveToIx, leapfrogs) {
-    console.log(leapfrogs);
     var toMove = $(x);
     var movingIx = toMove.data('comp-index');
+    var compFound = false;
 
     $('.component').each(function() {
         var ix = $(this).data('comp-index');
@@ -94,24 +100,59 @@ function moveCompDown(x, moveToIx, leapfrogs) {
                     placeBefore(toMove, this, leapfrogs);
             }
 
+            compFound = true;
             return false; // stop iterating
         }
     });
+
+    if (!compFound && leapfrogs.length > 0)
+        newRowOrColumn(toMove, leapfrogs);
+
+    gridCleanup();
+}
+
+function newRowOrColumn(toMove, leapfrogs) {
+    var lastComp = leapfrogs[leapfrogs.length - 1];
+    var moveToIx = $(lastComp).data('comp-index');
+
+    if (isColDivider(lastComp))
+    {
+        var theRow = $(lastComp).parents('.row');
+        newCompCol(toMove, moveToIx, theRow, leapfrogs);
+    }
+    else if (isRowDivider(lastComp))
+        newCompRow(toMove, moveToIx, leapfrogs);
+}
+
+function isColDivider(comp) {
+    return $(comp).hasClass('div-col');
+}
+
+function isRowDivider(comp) {
+    return $(comp).hasClass('div-row');
 }
 
 function isDivider(comp) {
-    return $(comp).hasClass('divider');
+    return isColDivider(comp)
+        || isRowDivider(comp);
+}
+
+function gridCleanup() {
+    $('.col').each(function() {
+        if ($(this).children().length == 0)
+            $(this).remove();
+    });
+
+    $('.row').each(function() {
+        if ($(this).children().length == 0)
+            $(this).remove();
+    });
 }
 
 function placeBefore(placeThis, beforeThis, leapfrogs) {
     var placeIx = $(placeThis).data('comp-index');
     var beforeIx = $(beforeThis).data('comp-index');
     var leapfrogDiff = Math.sign(placeIx - beforeIx);
-
-    console.log("Place Ix: " + placeIx);
-    console.log("Before Ix: " + beforeIx);
-    console.log("Diff: " + leapfrogDiff);
-    console.log("Leapfrogs: " + leapfrogs.length);
 
     $(leapfrogs).each(function () {
         var ix = $(this).data('comp-index');
@@ -141,11 +182,6 @@ function placeAfter(placeThis, afterThis, leapfrogs) {
     var afterIx = $(afterThis).data('comp-index');
     var leapfrogDiff = Math.sign(placeIx - afterIx);
 
-    console.log("Place Ix: " + placeIx);
-    console.log("After Ix: " + afterIx);
-    console.log("Diff: " + leapfrogDiff);
-    console.log("Leapfrogs: " + leapfrogs.length);
-
     $(leapfrogs).each(function () {
         var ix = $(this).data('comp-index');
         $(this).data('comp-index', ix + leapfrogDiff);
@@ -167,4 +203,46 @@ function placeAfter(placeThis, afterThis, leapfrogs) {
     }
 
     $(afterThis).after(placeThis);
+}
+
+function newCompCol (comp, moveToIx, theRow, leapfrogs) {
+    console.log("new col");
+    var newCol = $('<div class=\"col\"/>');
+    newCol.append(comp);
+
+    var oldIx = $(comp).data('comp-index');
+    $(comp).data('comp-index', moveToIx);
+
+    if (oldIx > moveToIx)
+        newCol.prependTo(theRow);
+    else
+        newCol.appendTo(theRow);
+
+    var leapfrogDiff = Math.sign(oldIx - moveToIx);
+    $(leapfrogs).each(function () {
+        var ix = $(this).data('comp-index');
+        $(this).data('comp-index', ix + leapfrogDiff);
+    });
+}
+
+function newCompRow (comp, moveToIx, leapfrogs) {
+    var sectionContent = $(comp).parents('.section-content');
+    var newRow = $('<div class="row no-gutters"/>');
+    var newCol = $('<div class="col"/>');
+    newCol.append(comp);
+    newRow.append(newCol);
+
+    var oldIx = $(comp).data('comp-index');
+    $(comp).data('comp-index', moveToIx);
+
+    if (oldIx > moveToIx)
+        sectionContent.prepend(newRow);
+    else
+        sectionContent.append(newRow);
+
+    var leapfrogDiff = Math.sign(oldIx - moveToIx);    
+    $(leapfrogs).each(function () {
+        var ix = $(this).data('comp-index');
+        $(this).data('comp-index', ix + leapfrogDiff);
+    });
 }

@@ -12,7 +12,7 @@
             <button .btn .btn-danger ##{sectionDelId}>
                 <i .lnir .lnir-trash-can>
 
-    <div .sectionContent>
+    <div .section-content>
         $forall (compRow, rowIsDiv) <- compWidgets
             <div :not rowIsDiv:.row :not rowIsDiv:.no-gutters>
                 $forall (compCol, colIsDiv) <- compRow
