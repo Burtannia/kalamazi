@@ -282,7 +282,7 @@ displayComponent sectionId cIx compId = displayComponent'
             $(widgetFile "components/toggle")
         
         displayComponent' (CImage imgId) =
-            [whamlet|<img src=@{ImagesR $ mkImageUrl imgId}>|]
+            [whamlet|<img .img-fluid src=@{ImagesR $ mkImageUrl imgId}>|]
 
         displayComponent' (CVideo url) =
             [whamlet|
