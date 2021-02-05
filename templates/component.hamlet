@@ -1,4 +1,5 @@
-<div ##{compId} .component :isCol:.h-100 :isAdmin:.highlight-comp data-comp-index=#{ix}>
-    ^{compWidget}
-    $if isAdmin
-        ^{controls}
+$with isDiv <- isCol || isRow
+    <div ##{compId} .component :isCol:.h-100 :isDiv:.divider :isAdmin:.highlight-comp data-comp-index=#{ix}>
+        ^{compWidget}
+        $if isAdmin
+            ^{controls}

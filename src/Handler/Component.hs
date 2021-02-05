@@ -209,7 +209,8 @@ getCompWidget isAdmin sectionId ix comp = do
         controls = compControls sectionId ix compId canMove form
         compWidget = displayComponent sectionId ix compId comp
         isCol = isDivCol comp
-
+        isRow = isDivRow comp
+        
     $(widgetFile "component")
 
 postCompWidget :: Bool -> SectionId -> Int -> Component
@@ -224,6 +225,7 @@ postCompWidget isAdmin sectionId ix comp = do
         controls = compControls sectionId ix compId canMove (formWidget, enctype)
         compWidget = displayComponent sectionId ix compId comp
         isCol = isDivCol comp
+        isRow = isDivRow comp
 
     mr <- case formRes of
         FormSuccess compData -> do

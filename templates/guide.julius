@@ -41,34 +41,130 @@ function moveDown(x) {
         el.next().after(el);
 }
 
-function moveCompUp(x, movingIx) {
+function moveCompUp(x, moveToIx, leapfrogs) {
+    console.log(leapfrogs);
     var toMove = $(x);
+    var movingIx = toMove.data('comp-index');
 
     $('.component').each(function() {
         var ix = $(this).data('comp-index');
         
-        if (ix == movingIx - 1)
+        if (ix == moveToIx)
         {
-            $(this).data('comp-index', movingIx);
-            toMove.data('comp-index', ix);
-            
-            $(this).before(toMove);
+            // if comp ix is a divider then move to the previous comp and place after otherwise place before ix
+            if (isDivider(this))
+            {
+                leapfrogs.push(this);
+                moveCompUp(x, moveToIx - 1, leapfrogs);
+            }
+            else
+            {
+                if (leapfrogs.length == 0)
+                    placeBefore(toMove, this, leapfrogs);
+                else
+                    placeAfter(toMove, this, leapfrogs);
+            }
+
+            return false; // stop iterating
         }
     });
 }
 
-function moveCompDown(x, movingIx) {
+function moveCompDown(x, moveToIx, leapfrogs) {
+    console.log(leapfrogs);
     var toMove = $(x);
+    var movingIx = toMove.data('comp-index');
 
     $('.component').each(function() {
         var ix = $(this).data('comp-index');
         
-        if (ix == movingIx + 1)
+        if (ix == moveToIx)
         {
-            $(this).data('comp-index', movingIx);
-            toMove.data('comp-index', ix);
-            
-            $(this).after(toMove);
+            // if comp ix is a divider then move to the next comp and place before otherwise place after ix
+            if (isDivider(this))
+            {
+                leapfrogs.push(this);
+                moveCompDown(x, moveToIx + 1, leapfrogs);
+            }
+            else
+            {
+                if (leapfrogs.length == 0)
+                    placeAfter(toMove, this, leapfrogs);
+                else
+                    placeBefore(toMove, this, leapfrogs);
+            }
+
+            return false; // stop iterating
         }
     });
+}
+
+function isDivider(comp) {
+    return $(comp).hasClass('divider');
+}
+
+function placeBefore(placeThis, beforeThis, leapfrogs) {
+    var placeIx = $(placeThis).data('comp-index');
+    var beforeIx = $(beforeThis).data('comp-index');
+    var leapfrogDiff = Math.sign(placeIx - beforeIx);
+
+    console.log("Place Ix: " + placeIx);
+    console.log("Before Ix: " + beforeIx);
+    console.log("Diff: " + leapfrogDiff);
+    console.log("Leapfrogs: " + leapfrogs.length);
+
+    $(leapfrogs).each(function () {
+        var ix = $(this).data('comp-index');
+        $(this).data('comp-index', ix + leapfrogDiff);
+        $(this).attr('data-comp-index', ix + leapfrogDiff);
+    });
+
+    if (leapfrogDiff == 1)
+    {
+        $(beforeThis).data('comp-index', beforeIx + 1);
+        $(beforeThis).attr('data-comp-index', beforeIx + 1);
+
+        $(placeThis).data('comp-index', beforeIx);
+        $(placeThis).attr('data-comp-index', beforeIx);
+    }
+    else // -1 or 0
+    {
+        $(placeThis).data('comp-index', beforeIx + leapfrogDiff);
+        $(placeThis).attr('data-comp-index', beforeIx + leapfrogDiff);
+    }
+
+    $(beforeThis).before(placeThis);
+}
+
+function placeAfter(placeThis, afterThis, leapfrogs) {
+    var placeIx = $(placeThis).data('comp-index');
+    var afterIx = $(afterThis).data('comp-index');
+    var leapfrogDiff = Math.sign(placeIx - afterIx);
+
+    console.log("Place Ix: " + placeIx);
+    console.log("After Ix: " + afterIx);
+    console.log("Diff: " + leapfrogDiff);
+    console.log("Leapfrogs: " + leapfrogs.length);
+
+    $(leapfrogs).each(function () {
+        var ix = $(this).data('comp-index');
+        $(this).data('comp-index', ix + leapfrogDiff);
+        $(this).attr('data-comp-index', ix + leapfrogDiff);
+    });
+
+    if (leapfrogDiff == 1)
+    {
+        $(placeThis).data('comp-index', afterIx + 1);
+        $(placeThis).attr('data-comp-index', afterIx + 1);
+    }
+    else // -1 or 0
+    {
+        $(afterThis).data('comp-index', afterIx + leapfrogDiff);
+        $(afterThis).attr('data-comp-index', afterIx + leapfrogDiff);
+
+        $(placeThis).data('comp-index', afterIx);
+        $(placeThis).attr('data-comp-index', afterIx);
+    }
+
+    $(afterThis).after(placeThis);
 }

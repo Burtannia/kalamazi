@@ -44,7 +44,7 @@ $('##{rawJS upId}').click(function() {
         url: "@{SectionR sectionId}",
         data: JSON.stringify(action)
     })
-    .done(() => moveCompUp(comp, ix))
+    .done(() => moveCompUp(comp, ix - 1, []))
     .fail(function (jqXHR, textStatus, errorThrown) {
         console.log(errorThrown + ": " + jqXHR.responseText);
         makeAlertDanger("Something went wrong");
@@ -66,7 +66,7 @@ $('##{rawJS downId}').click(function() {
         url: "@{SectionR sectionId}",
         data: JSON.stringify(action)
     })
-    .done(() => moveCompDown(comp, ix))
+    .done(() => moveCompDown(comp, ix + 1, []))
     .fail(function (jqXHR, textStatus, errorThrown) {
         console.log(errorThrown + ": " + jqXHR.responseText);
         makeAlertDanger("Something went wrong");
