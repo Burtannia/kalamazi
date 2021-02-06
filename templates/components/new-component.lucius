@@ -4,6 +4,7 @@
 
 .image-group {
     padding-right: 0.75rem;
+    width: 100%;
 }
 
 .image-group .note-editor {

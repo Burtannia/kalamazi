@@ -185,17 +185,32 @@ instance Eq Image where
     (==) i1 i2 = (==) (imageUuid i1) (imageUuid i2)
 
 imageSelectField :: [Entity Image] -> Field Handler ImageId
-imageSelectField images = selectFieldHelper outerView noneView otherView (return opts)
+imageSelectField = imageSelectFieldHelper False
+
+imageSelectFieldToggle :: [Entity Image] -> Field Handler ImageId
+imageSelectFieldToggle = imageSelectFieldHelper True
+
+imageSelectFieldHelper :: Bool -> [Entity Image] -> Field Handler ImageId
+imageSelectFieldHelper toggle images = selectFieldHelper outerView noneView otherView (return opts)
     where
         outerView = \idAttr nameAttr attrs inside -> do
             [whamlet|
                 $newline never
-                <input .form-control type="text" ##{idAttr <> "-search"} placeholder="Search for images..."
-                    onkeyup="searchImages(this)" onchange="showImages(this)">
-                <div ##{idAttr} .row .image-list .max-h-60 .mt-3 style="padding-top: 3px">^{inside}
+                $if toggle
+                    <button .btn .btn-dark .btn-block .ml-0 .mb-3
+                        type="button" data-toggle="collapse" onclick="toggleNext(this)">Select Image
+
+                <div :toggle:.collapse>
+                    <input .form-control type="text" ##{idAttr <> "-search"} placeholder="Search for images..."
+                        onkeyup="searchImages(this)" onchange="showImages(this)">
+                    <div ##{idAttr} .row .image-list .max-h-60 .mt-3 style="padding-top: 3px">^{inside}
             |]
             toWidget
                 [julius|
+                    function toggleNext(e) {
+                        $(e).next().collapse('toggle');
+                    }
+
                     function showImages(e) {
                         if ($(e).val() == "")
                             $(e).next().find(".radioImageContainer").each(function() {

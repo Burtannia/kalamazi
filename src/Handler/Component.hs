@@ -157,7 +157,7 @@ createCompForm imgs (CreateToggleImage ts) = CD_ToggleImage
     <$> amulti toggleField (bfs ("Groups" :: Text)) ts 0 bs4LISettings
     where
         toggleField = convertFieldPair
-            fst snd (,) (imageSelectField imgs) snFieldUnsanitized "image-group"
+            fst snd (,) (imageSelectFieldToggle imgs) snFieldUnsanitized "image-group"
 createCompForm imgs (CreateImage mimg) = CD_Image
     <$> areq (imageSelectField imgs) (bfs ("Image" :: Text)) mimg
 createCompForm _ (CreateVideo murl) = CD_Video
