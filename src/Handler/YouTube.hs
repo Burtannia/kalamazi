@@ -6,6 +6,7 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 
 module Handler.YouTube where
 
@@ -31,8 +32,8 @@ mkVideoUrl :: String -> Text
 mkVideoUrl videoId = "https://www.youtube.com/embed/" <> pack videoId
 
 data YTResponse = YTResponse
-    { ytVideoId :: String
-    , ytVideoTitle :: String
+    { ytVideoTitle :: String
+    , ytVideoId :: String
     } deriving (Show, Read, Generic)
 
 instance ToJSON YTResponse where
@@ -49,7 +50,7 @@ instance FromJSON YTResponse where
         snippet <- item0 .: "snippet"
         title <- snippet .: "title"
 
-        return $ YTResponse videoId title 
+        return $ YTResponse title videoId
 
 latestVideoKey :: Text
 latestVideoKey = "youtube-latest"
@@ -63,35 +64,40 @@ getLatestVideo = do
     case mEntCache of
 
         Nothing -> do
-            vid <- requestNew
+            vid <- requestNew $ mkDefault []
             _ <- insertCache now vid
             return vid
 
         Just entCache
             | now > cacheExpiry (entityVal entCache) -> do
-                vid <- requestNew
+                vid <- requestNew $ mkDefault $ cacheValues $ entityVal entCache
                 updateCache (entityKey entCache) now vid
                 return vid
             | otherwise -> do
                 let vals = cacheValues $ entityVal entCache
                 if length vals < 2
                     then do
-                        vid <- requestNew
+                        vid <- requestNew $ mkDefault []
                         updateCache (entityKey entCache) now vid
                         return vid
                     else
                         return $ YTVideo (vals L.!! 0) (vals L.!! 1)
 
     where
-        requestNew = do
+        requestNew def = do
             app <- getYesod
+
             req <- parseRequest $ mkApiUrl $ appYouTubeKey app
-            ytResp <- fmap getResponseBody (httpJSON req :: Handler (Response YTResponse))
+            let runReq = fmap getResponseBody (httpJSON req :: Handler (Response YTResponse))
 
-            let ytTitle = pack $ ytVideoTitle ytResp
-                ytUrl = mkVideoUrl $ ytVideoId ytResp
+            catch (fmap mkVideo runReq) (\(_ :: HttpException) -> return def)
 
-            return $ YTVideo ytTitle ytUrl
+        mkVideo YTResponse {..} = YTVideo (pack ytVideoTitle) (mkVideoUrl ytVideoId)
+
+        mkDefault :: [Text] -> YTVideo
+        mkDefault xs
+            | length xs < 2 = YTVideo "" ""
+            | otherwise = YTVideo (xs L.!! 0) (xs L.!! 1)
 
         insertCache now ytVideo = runDB $ insert $ mkCache now ytVideo
         updateCache key now ytVideo = runDB $ replace key $ mkCache now ytVideo
