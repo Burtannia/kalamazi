@@ -12,7 +12,6 @@ data AdminTools = AdminTools
     { awImageManager :: Widget
     , awGuideGroups :: Widget
     , awNewGuide :: Widget
-    , awGuideControls :: Maybe Widget
     }
 
 mkAdminTools :: AdminTools -> Widget

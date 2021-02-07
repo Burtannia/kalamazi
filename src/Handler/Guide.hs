@@ -33,19 +33,14 @@ getGuideR guideId = do
 
     -- Guide Form
     gForm <- genBs4FormIdentify gFormIdent $ guideForm imgs $ Just guide
-    let gWidget =
-            [whamlet|
-                ^{mkModalEdit "Edit" gForm}
-                <button #delete-guide .btn .btn-danger type="button">
-                    <i .lnir .lnir-trash-can>
-            |] 
+    let guideEditWidget = mkModalEdit "Edit" gForm
 
     -- Sections    
     let sectionWidgets = map (getSectionWidget imgs isAdmin guide) $ guideSections guide
 
     
     nsForm <- genBs4FormIdentify nsFormIdent $ sectionForm guideId Nothing
-    let nsWidget = mkModal "New Section" nsForm
+    let nsWidget = mkModalAdd "New Section" nsForm
 
     timeNow <- liftIO getCurrentTime
 
@@ -58,7 +53,6 @@ getGuideR guideId = do
                         getImageManager
                         getGroupManager
                         (genNewGuide imgs)
-                        (Just gWidget)
                 else
                     Nothing
             timeAgo = diffUTCTime timeNow $ guideModified guide
@@ -75,14 +69,10 @@ postGuideR guideId = do
     imgs <- runDB getAllImages
 
     -- Guide Form
-    ((gResult, gWidget'), gEnctype) <- runBs4FormIdentify gFormIdent
+    ((gResult, gWidget), gEnctype) <- runBs4FormIdentify gFormIdent
                                         $ guideForm imgs $ Just guide
-    let gWidget =
-            [whamlet|
-                ^{mkModalEdit "Edit" (gWidget', gEnctype)}
-                <button #delete-guide .btn .btn-danger type="button">
-                    <i .lnir .lnir-trash-can>
-            |]
+
+    let guideEditWidget = mkModalEdit "Edit" (gWidget, gEnctype)
 
     case gResult of
         FormSuccess newGuide -> do
@@ -114,7 +104,7 @@ postGuideR guideId = do
 
     ((nsResult, nsWidget'), nsEnctype) <- runBs4FormIdentify nsFormIdent
                                             $ sectionForm guideId Nothing
-    let nsWidget = mkModal "New Section" (nsWidget', nsEnctype)
+    let nsWidget = mkModalAdd "New Section" (nsWidget', nsEnctype)
 
     -- New Section
     case nsResult of
@@ -142,7 +132,6 @@ postGuideR guideId = do
                         postImageManager
                         postGroupManager
                         (runNewGuide imgs)
-                        (Just gWidget)
                 else
                     Nothing
             timeAgo = diffUTCTime timeNow $ guideModified guide

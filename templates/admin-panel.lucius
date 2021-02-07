@@ -4,10 +4,23 @@
     }
 }
 
-.bottom-left {
+.admin-toggle-wrapper {
+    display: flex;
+    flex-direction: column;
     position: fixed;
     bottom: 1rem;
     left: 1rem;
+    z-index: 100;
+}
+
+.admin-toggle-wrapper > * {
+    margin-top: 0.5rem;
+}
+
+.bottom-right {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
     z-index: 100;
 }
 

@@ -37,7 +37,6 @@ getHomeR = do
                         getImageManager
                         getGroupManager
                         (genNewGuide imgs)
-                        Nothing
                 else
                     Nothing
         $(widgetFile "homepage")        
@@ -67,7 +66,6 @@ postHomeR = do
                         postImageManager
                         postGroupManager
                         (runNewGuide imgs)
-                        Nothing
                 else
                     Nothing
         $(widgetFile "homepage")

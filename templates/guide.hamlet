@@ -7,6 +7,9 @@ $maybe adminTools <- madminTools
     $if isAdmin
         <div .controls .mb-3>
             ^{nsWidget}
+            ^{guideEditWidget}
+            <button #delete-guide .btn .btn-danger type="button">
+                <i .lnir .lnir-trash-can>
 
     <div .sections-container>
         $forall sWidget <- sectionWidgets

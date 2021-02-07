@@ -1,4 +1,11 @@
-<button .bottom-left .btn .btn-primary type="button" data-toggle="collapse" data-target="#admin-panel">Admin Tools
+<div .admin-toggle-wrapper>
+    <div .btn-group .btn-group-toggle .view-mode data-toggle="buttons">
+        <label .btn .btn-secondary .active>
+            <input type="radio" name="options" #edit-mode autocomplete="off" checked>Edit
+        <label .btn .btn-secondary>
+            <input type="radio" name="options" #preview-mode autocomplete="off">Preview
+
+    <button .btn .btn-primary type="button" data-toggle="collapse" data-target="#admin-panel">Admin Tools
 
 <div .collapse #admin-panel .mb-2>
     <div .card .card-body .bg-darker .text-white>
@@ -7,17 +14,3 @@
             ^{awImageManager}
             ^{awGuideGroups}
             ^{awNewGuide}
-
-        $maybe guideControls <- awGuideControls
-            <div .row style="margin-top: 0.5rem">
-                <div .col-6>
-                    <h6>Guide Controls:
-                    ^{guideControls}
-
-                <div .col-6>
-                    <h6>Viewing Mode:
-                    <div .btn-group .btn-group-toggle .view-mode data-toggle="buttons">
-                        <label .btn .btn-secondary .active>
-                            <input type="radio" name="options" #edit-mode autocomplete="off" checked>Edit
-                        <label .btn .btn-secondary>
-                            <input type="radio" name="options" #preview-mode autocomplete="off">Preview
