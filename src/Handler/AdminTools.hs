@@ -15,4 +15,10 @@ data AdminTools = AdminTools
     }
 
 mkAdminTools :: AdminTools -> Widget
-mkAdminTools AdminTools {..} = $(widgetFile "admin-panel")
+mkAdminTools AdminTools {..} = do
+    mcurrentRoute <- getCurrentRoute
+    $(widgetFile "admin-panel")
+
+isGuide :: Maybe (Route App) -> Bool
+isGuide (Just (GuideR _)) = True
+isGuide _ = False

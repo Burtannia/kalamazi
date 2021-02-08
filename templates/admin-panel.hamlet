@@ -1,9 +1,10 @@
 <div .admin-toggle-wrapper>
-    <div .btn-group .btn-group-toggle .view-mode data-toggle="buttons">
-        <label .btn .btn-secondary .active>
-            <input type="radio" name="options" #edit-mode autocomplete="off" checked>Edit
-        <label .btn .btn-secondary>
-            <input type="radio" name="options" #preview-mode autocomplete="off">Preview
+    $if isGuide mcurrentRoute
+        <div .btn-group .btn-group-toggle .view-mode data-toggle="buttons">
+            <label .btn .btn-secondary .active>
+                <input type="radio" name="options" #edit-mode autocomplete="off" checked>Edit
+            <label .btn .btn-secondary>
+                <input type="radio" name="options" #preview-mode autocomplete="off">Preview
 
     <button .btn .btn-primary type="button" data-toggle="collapse" data-target="#admin-panel">Admin Tools
 
