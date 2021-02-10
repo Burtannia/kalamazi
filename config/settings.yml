@@ -35,4 +35,4 @@ database:
   poolsize: "_env:YESOD_SQLITE_POOLSIZE:10"
 
 copyright: © 2020-2021 Kalamazi - All Rights Reserved
-#analytics: UA-YOURCODE
+analytics: G-QMPBL4YEKN
