@@ -13,11 +13,8 @@ import Import
 import           Text.HTML.SanitizeXSS           (sanitizeBalance)
 import           Text.Julius                     (rawJS)
 
-snFieldUnsanitized :: Field Handler Html
-snFieldUnsanitized = snField' sanitizeBalance
-
 snField :: Field Handler Html
-snField = snField' id
+snField = snField' sanitizeBalance
 
 snField' :: (Text -> Text) -> Field Handler Html
 snField' f = Field

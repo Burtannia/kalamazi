@@ -134,7 +134,7 @@ mkComponent (CD_Divider axis visible) = return $ CDivider axis visible
 
 createCompForm :: [Entity Image] -> CreateComponent -> AForm Handler ComponentData
 createCompForm _ (CreateMarkup mhtml) = CD_Markup
-    <$> areq snFieldUnsanitized (bfs ("Content" :: Text)) mhtml
+    <$> areq snField (bfs ("Content" :: Text)) mhtml
 createCompForm _ (CreateToggleText msc ts) = CD_ToggleText
     <$> areq (radioFieldList spaceChars) (withClass "mr-2 lg-radio" $ "Space Character") msc
     <*> amulti toggleField groupSettings ts 0 bs4LISettings
@@ -143,7 +143,7 @@ createCompForm _ (CreateToggleText msc ts) = CD_ToggleText
                      , ("> - Chevron", SpaceChev)
                      ]
         toggleField = convertFieldPair
-            fst snd (,) textField snFieldUnsanitized "w-100"
+            fst snd (,) textField snField "w-100"
         groupSettings = FieldSettings
             { fsLabel = "Groups"
             , fsTooltip = Nothing
@@ -157,7 +157,7 @@ createCompForm imgs (CreateToggleImage ts) = CD_ToggleImage
     <$> amulti toggleField (bfs ("Groups" :: Text)) ts 0 bs4LISettings
     where
         toggleField = convertFieldPair
-            fst snd (,) (imageSelectFieldToggle imgs) snFieldUnsanitized "image-group"
+            fst snd (,) (imageSelectFieldToggle imgs) snField "image-group"
 createCompForm imgs (CreateImage mimg) = CD_Image
     <$> areq (imageSelectField imgs) (bfs ("Image" :: Text)) mimg
 createCompForm _ (CreateVideo murl) = CD_Video
