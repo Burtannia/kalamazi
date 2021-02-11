@@ -29,14 +29,6 @@
 <!-- Page Contents -->
 
 <div .container #msg-wrapper>
-    $# $if not $ Just HomeR == mcurrentRoute
-    $#     <ul .breadcrumb>
-    $#         $forall bc <- parents
-    $#             <li>
-    $#                 <a href="@{fst bc}">#{snd bc}
-
-    $#         <li .active>#{title}
-
     $maybe msg <- mmsg
         <div .alert.alert-info.alert-dismissable.fade.show #message role="alert">#{msg}
             <button type="button" .close #msg-close data-dismiss="alert" aria-label="Close">
@@ -44,6 +36,18 @@
 
 <div .container>
     ^{widget}
+
+<div #privacyNotice>
+    <div .container>
+        <div .row>
+            <div .col-9 .justify-content-center>
+                <p .mb-0>
+                    We use cookies to analyse traffic to our site and to provide certain social media features.
+                    We also share information about your use of this site with services such as Google Analytics.
+                    <a href=@{PrivacyR}>Read our privacy policy.
+            <div .col-3 .justify-content-center .align-items.center>
+                <button type="button" #privacyAccept .btn .btn-success>Accept
+                <button type="button" #privacyDecline .btn .btn-danger>Decline
 
 <!-- Footer -->
 <footer .footer .bg-darker>

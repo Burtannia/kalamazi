@@ -1,14 +1,34 @@
 <h3 .text-white>Privacy Policy (GDPR)
 
 <p .text-white>
-    We don't directly store any data about you however elements embedded from external sources
-    such as YouTube videos may track you according to their privacy policies.
+    We don't directly store any data about you however various elements embedded from external
+    sources may make use of cookies and collect data about you according to their privacy policies.
+    More details on these can be found below.
+
+<h6 .text-white>Google Analytics & YouTube Embeds
+<p .text-white>
+    We use Google Analytics to track activity on our site. Data collected includes
+    information about how you interact with the site, the type of device used to
+    access the site, the time the site is accessed and the location the site is
+    accessed from. Embedded YouTube videos may also collect data according to the
+    same policy. You can find more about how Google uses your data
+    <a href="https://policies.google.com/technologies/partner-sites">here</a>.
+
+<h6 .text-white>Twitch Embeds
+<p .text-white>
+    Twitch streams embedded in this site may also use cookies and collect your data.
+    Twitch's privacy policy can be found
+    <a href="https://www.twitch.tv/p/en/legal/privacy-notice/">here</a>.
 
 $if loggedIn
+    <h6 .text-white>Account Data
     <p .text-white>
         Logging into the site uses Google OAuth which involves Google providing us with a token
         after you login with your Google account. This token is then stored in our database.
-        We do not have access to your Google account password. If you would like us to remove
-        your token then click the button below.
+        We do not have access to your Google account password or any other details. Google may
+        use cookies to keep you logged in. They may also collect data about which sites you
+        sign into using your Google account. Their privacy policy can be found
+        <a href="https://policies.google.com/technologies/partner-sites">here</a>.
+        / If you would like us to remove your token then click the button below.
 
     <button #forgetButton .btn .btn-primary >Forget Me!

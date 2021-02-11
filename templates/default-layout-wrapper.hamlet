@@ -67,6 +67,7 @@ $newline never
     \<!-- Icons -->
     <link rel="stylesheet" href=@{StaticR css_LineIcons_css}>
 
+
     <script>
       /* The `defaultCsrfMiddleware` Middleware added in Foundation.hs adds a CSRF token to the request cookies. */
       /* AJAX requests should add that token to a header to be validated by the server. */
@@ -86,6 +87,10 @@ $newline never
 
     <script>
       document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/,'js');
+
+    <script>
+      if(Cookies.get('consent'))
+      Cookies.set('consent', 'true', { expires: 30 })
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
     $maybe analytics <- appAnalytics $ appSettings master

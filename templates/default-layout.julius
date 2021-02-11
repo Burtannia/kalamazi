@@ -1,10 +1,24 @@
 $(function() {
+    if(Cookies.get('consent'))
+        $('#privacyNotice').remove();
+});
+
+$(function() {
     setTimeout(function() {
         $('#message').fadeOut(300, function() { 
             $(this).remove();
         });
     }, 5000);
 });
+
+$('#privacyAccept').click(() => {
+    Cookies.set('consent', 'true', { expires: 30 });
+    $('#privacyNotice').remove();
+});
+
+$('#privacyDecline').click(() =>
+    $('#privacyNotice').remove();
+);
 
 $(function() {
     var err = $('.invalid-feedback');

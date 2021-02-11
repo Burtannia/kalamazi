@@ -1,3 +1,22 @@
+#privacyNotice {
+    background-color: #040404;
+    color: white;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    z-index: 200;
+    padding: 1rem;
+}
+
+#privacyNotice > .container > .row {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+#privacyNotice button {
+    margin-left: 5px;
+}
+
 .close {
     margin-top: -0.15rem;
 }
