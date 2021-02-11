@@ -1,22 +1,13 @@
 function loadAnalytics() {
-    var consent = Cookies.get('consent');
+    var gaScript = document.createElement('script');
+    gaScript.src = "https://www.googletagmanager.com/gtag/js?id=" + #{gaCode};
+    gaScript.type = 'text/javascript';
+    
+    document.head.appendChild(gaScript);
 
-    if (consent == 'accept')
-    {
-        var gaScript = document.createElement('script');
-        gaScript.src = "https://www.googletagmanager.com/gtag/js?id=" + gaCode;
-        gaScript.type = 'text/javascript';
-        
-        documentGetElementsByTagName('head')[0].appendChild(gaScript);
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
 
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-
-        gtag('config', gaCode);
-    }
-    else if (consent == 'decline')
-        return;
-    else
-        setTimout(() => loadAnalytics(), 3000);
+    gtag('config', #{gaCode});
 }

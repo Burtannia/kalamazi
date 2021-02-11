@@ -17,8 +17,6 @@ import Text.Jasmine         (minifym)
 import Text.Julius          (juliusFile)
 import Control.Monad.Logger (LogSource)
 
-import Control.Arrow ((&&&))
-
 -- Used only when in "auth-dummy-login" setting is enabled.
 import Yesod.Auth.Dummy
 
@@ -154,9 +152,6 @@ instance Yesod App where
 
         let isAdmin = maybe False (userIsAdmin . snd) muser
 
-        -- Get the breadcrumbs, as defined in the YesodBreadcrumbs instance.
-        (title, parents) <- breadcrumbs
-
         guideGroups <- fmap (map entityVal) $
             liftHandler $ runDB $ selectList [] [Asc GuideGroupPosition]
 
@@ -198,10 +193,9 @@ instance Yesod App where
         -- you to use normal widget features in default-layout.
 
         pc <- widgetToPageContent $ do
+            for_ (appAnalytics $ appSettings master) $ \gaCode ->
+                toWidget $(juliusFile "templates/analytics.julius")
             $(widgetFile "default-layout")
-
-        for_ (appAnalytics $ appSettings master) $ \gaCode ->
-            withUrlRenderer $(juliusFile "templates/analytics.julius")
 
         withUrlRenderer $(hamletFile "templates/default-layout-wrapper.hamlet")
 
