@@ -8,9 +8,8 @@
     padding: 1rem;
 }
 
-#privacyNotice > .container > .row {
-    padding-left: 1rem;
-    padding-right: 1rem;
+#privacyNotice p {
+    max-width: 80%;
 }
 
 #privacyNotice button {

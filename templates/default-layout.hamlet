@@ -39,15 +39,14 @@
 
 <div #privacyNotice .d-none>
     <div .container>
-        <div .row>
-            <div .col-9 .justify-content-center>
-                <p .mb-0>
-                    We use cookies to analyse traffic to our site and to provide certain social media features.
-                    We also share information about your use of this site with services such as Google Analytics.
-                    <a href=@{PrivacyR}>Read our privacy policy.
-            <div .col-3 .justify-content-center .align-items.center>
-                <button type="button" #privacyAccept .btn .btn-success>Accept
-                <button type="button" #privacyDecline .btn .btn-danger>Decline
+        <div .row .justify-content-center .align-items.center>
+            <p .mb-0>
+                We use cookies to analyse traffic to our site and to provide certain social media features.
+                We also share information about your use of this site with services such as Google Analytics.
+                <a href=@{PrivacyR}>Read our privacy policy.
+                
+            <button type="button" #privacyAccept .btn .btn-success>Accept
+            <button type="button" #privacyDecline .btn .btn-danger>Decline
 
 <!-- Footer -->
 <footer .footer .bg-darker>
