@@ -13,11 +13,13 @@
     <button .btn .btn-danger #privacyChangeWithdraw>Withdraw
 
 <div #privacyRejected .mb-3 .d-none>
-    <p .mb-0 .text-white>
+    <p .text-white>
         You have not accepted our privacy policy, if you would like to do so then please click below.
         Embedded YouTube videos may still collect data if you choose to play them.
         Note that until you accept, some features of this site may be unavailable.
     <button .btn .btn-success #privacyChangeAccept>Accept
+
+<hr>
 
 <h6 .text-white>Google Analytics & YouTube Embeds
 <p .text-white>
@@ -39,10 +41,11 @@ $if loggedIn
     <p .text-white>
         Logging into the site uses Google OAuth which involves Google providing us with a token
         after you login with your Google account. This token is then stored in our database.
-        We do not have access to your Google account password or any other details. Google may
-        use cookies to keep you logged in. They may also collect data about which sites you
-        sign into using your Google account. Their privacy policy can be found
+        We do not store any other details and we do not have access to your Google account password.
+        Cookies may be used to prevent you having to login each time you access the site.
+        Google may also collect data about which sites you sign into using your Google account.
+        More details about Google's privacy policy can be found
         <a href="https://policies.google.com/technologies/partner-sites">here</a>.
-        / If you would like us to remove your token then click the button below.
+        If you would like us to remove your token then click the button below.
 
     <button #forgetButton .btn .btn-primary >Forget Me!
