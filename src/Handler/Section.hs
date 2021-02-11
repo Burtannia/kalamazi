@@ -12,14 +12,12 @@ import Import
 import Data.Aeson.Types
 import Handler.Component
 import Handler.Modal
-import Handler.Images
-import qualified Data.List as L (delete, (!!))
+import qualified Data.List as L (delete)
 import qualified Data.Text as T (foldr)
 import Text.Julius (rawJS)
-import Yesod.Form.Bootstrap4 (BootstrapFormLayout (..), renderBootstrap4)
 
-getSectionWidget :: [Entity Image] -> Bool -> Guide -> SectionId -> Widget
-getSectionWidget imgs isAdmin guide sectionId = do
+getSectionWidget :: [Entity Image] -> Bool -> SectionId -> Widget
+getSectionWidget imgs isAdmin sectionId = do
     section <- liftHandler $ runDB $ getJust sectionId
     let guideId = sectionGuideId section
         secUrl = sectionUrl section
@@ -42,8 +40,8 @@ getSectionWidget imgs isAdmin guide sectionId = do
 
     $(widgetFile "section")
 
-postSectionWidget :: [Entity Image] -> Bool -> Guide -> SectionId -> Widget
-postSectionWidget imgs isAdmin guide sectionId = do
+postSectionWidget :: [Entity Image] -> Bool -> SectionId -> Widget
+postSectionWidget imgs isAdmin sectionId = do
     section <- liftHandler $ runDB $ getJust sectionId
     let guideId = sectionGuideId section
         secUrl = sectionUrl section
@@ -207,7 +205,6 @@ sectionForm guideId msection = Section
     <*> pure (maybe [] sectionContent msection)
     where
         urlTip = Just "This will be used to link to the specific section within the guide. Only letters, numbers, hyphens and underscores are permitted."
-        bgTip = Just "This will appear faded in the background of the section."
         fs label mtt = FieldSettings
             { fsLabel = label
             , fsTooltip = mtt

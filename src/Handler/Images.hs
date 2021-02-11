@@ -8,11 +8,9 @@
 module Handler.Images where
 
 import Import
-import qualified Data.List as L (head)
 import Yesod.Form.Bootstrap4
 import System.Directory (removeFile, doesFileExist)
 import Data.Time.Format.ISO8601
-import Control.Arrow ((&&&))
 import Yesod.Core.Types (HandlerContents (..))
     
 getImageManager :: Widget
@@ -38,7 +36,7 @@ postImageManager = do
 
     case result of
         FormSuccess iu -> liftHandler $ do
-            uploadImage (Just $ iuName iu) (iuFile iu)
+            _ <- uploadImage (Just $ iuName iu) (iuFile iu)
             msgRedirect "Image uploaded successfully"
 
         FormMissing -> return ()
@@ -181,9 +179,6 @@ parseExt "image/png" = Just PNG
 parseExt "image/gif" = Just GIF
 parseExt _ = Nothing
 
-instance Eq Image where
-    (==) i1 i2 = (==) (imageUuid i1) (imageUuid i2)
-
 imageSelectField :: [Entity Image] -> Field Handler ImageId
 imageSelectField = imageSelectFieldHelper False
 
@@ -193,7 +188,7 @@ imageSelectFieldToggle = imageSelectFieldHelper True
 imageSelectFieldHelper :: Bool -> [Entity Image] -> Field Handler ImageId
 imageSelectFieldHelper toggle images = selectFieldHelper outerView noneView otherView (return opts)
     where
-        outerView = \idAttr nameAttr attrs inside -> do
+        outerView = \idAttr _ _ inside -> do
             [whamlet|
                 $newline never
                 $if toggle

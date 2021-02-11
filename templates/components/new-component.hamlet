@@ -11,7 +11,7 @@
 
             <div .comp-create-nav>
                 <ul .nav .nav-tabs role="tablist">
-                    $forall (ix, (compName, compId, cc)) <- withIndexes comps
+                    $forall (ix, (compName, compId, _)) <- withIndexes comps
                         $with isFirst <- ix == 0
                             <li .nav-item role="presentation">
                                 <a href=##{compId}-create

@@ -8,7 +8,6 @@
 module Handler.Modal where
 
 import Import
-import Text.Julius (rawJS)
 
 data ModalSettings = ModalSettings
     { msButtonInner :: Html

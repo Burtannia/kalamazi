@@ -23,8 +23,8 @@ getHomeR = do
     mGroup <- runDB $ getBy $ UniqueGuideGroupName homeGroupName
     guides <- case mGroup of
         Nothing -> return []
-        Just group -> do
-            flip mapM (guideGroupGuides $ entityVal group) $ \gid -> do
+        Just grp -> do
+            flip mapM (guideGroupGuides $ entityVal grp) $ \gid -> do
                 guide <- runDB $ getJust gid
                 return (gid, guideIcon guide)
 
@@ -52,8 +52,8 @@ postHomeR = do
     mGroup <- runDB $ getBy $ UniqueGuideGroupName homeGroupName
     guides <- case mGroup of
         Nothing -> return []
-        Just group -> do
-            flip mapM (guideGroupGuides $ entityVal group) $ \gid -> do
+        Just grp -> do
+            flip mapM (guideGroupGuides $ entityVal grp) $ \gid -> do
                 guide <- runDB $ getJust gid
                 return (gid, guideIcon guide)
 

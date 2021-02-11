@@ -18,3 +18,6 @@ import Database.Persist.Quasi
 import Model.CoreData
 
 share [mkPersist sqlSettings] $(persistFileWith lowerCaseSettings "config/models/core.persistentmodels")
+
+instance Eq Image where
+    (==) i1 i2 = (==) (imageUuid i1) (imageUuid i2)

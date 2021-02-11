@@ -9,26 +9,21 @@
 module Handler.Component where
 
 import Import
-import Control.Arrow ((&&&))
 import Handler.Images
 import Handler.Modal
 import Summernote
-import Data.List (foldr1)
-import Data.Maybe (fromJust)
 import Data.Bitraversable (bisequence)
 import Text.Julius (rawJS)
-import Data.Aeson.Types
-import Yesod.Form.Bootstrap4 (BootstrapFormLayout (..), bfs, renderBootstrap4)
-
-import Model.Guide
+import Data.Aeson.Types ()
+import Yesod.Form.Bootstrap4 (bfs)
 
 genNewComponent :: [Entity Image] -> SectionId -> Widget
 genNewComponent imgs sectionId = do
     modalId <- newIdent
-    let formWidgets = map (uncurry $ genForm modalId) $ withIndexes comps
+    let formWidgets = map (uncurry genForm) $ withIndexes comps
     $(widgetFile "components/new-component")
     where
-        genForm modalId ix (compName, compId, cc) = do
+        genForm ix (_, compId, cc) = do
             let isFirst = ix == 0
             formId <- newIdent
             (formWidget, enctype) <- liftHandler
@@ -40,11 +35,11 @@ runNewComponent :: [Entity Image] -> SectionId -> Handler (Widget, Maybe Compone
 runNewComponent imgs sectionId = do
     modalId <- newIdent
     (formWidgets, mcomps) <- fmap unzip $
-            mapM (uncurry $ runForm modalId) $ withIndexes comps
+            mapM (uncurry runForm) $ withIndexes comps
     let widget = $(widgetFile "components/new-component")
     return (widget, listToMaybe $ catMaybes mcomps)
     where
-        runForm modalId ix (compName, compId, cc) = do
+        runForm ix (_, compId, cc) = do
             let isFirst = ix == 0
             formId <- newIdent
             ((formRes, formWidget), enctype) <- liftHandler
@@ -212,8 +207,8 @@ getCompWidget imgs isAdmin sectionId ix comp = do
 
     -- generate controls and display widget
     let canMove = compCanMove comp
-        controls = compControls sectionId ix compId canMove form
-        compWidget = displayComponent sectionId ix compId comp
+        controls = compControls sectionId compId canMove form
+        compWidget = displayComponent comp
         isCol = isDivCol comp
         isRow = isDivRow comp
 
@@ -228,8 +223,8 @@ postCompWidget imgs isAdmin sectionId ix comp = do
         $ runBs4FormIdentify (mkEditCompId sectionId $ tshow ix)
         $ createCompForm imgs cc
     let canMove = compCanMove comp
-        controls = compControls sectionId ix compId canMove (formWidget, enctype)
-        compWidget = displayComponent sectionId ix compId comp
+        controls = compControls sectionId compId canMove (formWidget, enctype)
+        compWidget = displayComponent comp
         isCol = isDivCol comp
         isRow = isDivRow comp
 
@@ -252,16 +247,16 @@ postCompWidget imgs isAdmin sectionId ix comp = do
 compCanMove :: Component -> Bool
 compCanMove x = not $ isDivCol x || isDivRow x
 
-compControls :: SectionId -> Int -> Text -> Bool -> (Widget, Enctype) -> Widget
-compControls sectionId cIx compId canMove f = do
+compControls :: SectionId -> Text -> Bool -> (Widget, Enctype) -> Widget
+compControls sectionId compId canMove f = do
     delId <- newIdent
     upId <- newIdent
     downId <- newIdent
     let editWidget = mkModalEdit "Edit Component" f
     $(widgetFile "components/controls")
 
-displayComponent :: SectionId -> Int -> Text -> Component -> Widget
-displayComponent sectionId cIx compId = displayComponent'
+displayComponent :: Component -> Widget
+displayComponent = displayComponent'
     where
         displayComponent' (CMarkup markupId) = do
             markup <- liftHandler $ runDB $ getJust markupId

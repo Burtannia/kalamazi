@@ -23,7 +23,7 @@ snField' f = Field
         addStylesheet $ StaticR summernote_summernotebs4_css
         addScript $ StaticR summernote_summernotebs4_js
         [whamlet|
-            <textarea id=#{idAttr} name=#{nameAttr} *{otherAttrs} onchange="remakeSn(this)">#{showRes eResult}
+            <textarea id=#{idAttr} name=#{nameAttr} *{otherAttrs} :isReq:required onchange="remakeSn(this)">#{showRes eResult}
         |]
         toWidget
             [julius|

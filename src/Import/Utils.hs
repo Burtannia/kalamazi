@@ -8,14 +8,12 @@ module Import.Utils where
 
 import Import.NoFoundation
 import Foundation
-import qualified Data.List as L (tail)
 import Data.Time.Clock (NominalDiffTime)
 import Yesod.Form.MultiInput (MultiSettings (..))
 import Yesod.Form.Bootstrap4 (BootstrapFormLayout (..), renderBootstrap4)
 import qualified Data.List as L (init)
 import Control.Monad.Trans.State.Strict (State, evalState)
 import qualified Control.Monad.Trans.State.Strict as ST (get, put)
-import Control.Arrow ((&&&))
 
 splitWhenKeep :: (a -> Bool) -> [a] -> [[a]]
 splitWhenKeep _ [] = []

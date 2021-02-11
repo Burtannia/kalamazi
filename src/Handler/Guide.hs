@@ -19,7 +19,7 @@ import Handler.Images
 import Handler.Modal
 import qualified Data.Text as T (foldr)
 import Data.Time.Clock (diffUTCTime)
-import Yesod.Form.Bootstrap4 (BootstrapFormLayout (..), renderBootstrap4, bfs)
+import Yesod.Form.Bootstrap4 (bfs)
 
 getGuideR :: GuideId -> Handler Html
 getGuideR guideId = do
@@ -36,9 +36,8 @@ getGuideR guideId = do
     let guideEditWidget = mkModalEdit "Edit" gForm
 
     -- Sections    
-    let sectionWidgets = map (getSectionWidget imgs isAdmin guide) $ guideSections guide
+    let sectionWidgets = map (getSectionWidget imgs isAdmin) $ guideSections guide
 
-    
     nsForm <- genBs4FormIdentify nsFormIdent $ sectionForm guideId Nothing
     let nsWidget = mkModalAdd "New Section" nsForm
 
@@ -100,7 +99,7 @@ postGuideR guideId = do
 
     -- Sections
     let sections = guideSections guide
-        sectionWidgets = map (postSectionWidget imgs isAdmin guide) sections
+        sectionWidgets = map (postSectionWidget imgs isAdmin) sections
 
     ((nsResult, nsWidget'), nsEnctype) <- runBs4FormIdentify nsFormIdent
                                             $ sectionForm guideId Nothing

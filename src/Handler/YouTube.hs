@@ -84,13 +84,13 @@ getLatestVideo = do
                         return $ YTVideo (vals L.!! 0) (vals L.!! 1)
 
     where
-        requestNew def = do
+        requestNew defs = do
             app <- getYesod
 
             req <- parseRequest $ mkApiUrl $ appYouTubeKey app
             let runReq = fmap getResponseBody (httpJSON req :: Handler (Response YTResponse))
 
-            catch (fmap mkVideo runReq) (\(_ :: HttpException) -> return def)
+            catch (fmap mkVideo runReq) (\(_ :: HttpException) -> return defs)
 
         mkVideo YTResponse {..} = YTVideo (pack ytVideoTitle) (mkVideoUrl ytVideoId)
 
