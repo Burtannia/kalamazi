@@ -29,7 +29,7 @@ mkApiUrl ytKey = x ++ unpack ytKey
         x = "https://youtube.googleapis.com/youtube/v3/search?part=snippet&channelId=UCp4IOwajCQ50sEqp-SA4g8g&maxResults=1&order=date&type=video&key="
 
 mkVideoUrl :: String -> Text
-mkVideoUrl videoId = "https://www.youtube.com/embed/" <> pack videoId
+mkVideoUrl videoId = "https://www.youtube-nocookie.com/embed/" <> pack videoId
 
 data YTResponse = YTResponse
     { ytVideoTitle :: String

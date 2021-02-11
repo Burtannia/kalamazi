@@ -161,12 +161,18 @@ createCompForm imgs (CreateToggleImage ts) = CD_ToggleImage
 createCompForm imgs (CreateImage mimg) = CD_Image
     <$> areq (imageSelectField imgs) (bfs ("Image" :: Text)) mimg
 createCompForm _ (CreateVideo murl) = CD_Video
-    <$> areq urlField (withPlaceholder ph $ withTooltip vidTip $ bfs ("Url" :: Text)) murl
+    <$> areq ytUrlField (withPlaceholder ph $ withTooltip vidTip $ bfs ("Url" :: Text)) murl
     where
-        ph = "https://youtube.com/embed/<video-id>"
+        ytUrlField = check checkNoCookie urlField
+        checkNoCookie :: Text -> Either Text Text
+        checkNoCookie x
+            | "youtube-nocookie" `isInfixOf` x = Right x
+            | "youtube" `isInfixOf` x = Left "Please use \"youtube-nocookie.com\" instead of \"youtube.com\""
+            | otherwise = Right x
+        ph = "https://youtube-nocookie.com/embed/<video-id>"
         vidTip = fromString $
             "In order to embed videos from YouTube, the URL must have the following format:"
-            <> " https://youtube.com/embed/<video-id>"
+            <> " https://youtube-nocookie.com/embed/<video-id>"
 createCompForm _ (CreateWeakAura mtitle mcontent) = CD_WeakAura
     <$> areq textField (withPlaceholder "My WeakAura" $ withClass "mb-1" $ bfs ("Title" :: Text)) mtitle
     <*> areq textareaField (withPlaceholder ph $ withClass "minh-12rem" $ bfs ("Content" :: Text)) mcontent

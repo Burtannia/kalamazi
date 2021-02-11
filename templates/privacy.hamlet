@@ -8,14 +8,15 @@
 <div #privacyAccepted .mb-3 .d-none>
     <p .text-white>
         You have accepted our privacy policy, if you would like to withdraw then please click below.
-        <i>Note that this will cause some features of this site to become unavailable.
+        Note that this will cause some features of this site to become unavailable.
+        Embedded YouTube videos may still collect data if you choose to play them.
     <button .btn .btn-danger #privacyChangeWithdraw>Withdraw
 
 <div #privacyRejected .mb-3 .d-none>
     <p .mb-0 .text-white>
         You have not accepted our privacy policy, if you would like to do so then please click below.
-    <p .text-white>
-        <i>Note that not accepting will cause some features of this site to be unavailable.
+        Embedded YouTube videos may still collect data if you choose to play them.
+        Note that until you accept, some features of this site may be unavailable.
     <button .btn .btn-success #privacyChangeAccept>Accept
 
 <h6 .text-white>Google Analytics & YouTube Embeds
@@ -24,7 +25,7 @@
     information about how you interact with the site, the type of device used to
     access the site, the time the site is accessed and the location the site is
     accessed from. Embedded YouTube videos may also collect data according to the
-    same policy. You can find more about how Google uses your data
+    same policy if you play them. You can find more about how Google uses your data
     <a href="https://policies.google.com/technologies/partner-sites">here</a>.
 
 <h6 .text-white>Twitch Embeds
