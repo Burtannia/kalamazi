@@ -10,3 +10,23 @@ $('#forgetButton').click(function() {
         makeAlertDanger("Something went wrong");
     });
 });
+
+$(function() {
+    var consent = Cookies.get('consent');
+    if (consent == 'accept')
+        $('#privacyAccepted').removeClass('d-none');
+    else if (consent == 'decline')
+        $('#privacyRejected').removeClass('d-none');
+});
+
+$('#privacyChangeWithdraw').click(function () {
+    setPrivacyCookieDecline();
+    $('#privacyAccepted').addClass('d-none');
+    $('#privacyRejected').removeClass('d-none');
+});
+
+$('#privacyChangeAccept').click(function () {
+    setPrivacyCookieAccept();
+    $('#privacyRejected').addClass('d-none');
+    $('#privacyAccepted').removeClass('d-none');
+});

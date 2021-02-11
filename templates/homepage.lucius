@@ -13,11 +13,3 @@
 .home-guide-img-wrapper:not(:last-child) {
     border-right: #cccccc solid 1px;
 }
-
-#youtube-latest, #twitch-player {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-}

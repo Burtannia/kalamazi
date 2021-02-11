@@ -88,19 +88,5 @@ $newline never
     <script>
       document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/,'js');
 
-    <script>
-      if(Cookies.get('consent'))
-      Cookies.set('consent', 'true', { expires: 30 })
-
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    $maybe analytics <- appAnalytics $ appSettings master
-      <script async src="https://www.googletagmanager.com/gtag/js?id=#{analytics}">
-      <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-
-        gtag('config', '#{analytics}');
-
   <body .bg-black>
     ^{pageBody pc}

@@ -1,7 +1,47 @@
+/* Privacy */
+
 $(function() {
-    if(Cookies.get('consent'))
+    var consent = Cookies.get('consent');
+
+    if(consent == 'accept')
+        privacyAccept();
+    else if (consent == 'decline')
         $('#privacyNotice').remove();
+    else
+        $('#privacyNotice').removeClass('d-none');
 });
+
+$('#privacyAccept').click(() => {
+    setPrivacyCookieAccept();
+    privacyAccept();
+});
+
+$('#privacyDecline').click(() => {
+    setPrivacyCookieDecline();
+    $('#privacyNotice').remove();
+});
+
+function setPrivacyCookieAccept() {
+    Cookies.set('consent', 'accept', { expires: 30 });
+}
+
+function setPrivacyCookieDecline() {
+    Cookies.set('consent', 'decline', { expires: 30 });
+}
+
+function privacyAccept() {
+    $('#privacyNotice').remove();
+    loadTwitch();
+}
+
+function loadTwitch() {
+    var twitchSrc = "https://player.twitch.tv/?channel=kalamazi&parent=www.kalamazi.com&parent=localhost";
+    $('#twitchPlayer').attr('src', twitchSrc);
+    $('#twitchPlayer').removeClass('d-none');
+    $('#twitchPlaceholder').remove();
+}
+
+/* Messages & Alerts */
 
 $(function() {
     setTimeout(function() {
@@ -10,15 +50,6 @@ $(function() {
         });
     }, 5000);
 });
-
-$('#privacyAccept').click(() => {
-    Cookies.set('consent', 'true', { expires: 30 });
-    $('#privacyNotice').remove();
-});
-
-$('#privacyDecline').click(() =>
-    $('#privacyNotice').remove();
-);
 
 $(function() {
     var err = $('.invalid-feedback');
@@ -60,6 +91,8 @@ function makeAlertInfo(msg) {
     makeAlert(msg, "alert-Info");
 }
 
+/* Summernote */
+
 var summernoteSettings = {
     minHeight: 200,
     dialogsInBody: true,
@@ -94,6 +127,8 @@ var summernoteSettings = {
         ['view', ['fullscreen']]
     ]
 }
+
+/* Utility */
 
 $(function(){
 	$(window).scroll(function () {

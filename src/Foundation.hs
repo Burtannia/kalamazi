@@ -14,6 +14,7 @@ import Import.NoFoundation
 import Database.Persist.Sql (ConnectionPool, runSqlPool)
 import Text.Hamlet          (hamletFile)
 import Text.Jasmine         (minifym)
+import Text.Julius          (juliusFile)
 import Control.Monad.Logger (LogSource)
 
 import Control.Arrow ((&&&))
@@ -198,6 +199,10 @@ instance Yesod App where
 
         pc <- widgetToPageContent $ do
             $(widgetFile "default-layout")
+
+        for_ (appAnalytics $ appSettings master) $ \gaCode ->
+            withUrlRenderer $(juliusFile "templates/analytics.julius")
+
         withUrlRenderer $(hamletFile "templates/default-layout-wrapper.hamlet")
 
     -- The page to be redirected to when authentication is required.

@@ -10,11 +10,13 @@ $maybe adminTools <- madminTools
 <div .row .no-gutters>
     <div .col-md-6>
         <div .iframe-wrapper>
-            <iframe #youtube-latest
+            <iframe #youtubeLatest
                 src=#{ytUrl ytVideo} title=#{ytTitle ytVideo}
                 frameborder="0" allowfullscreen="true" scrolling="no">
     <div .col-md-6>
         <div .iframe-wrapper>
-            <iframe #twitch-player
-                src="https://player.twitch.tv/?channel=kalamazi&parent=www.kalamazi.com&parent=localhost"
+            <div #twitchPlaceholder .iframe-placeholder .text-center .text-white>
+                <p .mb-0>Please allow cookies to see this content.
+                <a href=@{PrivacyR}>Privacy Policy
+            <iframe #twitchPlayer .d-none
                 frameborder="0" allowfullscreen="true" scrolling="no">

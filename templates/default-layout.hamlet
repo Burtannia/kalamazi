@@ -37,7 +37,7 @@
 <div .container>
     ^{widget}
 
-<div #privacyNotice>
+<div #privacyNotice .d-none>
     <div .container>
         <div .row>
             <div .col-9 .justify-content-center>
