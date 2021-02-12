@@ -114,12 +114,18 @@ instance Yesod App where
             errorText (BadMethod _) = (405, "Method Not Allowed",
                                             "Method not supported")
             errorText NotAuthenticated = (401, "Unauthorized", "Unauthorized")
+
         when (maybe False (== "XMLHttpRequest") reqwith) $ do
             let (code, brief, full) = errorText errorResponse
             sendResponseStatus
                 (mkStatus code brief)
                 $ RepPlain $ toContent $ T.append "Error: " full
-        defaultErrorHandler errorResponse
+
+        case errorResponse of
+            NotFound -> fmap toTypedContent $ defaultLayout $ do
+                setTitle "Error 404 | Page Not Found"
+                $(widgetFile "notfound")
+            _ -> defaultErrorHandler errorResponse
         
     maximumContentLength :: App -> Maybe (Route App) -> Maybe Word64
     maximumContentLength _ _ = Just $ 5 * 1024 * 1024 -- 5 megabytes
