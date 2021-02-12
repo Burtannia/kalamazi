@@ -59,6 +59,16 @@ getLatestVideo :: Handler YTVideo
 getLatestVideo = do
     now <- liftIO getCurrentTime
     
+    let returnCache ec = do
+            let vals = cacheValues $ entityVal ec
+            if length vals < 2
+                then do
+                    vid <- requestNew $ mkDefault []
+                    updateCache (entityKey ec) now vid
+                    return vid
+                else
+                    return $ YTVideo (vals L.!! 0) (vals L.!! 1)
+
     mEntCache <- runDB $ getBy $ UniqueCacheId latestVideoKey
 
     case mEntCache of
@@ -70,18 +80,11 @@ getLatestVideo = do
 
         Just entCache
             | now > cacheExpiry (entityVal entCache) -> do
-                vid <- requestNew $ mkDefault $ cacheValues $ entityVal entCache
-                updateCache (entityKey entCache) now vid
-                return vid
-            | otherwise -> do
-                let vals = cacheValues $ entityVal entCache
-                if length vals < 2
-                    then do
-                        vid <- requestNew $ mkDefault []
-                        updateCache (entityKey entCache) now vid
-                        return vid
-                    else
-                        return $ YTVideo (vals L.!! 0) (vals L.!! 1)
+                _ <- async $ do
+                    vid <- requestNew $ mkDefault $ cacheValues $ entityVal entCache
+                    updateCache (entityKey entCache) now vid
+                returnCache entCache
+            | otherwise -> returnCache entCache
 
     where
         requestNew defs = do
