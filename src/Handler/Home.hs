@@ -4,6 +4,7 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE QuasiQuotes #-}
 module Handler.Home where
 
 import Import
@@ -26,10 +27,12 @@ getHomeR = do
         Just grp -> do
             flip mapM (guideGroupGuides $ entityVal grp) $ \gid -> do
                 guide <- runDB $ getJust gid
-                return (gid, guideIcon guide)
+                return (gid, guideIcon guide, guideTitle guide)
 
     defaultLayout $ do
-        setTitle "Welcome To Yesod!"
+        setTitle "Kalamazi | Warlock Guides for Raid and Mythic+ in World of Warcraft"
+        toWidgetHead
+            [hamlet| <meta name="description" content=#{pageDescription}> |]
         let madminTools =
                 if isAdmin then
                     Just $ mkAdminTools $ 
@@ -55,10 +58,12 @@ postHomeR = do
         Just grp -> do
             flip mapM (guideGroupGuides $ entityVal grp) $ \gid -> do
                 guide <- runDB $ getJust gid
-                return (gid, guideIcon guide)
+                return (gid, guideIcon guide, guideTitle guide)
 
     defaultLayout $ do
-        setTitle "Welcome To Yesod!"
+        setTitle "Kalamazi | Warlock Guides for Raid and Mythic+ in World of Warcraft"
+        toWidgetHead
+            [hamlet| <meta name="description" content=#{pageDescription}> |]
         let madminTools =
                 if isAdmin then
                     Just $ mkAdminTools $ 
@@ -70,3 +75,5 @@ postHomeR = do
                     Nothing
         $(widgetFile "homepage")
 
+pageDescription :: Text
+pageDescription = ""
