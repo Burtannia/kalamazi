@@ -1,9 +1,9 @@
 <h3 .text-white>Privacy Policy (GDPR)
 
 <p .text-white>
-    We don't directly store any data about you however various elements embedded from external
-    sources may make use of cookies and collect data about you according to their privacy policies.
-    More details on these can be found below. We also use a cookie to store your privacy preferences.
+    This document describes our use of cookies and your data. We do not store any personal
+    information about you however, third parties may collect data about you via content
+    embedded in this site (e.g. Twitch streams). More information on this is given below.
 
 <div #privacyAccepted .mb-3 .d-none>
     <p .text-white>
@@ -16,10 +16,15 @@
     <p .text-white>
         You have not accepted our privacy policy, if you would like to do so then please click below.
         Embedded YouTube videos may still collect data if you choose to play them.
-        Note that until you accept, some features of this site may be unavailable.
+        Note that until you accept, some features of this site will be unavailable.
     <button .btn .btn-success #privacyChangeAccept>Accept
 
-<hr>
+<h6 .text-white>Essential Cookies
+<p .text-white>
+    These cookies are necessary for the website to function and cannot be opted out of.
+    They are usually set in response to actions made by you for example, remembering your
+    privacy preferences, logging in or filling in forms. You can set your browser to block
+    these cookies, but this will cause some areas of the site to stop working.
 
 <h6 .text-white>Google Analytics & YouTube Embeds
 <p .text-white>
@@ -33,7 +38,8 @@
 <h6 .text-white>Twitch Embeds
 <p .text-white>
     Twitch streams embedded in this site may also use cookies and collect your data.
-    Twitch's privacy policy can be found
+    You must accept our privacy policy in order to see embedded Twitch content on this site.
+    Details on the data Twitch collects and how it is used can be found
     <a href="https://www.twitch.tv/p/en/legal/privacy-notice/">here</a>.
 
 $if loggedIn
