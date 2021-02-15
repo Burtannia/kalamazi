@@ -1,0 +1,23 @@
+const clips =
+    [ "UninterestedProductivePandaNerfRedBlaster" // Demo in Nathria
+    , "EnchantingInspiringPonyFeelsBadMan" // True Rank 1 Warlock
+    , "AlluringGiftedCucumberGivePLZ" // Trinkets
+    , "BelovedTallWallabyArgieB8" // Soul Well
+    , "CallousHonorableStarMau5" // Reason Locks Aren't Taken To M+
+    , "CautiousRoughCasetteImGlitch" // Denathrius 2.5k Wipe
+    , "ExpensiveBlightedLarkImGlitch" // Denathrius Kill
+    ]
+
+function mkTwitchUrl(clip) {
+    return "https://clips.twitch.tv/embed?clip="
+        + clip + "&parent=www.kalamazi.com&parent=localhost";
+}
+
+$(function() {
+    if (Cookies.get('consent') == 'accept')
+    {
+        const ix = Math.floor(Math.random() * clips.length);
+        $('#twitchClip').attr('src', mkTwitchUrl(clips[ix]));
+        $('#twitchClipWrapper').removeClass('d-none');
+    }
+});

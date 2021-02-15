@@ -1,0 +1,9 @@
+<div .row>
+    <div .col-12 .text-white .text-center>
+        <h3>Not Found
+        <img .mb-2 src=@{StaticR facepalm_png}>
+        <div #twitchClipWrapper .d-none>
+            <p>Unfortunately we couldn't find the page that you were looking for. Here's a Twitch clip to make up for it...
+            <div .iframe-wrapper>
+                <iframe #twitchClip
+                    frameborder="0" allowfullscreen="true" scrolling="no">

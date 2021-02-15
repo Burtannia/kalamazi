@@ -124,7 +124,10 @@ instance Yesod App where
         case errorResponse of
             NotFound -> fmap toTypedContent $ defaultLayout $ do
                 setTitle "Error 404 | Page Not Found"
-                $(widgetFile "notfound")
+                $(widgetFile "not-found")
+            (PermissionDenied msg) -> fmap toTypedContent $ defaultLayout $ do
+                setTitle "Error 403 | Permission Denied"
+                $(widgetFile "permission-denied")
             _ -> defaultErrorHandler errorResponse
         
     maximumContentLength :: App -> Maybe (Route App) -> Maybe Word64
