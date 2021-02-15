@@ -3,7 +3,7 @@
 <p .text-white>
     We don't directly store any data about you however various elements embedded from external
     sources may make use of cookies and collect data about you according to their privacy policies.
-    More details on these can be found below.
+    More details on these can be found below. We also use a cookie to store your privacy preferences.
 
 <div #privacyAccepted .mb-3 .d-none>
     <p .text-white>
