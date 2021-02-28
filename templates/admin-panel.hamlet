@@ -8,7 +8,7 @@
 
     <button .btn .btn-primary type="button" data-toggle="collapse" data-target="#admin-panel">Admin Tools
 
-<div .collapse #admin-panel .mb-2>
+<div .collapse #admin-panel .mt-2 .mb-2>
     <div .card .card-body .bg-darker .text-white>
         <h3>Admin Tools
         <div>
