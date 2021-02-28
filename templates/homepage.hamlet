@@ -33,5 +33,5 @@ $maybe adminTools <- madminTools
                 <i .lnir .lnir-discord>
             <a href=#{patreonLink}>
                 <i .lnir .lnir-patreon>
-            <a href=#{wagoLink}>
-                <i .lnir .lnir-code>
+            <a href=#{emailLink}>
+                <i .lnir .lnir-envelope>

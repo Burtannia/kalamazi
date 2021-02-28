@@ -61,13 +61,14 @@ data MenuTypes
 homeGroupName :: Text
 homeGroupName = "Homepage Guides"
 
-youtubeLink, discordLink, twitterLink, patreonLink, twitchLink, wagoLink :: Text
+youtubeLink, discordLink, twitterLink, patreonLink, twitchLink, wagoLink, emailLink :: Text
 youtubeLink = "https://www.youtube.com/kalamazigames"
 discordLink = "https://discord.gg/cyn6Zsv"
 twitterLink = "https://twitter.com/Kalamazing"
 patreonLink = "https://www.patreon.com/Kalamazi"
 twitchLink = "https://www.twitch.tv/kalamazi"
 wagoLink = "https://wago.io/p/kalamazi"
+emailLink = "mailto:kalamazing98@gmail.com"
 
 -- This is where we define all of the routes in our application. For a full
 -- explanation of the syntax, please see:
