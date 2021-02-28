@@ -13,3 +13,9 @@
 .home-guide-img-wrapper:not(:last-child) {
     border-right: #cccccc solid 1px;
 }
+
+#backgroundWrapper {
+    background-image: url(@{StaticR background_png});
+    height: 720px;
+    width: 1280px;
+}

@@ -1,5 +1,5 @@
 <!-- Navbar -->
-<nav .navbar .navbar-expand-lg .navbar-dark .bg-darker>
+<nav .navbar .navbar-expand-lg .navbar-dark .bg-black>
     <div .container>
 
         <a .navbar-brand href="/">
@@ -27,15 +27,19 @@
                                             :Just route == mcurrentRoute:.active>#{label}
 
 <!-- Page Contents -->
+$maybe msg <- mmsg
+    <div #msg-wrapper>
+        <div .container>
+            <div .alert.alert-info.alert-dismissable.fade.show #message role="alert">#{msg}
+                <button type="button" .close #msg-close data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times
 
-<div .container #msg-wrapper>
-    $maybe msg <- mmsg
-        <div .alert.alert-info.alert-dismissable.fade.show #message role="alert">#{msg}
-            <button type="button" .close #msg-close data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times
-
-<div .container>
-    ^{widget}
+$if (mcurrentRoute == Just HomeR)
+    <div .container-fluid>
+        ^{widget}
+$else
+    <div .container>
+        ^{widget}
 
 <div #privacyNotice .d-none>
     <div .container>

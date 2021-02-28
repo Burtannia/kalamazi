@@ -86,5 +86,6 @@ $newline never
     <script>
       document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/,'js');
 
-  <body .bg-black>
-    ^{pageBody pc}
+  $with isHome <- mcurrentRoute == Just HomeR
+    <body :isHome:.bg-blackest :not isHome:.bg-black>
+      ^{pageBody pc}

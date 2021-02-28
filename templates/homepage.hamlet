@@ -1,11 +1,14 @@
 $maybe adminTools <- madminTools
     ^{adminTools}
 
-<div .row .no-gutters>
-    $forall (gid, icon, title) <- guides
-        <div .col-md .home-guide-img-wrapper>
-            <a href=@{GuideR gid}>
-                <img .home-guide-img src=@{ImagesR $ mkImageUrl icon} alt=#{title}>
+<div #backgroundWrapper .row .no-gutters>
+
+
+$# <div .row .no-gutters>
+$#     $forall (gid, icon, title) <- guides
+$#         <div .col-md .home-guide-img-wrapper>
+$#             <a href=@{GuideR gid}>
+$#                 <img .home-guide-img src=@{ImagesR $ mkImageUrl icon} alt=#{title}>
 
 <div .row .no-gutters>
     <div .col-md-6>

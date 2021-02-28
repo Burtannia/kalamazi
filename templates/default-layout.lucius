@@ -30,10 +30,6 @@
 
 /* Navbar */
 
-nav {
-    margin-bottom: 1rem;
-}
-
 .nav-logo {
     width: 3rem;
     height: 3rem;
@@ -51,8 +47,11 @@ nav {
     color: #a1232c !important;
 }
 
-#message {
-    margin-bottom: 1rem;
+#msg-wrapper {
+    position: absolute;
+    padding-top: 1rem;
+    z-index: 100;
+    width: 100%;
 }
 
 /* Footer */
@@ -67,6 +66,10 @@ footer p {
 }
 
 /* General Classes */
+
+.bg-blackest {
+    background-color: #000000 !important;
+}
 
 .bg-black {
     background-color: #101010 !important;
