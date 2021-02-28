@@ -129,6 +129,17 @@ var summernoteSettings = {
     ]
 }
 
+// fix for modals in modals
+
+$(function() {
+    $('.note-modal :button').click(function() {
+        setTimeout(function() {
+            $('body').addClass('modal-open');
+            $('body').attr('style', 'padding-right: 17px');
+        }, 50);
+    });
+});
+
 /* Utility */
 
 $(function(){
