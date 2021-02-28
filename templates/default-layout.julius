@@ -43,7 +43,7 @@ function loadTwitch() {
 }
 
 /* Messages & Alerts */
-/*
+
 $(function() {
     setTimeout(function() {
         $('#message').fadeOut(300, function() { 
@@ -51,7 +51,7 @@ $(function() {
         });
     }, 5000);
 });
-*/
+
 $(function() {
     var err = $('.invalid-feedback');
 
