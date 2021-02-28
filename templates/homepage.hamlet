@@ -24,3 +24,13 @@ $maybe adminTools <- madminTools
                     <a href=@{PrivacyR}>Privacy Policy
                 <iframe #twitchPlayer .d-none
                     frameborder="0" allowfullscreen="true" scrolling="no">
+    <div #featureSocialsWrapper>
+        <div #featureSocials>
+            <a href=#{twitterLink}>
+                <i .lnir .lnir-twitter-original>
+            <a href=#{discordLink}>
+                <i .lnir .lnir-discord>
+            <a href=#{patreonLink}>
+                <i .lnir .lnir-patreon>
+            <a href=#{wagoLink}>
+                <i .lnir .lnir-code>

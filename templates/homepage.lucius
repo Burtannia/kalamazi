@@ -33,10 +33,9 @@
 #featureOverlay {
     position: absolute;
     top: 50%;
-    bottom: 0;
     left: 0;
     right: 0;
-    transform: translateY(-25%);
+    transform: translateY(-50%);
     display: flex;
     justify-content: space-between;
     padding-left: 5rem;
@@ -51,4 +50,28 @@
     -webkit-box-shadow:0 0 20px rgba(171,5,5,0.5); 
     -moz-box-shadow: 0 0 20px rgba(171,5,5,0.5); 
     box-shadow:0 0 20px rgba(171,5,5,0.5);
+}
+
+#featureSocialsWrapper {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 15%;
+}
+
+#featureSocials {
+    display: flex;
+    justify-content: center;
+}
+
+#featureSocials a {
+    color: #531210;
+    font-size: 1.5rem;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+#featureSocials a:hover {
+    color: #a1232c;
+    text-decoration: none;
 }
