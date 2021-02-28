@@ -1,6 +1,5 @@
 #homeGuides {
-    width: 70%;
-    display: flex;
+    max-width: 1300px;
     padding-top: 1rem;
     padding-bottom: 1rem;
     margin: auto;
