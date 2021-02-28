@@ -1,25 +1,26 @@
 $maybe adminTools <- madminTools
     ^{adminTools}
 
-<div #backgroundWrapper .row .no-gutters>
+<div .w-100 .bg-darker>
+    <div #homeGuides>
+        $forall (gid, icon, title) <- guides
+            <div .col-md .home-guide-wrapper .text-center>
+                <a href=@{GuideR gid} .text-white>
+                    <img .img-fluid src=@{ImagesR $ mkImageUrl icon} alt=#{title}>
+                    <h6>#{title}
 
-
-$# <div .row .no-gutters>
-$#     $forall (gid, icon, title) <- guides
-$#         <div .col-md .home-guide-img-wrapper>
-$#             <a href=@{GuideR gid}>
-$#                 <img .home-guide-img src=@{ImagesR $ mkImageUrl icon} alt=#{title}>
-
-<div .row .no-gutters>
-    <div .col-md-6>
-        <div .iframe-wrapper>
-            <iframe #youtubeLatest
-                src=#{ytUrl ytVideo} title=#{ytTitle ytVideo}
-                frameborder="0" allowfullscreen="true" scrolling="no">
-    <div .col-md-6>
-        <div .iframe-wrapper>
-            <div #twitchPlaceholder .iframe-placeholder .text-center .text-white>
-                <p .mb-0>Please allow cookies to see this content.
-                <a href=@{PrivacyR}>Privacy Policy
-            <iframe #twitchPlayer .d-none
-                frameborder="0" allowfullscreen="true" scrolling="no">
+<div #featureWrapper>
+    <img src=@{StaticR background_png} .img-fluid .w-100>
+    <div #featureOverlay>
+        <div .feature-iframe>
+            <div .iframe-wrapper>
+                <iframe #youtubeLatest
+                    src=#{ytUrl ytVideo} title=#{ytTitle ytVideo}
+                    frameborder="0" allowfullscreen="true" scrolling="no">
+        <div .feature-iframe>
+            <div .iframe-wrapper>
+                <div #twitchPlaceholder .iframe-placeholder .text-center .text-white>
+                    <p .mb-0>Please allow cookies to see this content.
+                    <a href=@{PrivacyR}>Privacy Policy
+                <iframe #twitchPlayer .d-none
+                    frameborder="0" allowfullscreen="true" scrolling="no">

@@ -35,7 +35,7 @@ $maybe msg <- mmsg
                     <span aria-hidden="true">&times
 
 $if (mcurrentRoute == Just HomeR)
-    <div .container-fluid>
+    <div .container-fluid .p-0>
         ^{widget}
 $else
     <div .container>
