@@ -39,9 +39,13 @@
                                             :guideGroupName gg == homeGroupName:disabled="disabled">
                                             <i .lnir .lnir-trash-can>
                                     <td>
-                                        <button .btn .btn-secondary .up-gg type="button">
+                                        <button .btn .btn-secondary .up-gg type="button"
+                                            :guideGroupName gg == homeGroupName:.disabled
+                                            :guideGroupName gg == homeGroupName:disabled="disabled">
                                             <i .lnir .lnir-chevron-up>
-                                        <button .btn .btn-secondary .down-gg type="button">
+                                        <button .btn .btn-secondary .down-gg type="button"
+                                            :guideGroupName gg == homeGroupName:.disabled
+                                            :guideGroupName gg == homeGroupName:disabled="disabled">
                                             <i .lnir .lnir-chevron-down>
 
             <div .modal-footer>
