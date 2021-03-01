@@ -145,6 +145,7 @@ nsFormIdent = "new-section"
 guideForm :: [Entity Image] -> Maybe Guide -> AForm Handler Guide
 guideForm imgs mg = Guide
     <$> areq textField titleSettings (guideTitle <$> mg)
+    <*> aopt textField (withPlaceholder "My New Guide" $ fSettings "Short Title (Optional)" $ Just shortTip) (guideShortTitle <$> mg) 
     <*> areq gUrlField (withPlaceholder "my-new-guide" $ fSettings "Url" $ Just urlTip) (guideUrl <$> mg)
     <*> areq checkBoxField pubSettings (guideIsPublished <$> mg)
     <*> lift (liftIO getCurrentTime)
@@ -163,12 +164,12 @@ guideForm imgs mg = Guide
                 validChars = '-' : '_' : (['a'..'z'] ++ ['A'..'Z'] ++ ['0'..'9'])
         titleSettings = FieldSettings
             { fsLabel = "Guide Title"
-            , fsTooltip = Nothing
+            , fsTooltip = Just "This will also be used as the title of the webpage."
             , fsId = Nothing
             , fsName = Nothing
             , fsAttrs =
                 [ ("class", "form-control mb-1")
-                , ("placeholder", "My New Guide") ]
+                , ("placeholder", "My New Guide For Things and Stuff and Things") ]
             }
         fSettings label mtt = FieldSettings
             { fsLabel = label
@@ -186,8 +187,12 @@ guideForm imgs mg = Guide
             , fsAttrs =
                 [ ("class", "lg-checkbox") ]
             }
+        shortTip = "Optional short title to be displayed in links on the homepage / navbar etc."
         urlTip = "The guide will be at kalamazi.com/guides/<url>. Only letters, numbers, hyphens and underscores are permitted."
         iconTip = "This image will be used as a thumbnail if the guide is displayed on the homepage."
+
+getShortTitle :: Guide -> Text
+getShortTitle g = fromMaybe (guideTitle g) $ guideShortTitle g
 
 genNewGuide :: [Entity Image] -> Widget
 genNewGuide imgs = do
@@ -242,7 +247,7 @@ guideGroupForm = GuideGroup
     <*> pure 0 -- not used
     <*> amulti (selectField guideOptions) (bfs ("Guides" :: Text)) [] 1 bs4LISettings
     where
-        guideOptions = optionsPersistKey [] [Asc GuideTitle] guideTitle
+        guideOptions = optionsPersistKey [] [Asc GuideTitle] getShortTitle
         groupNameSettings = FieldSettings
             { fsLabel = "Group Name"
             , fsTooltip = Just $ fromString $

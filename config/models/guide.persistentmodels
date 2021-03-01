@@ -7,6 +7,7 @@ GuideGroup json
     deriving Show
 Guide
     title Text
+    shortTitle Text Maybe
     url Text
     isPublished Bool
     modified UTCTime

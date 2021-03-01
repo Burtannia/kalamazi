@@ -166,7 +166,8 @@ instance Yesod App where
             liftHandler $ runDB $ selectList [] [Asc GuideGroupPosition]
 
         let mkGuideLink (guideId, guide) = MenuItem
-                (guideTitle guide) (GuideR guideId) (isAdmin || guideIsPublished guide)
+                (fromMaybe (guideTitle guide) $ guideShortTitle guide)
+                (GuideR guideId) (isAdmin || guideIsPublished guide)
             mkGroupNav gg = liftHandler $ do
                 guides <- mapM (sequence . (id &&& runDB . getJust)) $ guideGroupGuides gg
                 let guideLinks = filter menuItemAccessCallback $ map mkGuideLink guides

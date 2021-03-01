@@ -27,7 +27,7 @@ getHomeR = do
         Just grp -> do
             flip mapM (guideGroupGuides $ entityVal grp) $ \gid -> do
                 guide <- runDB $ getJust gid
-                return (gid, guideIcon guide, guideTitle guide)
+                return (gid, guideIcon guide, getShortTitle guide)
 
     defaultLayout $ do
         setTitle "Kalamazi | Warlock Guides for Raid and Mythic+ in World of Warcraft"
@@ -58,7 +58,7 @@ postHomeR = do
         Just grp -> do
             flip mapM (guideGroupGuides $ entityVal grp) $ \gid -> do
                 guide <- runDB $ getJust gid
-                return (gid, guideIcon guide, guideTitle guide)
+                return (gid, guideIcon guide, getShortTitle guide)
 
     defaultLayout $ do
         setTitle "Kalamazi | Warlock Guides for Raid and Mythic+ in World of Warcraft"
