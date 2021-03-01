@@ -32,7 +32,7 @@
                                     <td>#{guideGroupName gg}
                                     <td>
                                         $forall guide <- guides
-                                            <p>#{guideTitle guide}                       
+                                            <p>#{getShortTitle guide}                       
                                     <td>
                                         <button type="button" .btn .btn-danger .del-gg
                                             :guideGroupName gg == homeGroupName:.disabled
