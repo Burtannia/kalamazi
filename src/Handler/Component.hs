@@ -306,7 +306,7 @@ displayComponent = displayComponent'
         mkTextSnippet mu = [shamlet| <h6>#{mu} |]
 
         mkImageSnippet imgId = withUrlRenderer
-            [hamlet|<img .img-fluid src=@{ImagesR $ mkImageUrl imgId}>|]
+            [hamlet|<img src=@{ImagesR $ mkImageUrl imgId}>|]
 
         displayMarkup markup = $(widgetFile "components/markup")
 

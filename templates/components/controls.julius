@@ -1,6 +1,7 @@
 $('##{rawJS delId}').click(function() {
     var comp = $('##{rawJS compId}');
     var ix = comp.data('comp-index');
+    var secId = "section-" + #{toPathPiece sectionId};
 
     var action = {
         tag: "DeleteComp",
@@ -20,10 +21,13 @@ $('##{rawJS delId}').click(function() {
             else
             {
                 comp.remove();
-                $('.component').each(function() {
+                $('#' + secId).find('.component').each(function() {
                     var thisIx = $(this).data('comp-index');
                     if (thisIx > ix)
+                    {
                         $(this).data('comp-index', thisIx - 1);
+                        $(this).attr('data-comp-index', thisIx - 1);
+                    }
                 });
             }
         })
