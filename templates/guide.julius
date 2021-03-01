@@ -46,16 +46,18 @@ function moveCompUp(x, moveToIx, leapfrogs, sectionId) {
     var movingIx = toMove.data('comp-index');
     var compFound = false;
 
+    console.log("Move to: " + moveToIx);
+
     $('#' + sectionId).find('.component').each(function() {
         var ix = $(this).data('comp-index');
-        
+        console.log(ix);
         if (ix == moveToIx)
         {
             // if comp ix is a divider then move to the previous comp and place after otherwise place before ix
             if (isDivider(this))
             {
                 leapfrogs.push(this);
-                moveCompUp(x, moveToIx - 1, leapfrogs);
+                moveCompUp(x, moveToIx - 1, leapfrogs, sectionId);
             }
             else
             {
@@ -90,7 +92,7 @@ function moveCompDown(x, moveToIx, leapfrogs, sectionId) {
             if (isDivider(this))
             {
                 leapfrogs.push(this);
-                moveCompDown(x, moveToIx + 1, leapfrogs);
+                moveCompDown(x, moveToIx + 1, leapfrogs, sectionId);
             }
             else
             {

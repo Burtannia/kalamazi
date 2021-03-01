@@ -33,7 +33,6 @@ $('##{rawJS delId}').click(function() {
         });
 });
 
-
 $('##{rawJS upId}').click(function() {
     var comp = $('##{rawJS compId}');
     var ix = comp.data('comp-index');
