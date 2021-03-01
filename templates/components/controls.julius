@@ -26,7 +26,9 @@ $('##{rawJS delId}').click(function() {
                     if (thisIx > ix)
                     {
                         $(this).data('comp-index', thisIx - 1);
-                        $(this).attr('data-comp-index', thisIx - 1);
+                        $(this).find('[name="_formid"]').each(function() {
+                            fixFormId(this, thisIx - 1);
+                        });
                     }
                 });
             }
@@ -82,3 +84,14 @@ $('##{rawJS downId}').click(function() {
         makeAlertDanger("Something went wrong");
     });
 });
+
+function fixFormId(el, newIx) {
+    var oldVal = $(el).val();
+    console.log(oldVal);
+    var pieces = oldVal.split('-');
+    pieces[2] = newIx;
+
+    var newVal = pieces.join('-');
+    $(el).val(newVal);
+    console.log(newVal);
+}

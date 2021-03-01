@@ -155,16 +155,16 @@ function placeBefore(placeThis, beforeThis, leapfrogs) {
 
     $(leapfrogs).each(function () {
         var ix = $(this).data('comp-index');
-        $(this).data('comp-index', ix + leapfrogDiff);
+        updateIx(this, ix + leapfrogDiff);
     });
 
     if (leapfrogDiff == 1)
     {
-        $(beforeThis).data('comp-index', beforeIx + 1);
-        $(placeThis).data('comp-index', beforeIx);
+        updateIx(beforeThis, beforeIx + 1);
+        updateIx(placeThis, beforeIx);
     }
     else // -1 or 0
-        $(placeThis).data('comp-index', beforeIx + leapfrogDiff);
+        updateIx(placeThis, beforeIx + leapfrogDiff);
 
     $(beforeThis).before(placeThis);
 }
@@ -176,15 +176,15 @@ function placeAfter(placeThis, afterThis, leapfrogs) {
 
     $(leapfrogs).each(function () {
         var ix = $(this).data('comp-index');
-        $(this).data('comp-index', ix + leapfrogDiff);
+        updateIx(this, ix + leapfrogDiff);
     });
 
     if (leapfrogDiff == 1)
-        $(placeThis).data('comp-index', afterIx + 1);
+        updateIx(placeThis, afterIx + 1);
     else // -1 or 0
     {
-        $(afterThis).data('comp-index', afterIx + leapfrogDiff);
-        $(placeThis).data('comp-index', afterIx);
+        updateIx(afterThis, afterIx + leapfrogDiff);
+        updateIx(placeThis, afterIx);
     }
 
     $(afterThis).after(placeThis);
@@ -228,5 +228,12 @@ function newCompRow (comp, moveToIx, leapfrogs) {
     $(leapfrogs).each(function () {
         var ix = $(this).data('comp-index');
         $(this).data('comp-index', ix + leapfrogDiff);
+    });
+}
+
+function updateIx(el, newIx) {
+    $(el).data('comp-index', newIx);
+    $(el).find('[name="_formid"]').each(function() {
+        fixFormId(this, newIx);
     });
 }
