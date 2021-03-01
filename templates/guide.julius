@@ -46,11 +46,8 @@ function moveCompUp(x, moveToIx, leapfrogs, sectionId) {
     var movingIx = toMove.data('comp-index');
     var compFound = false;
 
-    console.log("Move to: " + moveToIx);
-
     $('#' + sectionId).find('.component').each(function() {
         var ix = $(this).data('comp-index');
-        console.log(ix);
         if (ix == moveToIx)
         {
             // if comp ix is a divider then move to the previous comp and place after otherwise place before ix
@@ -194,7 +191,6 @@ function placeAfter(placeThis, afterThis, leapfrogs) {
 }
 
 function newCompCol (comp, moveToIx, theRow, leapfrogs) {
-    console.log("new col");
     var newCol = $('<div class=\"col\"/>');
     newCol.append(comp);
 
