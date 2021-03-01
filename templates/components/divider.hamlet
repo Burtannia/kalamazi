@@ -1,7 +1,6 @@
 $# maybe move to css grid to get even widths
-$if visible
-    $case axis
-        $of Column
-            <div .divider-column>
-        $of Row
-            <div .divider-row>
+$case axis
+    $of Column
+        <div .divider-column :not visible:.hidden-divider>
+    $of Row
+        <div .divider-row :not visible:.hidden-divider>

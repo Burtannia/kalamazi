@@ -266,6 +266,14 @@
     border-right: solid 1px white;
 }
 
+.divider-column.hidden-divider {
+    border-right: dashed 2px white;
+}
+
+.divider-row.hidden-divider {
+    border-top: dashed 2px white;
+}
+
 .no-border .highlight-comp {
     border: none;
 }
