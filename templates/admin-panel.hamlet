@@ -8,10 +8,36 @@
 
     <button .btn .btn-primary type="button" data-toggle="collapse" data-target="#admin-panel">Admin Tools
 
-<div .collapse #admin-panel .mt-2 .mb-2>
+<div .collapse #admin-panel .mt-1 .mb-1>
     <div .card .card-body .bg-darker .text-white>
         <h3>Admin Tools
         <div>
             ^{awImageManager}
             ^{awGuideGroups}
             ^{awNewGuide}
+
+            <button type="button" .btn .btn-dark
+                data-toggle="modal" data-target="#siteInfo">Site Info
+
+            <div .modal .fade #siteInfo tabindex="-1">
+                <div .modal-dialog>
+                    <div .modal-content>
+                        <div .modal-header>
+                            <h5 .modal-title>Site Info
+                            <button type="button" .close data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;
+                        <div .modal-body>
+                            <h5 .mb-3>Recommended Image Sizes
+                            <h6>Homepage Background
+                            <p>
+                                Width: 1920px
+                            <p> 
+                                Height: More flexible than the width, I recommend at least 600px to give room
+                                for the YouTube video and stream etc. The example I created was about 800px.
+                            <h6>Homepage Guide Thumbnails
+                            <p>
+                                The examples I created were 400x300. The important thing is that all images
+                                used for thumbnails have the same apsect ratio. So if one of them is 16:9
+                                they should all be 16:9.
+                        <div .modal-footer>
+                            <button type="button" .btn .btn-secondary data-dismiss="modal">Close
