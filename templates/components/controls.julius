@@ -37,7 +37,8 @@ $('##{rawJS delId}').click(function() {
 $('##{rawJS upId}').click(function() {
     var comp = $('##{rawJS compId}');
     var ix = comp.data('comp-index');
-
+    var secId = "section-" + #{toPathPiece sectionId};
+    
     var action = {
         tag: "CompUp",
         contents: ix
@@ -49,7 +50,7 @@ $('##{rawJS upId}').click(function() {
         url: "@{SectionR sectionId}",
         data: JSON.stringify(action)
     })
-    .done(() => moveCompUp(comp, ix - 1, []))
+    .done(() => moveCompUp(comp, ix - 1, [], secId))
     .fail(function (jqXHR, textStatus, errorThrown) {
         console.log(errorThrown + ": " + jqXHR.responseText);
         makeAlertDanger("Something went wrong");
@@ -59,6 +60,7 @@ $('##{rawJS upId}').click(function() {
 $('##{rawJS downId}').click(function() {
     var comp = $('##{rawJS compId}');
     var ix = comp.data('comp-index');
+    var secId = "section-" + #{toPathPiece sectionId};
 
     var action = {
         tag: "CompDown",
@@ -71,7 +73,7 @@ $('##{rawJS downId}').click(function() {
         url: "@{SectionR sectionId}",
         data: JSON.stringify(action)
     })
-    .done(() => moveCompDown(comp, ix + 1, []))
+    .done(() => moveCompDown(comp, ix + 1, [], secId))
     .fail(function (jqXHR, textStatus, errorThrown) {
         console.log(errorThrown + ": " + jqXHR.responseText);
         makeAlertDanger("Something went wrong");

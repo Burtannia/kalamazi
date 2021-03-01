@@ -41,12 +41,12 @@ function moveDown(x) {
         el.next().after(el);
 }
 
-function moveCompUp(x, moveToIx, leapfrogs) {
+function moveCompUp(x, moveToIx, leapfrogs, sectionId) {
     var toMove = $(x);
     var movingIx = toMove.data('comp-index');
     var compFound = false;
 
-    $('.component').each(function() {
+    $('#' + sectionId).find('.component').each(function() {
         var ix = $(this).data('comp-index');
         
         if (ix == moveToIx)
@@ -76,12 +76,12 @@ function moveCompUp(x, moveToIx, leapfrogs) {
     gridCleanup();
 }
 
-function moveCompDown(x, moveToIx, leapfrogs) {
+function moveCompDown(x, moveToIx, leapfrogs, sectionId) {
     var toMove = $(x);
     var movingIx = toMove.data('comp-index');
     var compFound = false;
 
-    $('.component').each(function() {
+    $('#' + sectionId).find('.component').each(function() {
         var ix = $(this).data('comp-index');
         
         if (ix == moveToIx)

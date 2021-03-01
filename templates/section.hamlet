@@ -1,4 +1,4 @@
-<div .section ##{secUrl}-wrapper>
+<div .section #section-#{toPathPiece sectionId}>
     <h4 ##{secUrl} .mb-3 .text-center>#{sectionTitle section}
         <i .lnir .lnir-share .section-link>
     $if isAdmin
