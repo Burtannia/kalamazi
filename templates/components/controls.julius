@@ -87,11 +87,9 @@ $('##{rawJS downId}').click(function() {
 
 function fixFormId(el, newIx) {
     var oldVal = $(el).val();
-    console.log(oldVal);
     var pieces = oldVal.split('-');
     pieces[2] = newIx;
 
     var newVal = pieces.join('-');
     $(el).val(newVal);
-    console.log(newVal);
 }
