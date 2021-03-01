@@ -61,7 +61,7 @@ $(function() {
 
     var tab = err.parents('.tab-pane'); // for modals with tabs
     if ( tab.length )
-        $('#' + tab.prop('id') + '-tab').tab('show');
+        $('#' + tab.prop('id') + "-tab").tab('show');
 });
 
 function makeAlert(msg, alertClass) {

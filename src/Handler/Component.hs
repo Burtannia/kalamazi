@@ -66,6 +66,9 @@ mkCreateCompId sectionId t = mkFormId ["create", t, toPathPiece sectionId]
 mkEditCompId :: SectionId -> Text -> Text
 mkEditCompId sectionId t = mkFormId ["edit", t, toPathPiece sectionId]
 
+mkCompTabId :: SectionId -> Text -> Text
+mkCompTabId sectionId compId = "sec-" <> toPathPiece sectionId <> "-" <> compId <> "-create"
+
 -- A form friendly representation of a component to be constructed.
 data CreateComponent
     = CreateMarkup (Maybe Html)

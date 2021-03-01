@@ -1,4 +1,4 @@
-<div #sec-#{toPathPiece sectionId}-#{compId}-create .tab-pane .fade :isFirst:.show :isFirst:.active role="tabpanel">
+<div ##{mkCompTabId sectionId compId} .tab-pane .fade :isFirst:.show :isFirst:.active role="tabpanel">
     <div .modal-body>
         <form ##{formId} method=post enctype=#{enctype}>
             ^{formWidget}
