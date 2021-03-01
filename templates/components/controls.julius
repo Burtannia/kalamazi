@@ -15,12 +15,17 @@ $('##{rawJS delId}').click(function() {
             data: JSON.stringify(action)
         })
         .done(function (data) {
-            comp.remove();
-            $('.component').each(function() {
-                var thisIx = $(this).data('comp-index');
-                if (thisIx > ix)
-                    $(this).data('comp-index', thisIx - 1);
-            });
+            if (isColDivider(comp) || isRowDivider(comp))
+                window.location.reload(true);
+            else
+            {
+                comp.remove();
+                $('.component').each(function() {
+                    var thisIx = $(this).data('comp-index');
+                    if (thisIx > ix)
+                        $(this).data('comp-index', thisIx - 1);
+                });
+            }
         })
         .fail(function (jqXHR, textStatus, errorThrown) {
             console.log(errorThrown + ": " + jqXHR.responseText);
