@@ -1,4 +1,12 @@
+.guide {
+    margin-top: 3rem;
+}
+
 /* Section */
+
+.section {
+    margin-top: 2rem;
+}
 
 .section-link,
 .section-copied {
