@@ -1,5 +1,5 @@
 $('##{rawJS waId}').click(function() {
-    var wa = #{unTextarea content};
+    var wa = #{waContent};
 
     navigator.clipboard.writeText(wa).then(function() {
         var label = $('##{rawJS waId}').find('p');

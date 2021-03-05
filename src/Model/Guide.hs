@@ -26,7 +26,7 @@ data Component
     | CToggle ToggleGroup
     | CImage ImageId
     | CVideo Text
-    | CWeakAura Text Textarea
+    | CWeakAura WeakAuraId
     | CDivider Axis Bool
     deriving (Show, Read)
 

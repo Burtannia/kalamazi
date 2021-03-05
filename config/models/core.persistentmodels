@@ -12,6 +12,9 @@ Image
     Primary uuid
 MarkupBlock
     content Html
+WeakAura
+    title Text
+    created UTCTime
 Cache
     ident Text
     values [Text]

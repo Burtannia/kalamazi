@@ -1,3 +1,3 @@
 <div .weakaura .text-center ##{waId}>
-    #{title}
+    #{weakAuraTitle wa}
     <p .small .mb-0>Click to copy
