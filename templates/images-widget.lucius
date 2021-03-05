@@ -9,6 +9,11 @@
     position: relative;
 }
 
+.image-wrapper img {
+    display: block;
+    margin: auto;
+}
+
 .del-overlay {
     position: absolute;
     top: 0;
