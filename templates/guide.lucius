@@ -1,5 +1,18 @@
 .guide {
     margin-top: 3rem;
+    color: #d4d4d4;
+
+    table {
+        table-layout: fixed;
+    }
+
+    .table-bordered, .table-bordered td {
+        border-color: #777777;
+    }
+}
+
+.guide-title {
+    color: #a1232c;
 }
 
 /* Section */
@@ -16,8 +29,8 @@
 }
 
 .section-link {
-    margin-top: 0.7rem;
-    color: dimgrey;
+    margin-top: 0.8rem;
+    color: #6c757d;
 }
 
 .section-link:hover {
@@ -26,8 +39,8 @@
 }
 
 .section-copied {
-    margin-top: 0.6rem;
-    color: grey;
+    margin-top: 0.7rem;
+    color: #6c757d;
     font-style: normal;
     font-weight: 400;
 }
@@ -95,14 +108,10 @@
 }
 
 .markup-footnote {
-    color: #9d9d9d;
+    color: #6c757d;
     font-style: italic;
     margin-bottom: 0;
-}
-
-table {
-    table-layout: fixed;
-}
+} 
 
 /* WeakAura */
 
@@ -266,6 +275,11 @@ table {
 
 /* Dividers */
 
+.divider-row,
+.divider-column {
+    opacity: 0.15;
+}
+
 .divider-row {
     height: 1px;
     width: 100%;
@@ -288,4 +302,9 @@ table {
 
 .no-border .highlight-comp {
     border: none;
+}
+
+.div-col {
+    margin-right: 1rem;
+    margin-left: 1rem;
 }
