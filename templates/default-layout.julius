@@ -136,12 +136,22 @@ var summernoteSettings = {
 
 $(function() {
     $('.note-modal :button').click(function() {
-        setTimeout(function() {
-            $('body').addClass('modal-open');
-            $('body').attr('style', 'padding-right: 17px');
-        }, 50);
+        fixBody();
     });
 });
+
+function fixBody() {
+    setTimeout(function() {
+        if ( !$('body').hasClass('modal-open') )
+        {
+            $('body').addClass('modal-open');
+            $('body').attr('style', 'padding-right: 17px');
+            return;
+        }
+
+        fixBody();
+    }, 50); 
+}
 
 /* Utility */
 
