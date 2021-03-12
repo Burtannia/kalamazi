@@ -7,6 +7,7 @@ const clips =
     , "CautiousRoughCasetteImGlitch" // Denathrius 2.5k Wipe
     , "ExpensiveBlightedLarkImGlitch" // Denathrius Kill
     , "KnottyDreamyWrenWutFace-zYxPTTEfN8SBzsVY" // The Great Escape
+    , "GentleEmpathicTrayBlargNaut-TyHYDHqAI2MuFsrW" // Nether 69
     ]
 
 function mkTwitchUrl(clip) {
