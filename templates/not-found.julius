@@ -6,6 +6,7 @@ const clips =
     , "CallousHonorableStarMau5" // Reason Locks Aren't Taken To M+
     , "CautiousRoughCasetteImGlitch" // Denathrius 2.5k Wipe
     , "ExpensiveBlightedLarkImGlitch" // Denathrius Kill
+    , "KnottyDreamyWrenWutFace-zYxPTTEfN8SBzsVY" // The Great Escape
     ]
 
 function mkTwitchUrl(clip) {
