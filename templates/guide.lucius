@@ -15,10 +15,6 @@
     color: #a1232c;
 }
 
-.footer {
-    margin-top: 1rem;
-}
-
 /* Section */
 
 .section {
