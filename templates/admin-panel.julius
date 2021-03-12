@@ -3,10 +3,6 @@ $('#preview-mode').change(function() {
         $(this).hide();
     });
 
-    $('.hidden-divider').each(function() {
-        $(this).hide();
-    });
-
     $('.component').each(function() {
         $(this).removeClass('highlight-comp');
     });
@@ -14,10 +10,6 @@ $('#preview-mode').change(function() {
 
 $('#edit-mode').change(function() {
     $('.controls').each(function() {
-        $(this).show();
-    });
-    
-    $('.hidden-divider').each(function() {
         $(this).show();
     });
 

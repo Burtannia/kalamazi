@@ -1,4 +1,3 @@
-$# maybe move to css grid to get even widths
 $case axis
     $of Column
         <div .divider-column :not visible:.hidden-divider>

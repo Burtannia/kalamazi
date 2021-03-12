@@ -292,11 +292,16 @@
     border-right: solid 1px white;
 }
 
-.divider-column.hidden-divider {
+.divider-column.hidden-divider,
+.divider-row.hidden-divider {
+    border: none;
+}
+
+.highlight-comp .divider-column.hidden-divider {
     border-right: dashed 2px white;
 }
 
-.divider-row.hidden-divider {
+.highlight-comp .divider-row.hidden-divider {
     border-top: dashed 2px white;
 }
 
