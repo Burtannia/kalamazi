@@ -72,7 +72,7 @@
 #featureSocials a:hover {
     text-decoration: none;
     position: relative;
-    top: -5px;
+    top: -3px;
 }
 
 #featureSocials i {
