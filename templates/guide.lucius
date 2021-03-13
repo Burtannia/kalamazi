@@ -2,7 +2,7 @@
     margin-top: 3rem;
     color: #d4d4d4;
 
-    h1, h2, h3, h4, h5, h6 {
+    h3 {
         color: white;
     }
 
@@ -89,6 +89,10 @@
 
 .markup-wrapper {
     width: 100%;
+}
+
+.markup-wrapper a:hover {
+    text-decoration: none;
 }
 
 .markup-wrapper p {
@@ -285,21 +289,16 @@
 
 /* Dividers */
 
-.divider-row,
-.divider-column {
-    opacity: 0.15;
-}
-
 .divider-row {
     height: 1px;
     width: 100%;
-    border-top: solid 1px white;
+    border-top: solid 1px #222222;
 }
 
 .divider-column {
     height: 100%;
     width: 1px;
-    border-right: solid 1px white;
+    border-right: solid 1px #222222;
 }
 
 .divider-column.hidden-divider,
@@ -308,11 +307,11 @@
 }
 
 .highlight-comp .divider-column.hidden-divider {
-    border-right: dashed 2px white;
+    border-right: dashed 2px #222222;
 }
 
 .highlight-comp .divider-row.hidden-divider {
-    border-top: dashed 2px white;
+    border-top: dashed 2px #222222;
 }
 
 .no-border .highlight-comp {
