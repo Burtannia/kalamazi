@@ -64,13 +64,54 @@
 }
 
 #featureSocials a {
-    color: #531210;
-    font-size: 1.5rem;
+    font-size: 1.4rem;
     margin-left: 5px;
     margin-right: 5px;
 }
 
 #featureSocials a:hover {
-    color: #a1232c;
     text-decoration: none;
+    position: relative;
+    top: -5px;
+}
+
+#featureSocials i {
+    border-radius: 50%;
+    padding: 0.6rem 0.6rem;
+}
+
+.twitter-link,
+.twitter-link:hover {
+    color: white;
+}
+
+.twitter-link i {
+    background-color: #00aced;
+}
+
+.discord-link,
+.discord-link:hover {
+    color: white;
+}
+
+.discord-link i {
+    background-color: #7289da;
+}
+
+.patreon-link,
+.patreon-link:hover {
+    color: white;
+}
+
+.patreon-link i {
+    background-color: #f96854;
+}
+
+.mail-link,
+.mail-link:hover {
+    color: white;
+}
+
+.mail-link i {
+    background-color: #a1232c;
 }

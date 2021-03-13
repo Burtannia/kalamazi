@@ -27,11 +27,11 @@ $maybe adminTools <- madminTools
                     frameborder="0" allowfullscreen="true" scrolling="no">
     <div #featureSocialsWrapper>
         <div #featureSocials>
-            <a href=#{twitterLink}>
+            <a href=#{twitterLink} .twitter-link>
                 <i .lnir .lnir-twitter-original>
-            <a href=#{discordLink}>
+            <a href=#{discordLink} .discord-link>
                 <i .lnir .lnir-discord>
-            <a href=#{patreonLink}>
+            <a href=#{patreonLink} .patreon-link>
                 <i .lnir .lnir-patreon>
-            <a href=#{emailLink}>
+            <a href=#{emailLink} .mail-link>
                 <i .lnir .lnir-envelope>
