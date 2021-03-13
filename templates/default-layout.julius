@@ -71,7 +71,7 @@ function makeAlert(msg, alertClass) {
     var alertBtn = $("<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button>")
     alertDiv.append(alertBtn);
 
-    $('#msg-wrapper').append(alertDiv);
+    $('#msg-wrapper').children('.container').append(alertDiv);
 
     setTimeout(function() {
         alertDiv.fadeOut(300, function() { 

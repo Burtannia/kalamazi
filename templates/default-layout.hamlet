@@ -29,9 +29,9 @@ $with isHome <- mcurrentRoute == Just HomeR
                                                 :Just route == mcurrentRoute:.active>#{label}
 
 <!-- Page Contents -->
-$maybe msg <- mmsg
-    <div #msg-wrapper>
-        <div .container>
+<div #msg-wrapper>
+    <div .container>
+        $maybe msg <- mmsg
             <div .alert.alert-info.alert-dismissable.fade.show #message role="alert">#{msg}
                 <button type="button" .close #msg-close data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times
