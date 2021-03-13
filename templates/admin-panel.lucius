@@ -4,6 +4,10 @@
     }
 }
 
+#admin-panel .card {
+    border: 1px solid #222222;
+}
+
 .admin-toggle-wrapper {
     display: flex;
     flex-direction: column;
