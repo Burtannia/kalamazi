@@ -207,6 +207,11 @@
     color: white !important;
 }
 
+.note-popover {
+    background-color: #333333 !important;
+    color: white !important;
+}
+
 /* Toggle Groups */
 
 .toggle-group {
