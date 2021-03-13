@@ -121,6 +121,25 @@ footer p {
     bottom: 0.1rem;
 }
 
+/* Error Pages */
+
+.error-page {
+    margin-top: 3rem;
+
+    h2 {
+        color: #a1232c;
+        margin-bottom: 1rem;
+    }
+
+    img {
+        margin-bottom: 1rem;
+    }
+
+    p {
+        margin-bottom: 0.5rem;
+    }
+}
+
 /* Iframes */
 
 .iframe-wrapper {

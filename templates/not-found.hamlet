@@ -1,7 +1,7 @@
-<div .row>
+<div .row .error-page>
     <div .col-12 .text-white .text-center>
-        <h3>Not Found
-        <img .mb-2 src=@{StaticR facepalm_png}>
+        <h2>Not Found
+        <img src=@{StaticR facepalm_png}>
         <div #twitchClipWrapper .d-none>
             <p>Unfortunately we couldn't find the page that you were looking for. Here's a Twitch clip to make up for it...
             <div .iframe-wrapper>
