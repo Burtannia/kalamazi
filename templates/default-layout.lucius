@@ -49,7 +49,6 @@
 
 #msg-wrapper {
     position: fixed;
-    padding-top: 1rem;
     z-index: 10000;
     width: 100%;
 }
