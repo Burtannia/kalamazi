@@ -76,7 +76,7 @@ footer p {
 }
 
 .bg-darker {
-    background-color: #222222 !important;
+    background-color: #050707 !important;
 }
 
 .border-red {
