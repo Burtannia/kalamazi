@@ -97,6 +97,7 @@ function makeAlertInfo(msg) {
 var summernoteSettings = {
     minHeight: 200,
     dialogsInBody: true,
+    disableDragAndDrop: true,
     fontSizes: [
         8, 9, 10, 11, 12, 14, 16, 18, 24, 36
     ],
@@ -107,13 +108,13 @@ var summernoteSettings = {
         ['#C41E3A', '#A330C9', '#FF7C0A', '#AAD372', '#3FC7EB', '#00FF98', '#F48CBA', '#FFFFFF'],
         ['#FFF468', '#0070DD', '#8788EE', '#C69B6D'],
         // Other Colours
-        ['#a1232c']
+        ['#a1232c', '#d4d4d4', '#6c757d']
     ],
     colorsName: [
         ["Poor", "Common", "Uncommon", "Rare", "Epic", "Legendary", "Artifact", "Heirloom"],
         ["Death Knight", "Demon Hunter", "Druid", "Hunter", "Mage", "Monk", "Paladin", "Priest"],
         ["Rogue", "Shaman", "Warlock", "Warrior"],
-        ["Kalamazi"]
+        ["Kalamazi", "Content", "Footnote"]
     ],
     styleTags: [
         { title: 'Header', tag: 'h4', className: 'markup-header', value: 'h4' },
