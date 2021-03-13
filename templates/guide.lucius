@@ -2,6 +2,10 @@
     margin-top: 3rem;
     color: #d4d4d4;
 
+    h1, h2, h3, h4, h5, h6 {
+        color: white;
+    }
+
     table {
         table-layout: fixed;
     }
@@ -12,7 +16,7 @@
 }
 
 .guide-title {
-    color: #a1232c;
+    color: #a1232c !important;
 }
 
 /* Section */
@@ -96,7 +100,7 @@
     text-align: center;
     font-style: italic;
     margin-bottom: 0;
-    color: #a1232c;
+    color: #a1232c !important;
 }
 
 .markup-header + .markup-sub-header {
