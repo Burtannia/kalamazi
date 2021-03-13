@@ -58,7 +58,7 @@ $else
 $with isHome <- mcurrentRoute == Just HomeR
     <footer .footer 
         :isHome:.bg-black :not isHome:.bg-darker
-        :not isHome:.mt-3>
+        :not isHome:.mt-4>
         <p .text-muted .text-center>
             #{appCopyright $ appSettings master}
             \ - #

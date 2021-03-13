@@ -1,33 +1,33 @@
-<h3 .text-white>Privacy Policy (GDPR)
+<h3 .text-white .mt-4>Privacy Policy (GDPR)
 
-<p .text-white>
+<p>
     This document describes our use of cookies and your data. We do not store any personal
     information about you however, third parties may collect data about you via content
     embedded in this site (e.g. Twitch streams). More information on this is given below.
 
 <div #privacyAccepted .mb-3 .d-none>
-    <p .text-white>
+    <p>
         You have accepted our privacy policy, if you would like to withdraw then please click below.
         Note that this will cause some features of this site to become unavailable.
         Embedded YouTube videos may still collect data if you choose to play them.
     <button .btn .btn-danger #privacyChangeWithdraw>Withdraw
 
 <div #privacyRejected .mb-3 .d-none>
-    <p .text-white>
+    <p>
         You have not accepted our privacy policy, if you would like to do so then please click below.
         Embedded YouTube videos may still collect data if you choose to play them.
         Note that until you accept, some features of this site will be unavailable.
     <button .btn .btn-success #privacyChangeAccept>Accept
 
 <h6 .text-white>Essential Cookies
-<p .text-white>
+<p>
     These cookies are necessary for the website to function and cannot be opted out of.
     They are usually set in response to actions made by you for example, remembering your
     privacy preferences, logging in or filling in forms. You can set your browser to block
     these cookies, but this will cause some areas of the site to stop working.
 
 <h6 .text-white>Google Analytics & YouTube Embeds
-<p .text-white>
+<p>
     We use Google Analytics to track activity on our site. Data collected includes
     information about how you interact with the site, the type of device used to
     access the site, the time the site is accessed and the location the site is
@@ -36,7 +36,7 @@
     <a href="https://policies.google.com/technologies/partner-sites">here</a>.
 
 <h6 .text-white>Twitch Embeds
-<p .text-white>
+<p>
     Twitch streams embedded in this site may also use cookies and collect your data.
     You must accept our privacy policy in order to see embedded Twitch content on this site.
     Details on the data Twitch collects and how it is used can be found
@@ -44,7 +44,7 @@
 
 $if loggedIn
     <h6 .text-white>Account Data
-    <p .text-white>
+    <p>
         Logging into the site uses Google OAuth which involves Google providing us with a token
         after you login with your Google account. This token is then stored in our database.
         We do not store any other details and we do not have access to your Google account password.
