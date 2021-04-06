@@ -237,3 +237,23 @@ function updateIx(el, newIx) {
         fixFormId(this, newIx);
     });
 }
+
+/* Functions used in imageSelectField */
+
+function toggleNext(e) {
+    $(e).next().collapse('toggle');
+}
+
+function showImages(e) {
+    if ($(e).val() == "")
+        $(e).next().find(".radioImageContainer").each(function() {
+            $(this).parent().show();
+        });
+}
+
+function searchImages(e) {
+    var value = $(e).val().toLowerCase();
+    $(e).next().find(".radioImageContainer p").filter(function() {
+        $(this).parent().parent().parent().toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+}

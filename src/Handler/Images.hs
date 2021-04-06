@@ -200,26 +200,6 @@ imageSelectFieldHelper toggle images = selectFieldHelper outerView noneView othe
                         onkeyup="searchImages(this)" onchange="showImages(this)">
                     <div ##{idAttr} .row .image-list .max-h-60 .mt-3 style="padding-top: 3px">^{inside}
             |]
-            toWidget
-                [julius|
-                    function toggleNext(e) {
-                        $(e).next().collapse('toggle');
-                    }
-
-                    function showImages(e) {
-                        if ($(e).val() == "")
-                            $(e).next().find(".radioImageContainer").each(function() {
-                                $(this).parent().show();
-                            });
-                    }
-
-                    function searchImages(e) {
-                        var value = $(e).val().toLowerCase();
-                        $(e).next().find(".radioImageContainer p").filter(function() {
-                            $(this).parent().parent().parent().toggle($(this).text().toLowerCase().indexOf(value) > -1)
-                        });
-                    }
-                |]
         noneView = \idAttr nameAttr isSel ->
             [whamlet|
                 $newline never
@@ -241,23 +221,6 @@ imageSelectFieldHelper toggle images = selectFieldHelper outerView noneView othe
                                 <img .img-fluid src=@{ImagesR $ mkImageUrl imgId}>
                             <p .text-center>#{text}
             |]
-            toWidget
-                [lucius|
-                    .radioImageContainer img {
-                        cursor: pointer;
-                    }
-
-                    .radioForImage { 
-                        position: absolute;
-                        opacity: 0;
-                        width: 0;
-                        height: 0;
-                    }
-
-                    .radioForImage:checked + img {
-                        outline: 2px solid #a1232c;
-                    }
-                |]
         opts = mkImageOpts images
 
 mkImageOpts :: [Entity Image] -> OptionList ImageId
