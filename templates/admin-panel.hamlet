@@ -30,10 +30,13 @@
                             <h5 .mb-3>Recommended Image Sizes
                             <h6>Homepage Background
                             <p>
-                                Width: 1920px
+                                Width: At least 1920px. Not much point being above 2560px.
                             <p> 
                                 Height: More flexible than the width, I recommend at least 600px to give room
                                 for the YouTube video and stream etc. The example I created was about 800px.
+                            <p>
+                                File Size: Ideally try to keep images under 500KB to allow pages to load as
+                                quickly as possible. For example the background image I created was 279KB.
                             <h6>Homepage Guide Thumbnails
                             <p>
                                 The examples I created were 400x300. The important thing is that all images
