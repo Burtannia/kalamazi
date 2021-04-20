@@ -7,6 +7,7 @@
 {-# LANGUAGE ExplicitForAll #-}
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE InstanceSigs #-}
+{-# LANGUAGE QuasiQuotes #-}
 
 module Foundation where
 
@@ -104,6 +105,7 @@ instance Yesod App where
 
     errorHandler :: ErrorResponse -> Handler TypedContent
     errorHandler errorResponse = do
+
         $(logWarn) (T.append "Error Response: "
                             $ pack (show errorResponse))
         req <- waiRequest
@@ -122,14 +124,21 @@ instance Yesod App where
                 (mkStatus code brief)
                 $ RepPlain $ toContent $ T.append "Error: " full
 
-        case errorResponse of
-            NotFound -> fmap toTypedContent $ defaultLayout $ do
-                setTitle "Error 404 | Page Not Found"
-                $(widgetFile "not-found")
-            (PermissionDenied msg) -> fmap toTypedContent $ defaultLayout $ do
-                setTitle "Error 403 | Permission Denied"
-                $(widgetFile "permission-denied")
-            _ -> defaultErrorHandler errorResponse
+        -- REMOVE
+        muser <- maybeAuthPair
+        let isAdmin = maybe False (userIsAdmin . snd) muser
+
+        if isAdmin then
+            case errorResponse of
+                NotFound -> fmap toTypedContent $ defaultLayout $ do
+                    setTitle "Error 404 | Page Not Found"
+                    $(widgetFile "not-found")
+                (PermissionDenied msg) -> fmap toTypedContent $ defaultLayout $ do
+                    setTitle "Error 403 | Permission Denied"
+                    $(widgetFile "permission-denied")
+                _ -> defaultErrorHandler errorResponse
+        else
+            selectRep $ provideRep $ return ("Not Found" :: Html)
         
     maximumContentLength :: App -> Maybe (Route App) -> Maybe Word64
     maximumContentLength _ _ = Just $ 5 * 1024 * 1024 -- 5 megabytes
@@ -158,10 +167,11 @@ instance Yesod App where
         mmsg <- getMessage
 
         muser <- maybeAuthPair
+
         mcurrentRoute <- getCurrentRoute
 
         let isAdmin = maybe False (userIsAdmin . snd) muser
-
+        
         guideGroups <- fmap (map entityVal) $
             liftHandler $ runDB $ selectList [] [Asc GuideGroupPosition]
 
@@ -195,7 +205,7 @@ instance Yesod App where
 
             filteredMenuItems =
                 let xs = [x | x <- menuItems, getCallback x, getLabel x /= homeGroupName]
-                 in zip [0..length xs - 1] xs
+                in zip [0..length xs - 1] xs
 
         -- We break up the default layout into two components:
         -- default-layout is the contents of the body tag, and
@@ -226,20 +236,22 @@ instance Yesod App where
     isAuthorized (StaticR _) _ = return Authorized
     isAuthorized LoginRedirectR _ = return Authorized
 
-    isAuthorized HomeR False = return Authorized
-    isAuthorized HomeR _ = isAuthenticated
+    isAuthorized _ _ = isAuthenticated
 
-    isAuthorized (ImagesR _) _ = return Authorized
-    isAuthorized (ImageR _) _ = isAuthenticated
+    -- isAuthorized HomeR False = return Authorized
+    -- isAuthorized HomeR _ = isAuthenticated
 
-    isAuthorized (GuideR _) False = return Authorized
-    isAuthorized (GuideR _) True = isAuthenticated
+    -- isAuthorized (ImagesR _) _ = return Authorized
+    -- isAuthorized (ImageR _) _ = isAuthenticated
+
+    -- isAuthorized (GuideR _) False = return Authorized
+    -- isAuthorized (GuideR _) True = isAuthenticated
     
-    isAuthorized (GuideGroupR _) _ = isAuthenticated
+    -- isAuthorized (GuideGroupR _) _ = isAuthenticated
 
-    isAuthorized (SectionR _) _ = isAuthenticated
+    -- isAuthorized (SectionR _) _ = isAuthenticated
 
-    isAuthorized PrivacyR _ = return Authorized
+    -- isAuthorized PrivacyR _ = return Authorized
 
     -- This function creates static content files in the static folder
     -- and names them based on a hash of their content. This allows
@@ -343,12 +355,16 @@ instance YesodAuth App where
 -- | Access function to determine if a user is logged in and is an admin.
 isAuthenticated :: Handler AuthResult
 isAuthenticated = do
-    muser <- maybeAuth
-    return $ case muser of
-        Nothing -> Unauthorized "You must be logged in to access this page"
-        Just (Entity _ user)
-            | userIsAdmin user -> Authorized
-            | otherwise -> Unauthorized "You are not authorized to access this page"
+    user <- requireAuth
+    if userIsAdmin $ entityVal user
+        then return Authorized
+        else notFound
+    -- muser <- maybeAuth
+    -- return $ case muser of
+    --     Nothing -> Unauthorized "You must be logged in to access this page"
+    --     Just (Entity _ user)
+    --         | userIsAdmin user -> Authorized
+    --         | otherwise -> Unauthorized "You are not authorized to access this page"
 
 instance YesodAuthPersist App
 
