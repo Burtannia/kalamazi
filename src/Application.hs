@@ -73,6 +73,8 @@ makeFoundation appSettings = do
     createDirectoryIfMissing True (appImageDir appSettings)
     appImages <- static (appImageDir appSettings)
 
+    createDirectoryIfMissing True (appWeakauraDir appSettings)
+
     appGoogleAuthId <- fmap pack $ getEnv "KALA_GOOGLE_OAUTH_ID"
     appGoogleAuthKey <- fmap pack $ getEnv "KALA_GOOGLE_OAUTH_SECRET"
     appYouTubeKey <- fmap pack $ getEnv "KALA_YOUTUBE_SECRET"

@@ -31,6 +31,8 @@ data AppSettings = AppSettings
     -- ^ Directory from which to serve static files.
     , appImageDir               :: String
     -- ^ Directory from which to serve and store uploaded images.
+    , appWeakauraDir            :: String
+    -- ^ Directory to store WeakAuras in.
     , appDatabaseConf           :: SqliteConf
     -- ^ Configuration settings for accessing the database.
     , appRoot                   :: Maybe Text
@@ -75,6 +77,7 @@ instance FromJSON AppSettings where
 #endif
         appStaticDir              <- o .: "static-dir"
         appImageDir               <- o .: "image-dir"
+        appWeakauraDir            <- o .: "weakaura-dir"
         appDatabaseConf           <- o .: "database"
         appRoot                   <- o .:? "approot"
         appHost                   <- fromString <$> o .: "host"

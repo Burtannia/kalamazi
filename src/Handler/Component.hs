@@ -17,7 +17,7 @@ import Text.Julius (rawJS)
 import Data.Aeson.Types ()
 import Data.Time.Format.ISO8601
 import qualified Data.Text.IO as TIO (readFile, writeFile)
-import System.Directory (createDirectoryIfMissing, removeFile)
+import System.Directory (removeFile)
 import Yesod.Form.Bootstrap4 (bfs)
 
 genNewComponent :: [Entity Image] -> SectionId -> Widget
@@ -106,7 +106,7 @@ toCreateComp (CVideo url) = return $ CreateVideo $ Just url
 toCreateComp (CWeakAura wId) = do
     wa <- runDB $ getJust wId
     let waTitle = weakAuraTitle wa
-        fPath = mkWeakauraPath $ iso8601Show $ weakAuraCreated wa
+    fPath <- mkWeakauraPath $ iso8601Show $ weakAuraCreated wa
     waContent <- liftIO $ TIO.readFile fPath
     return $ CreateWeakAura (Just waTitle) (Just $ Textarea waContent)
 toCreateComp (CDivider axis visible) = return $ CreateDivider (Just axis) (Just visible)
@@ -138,8 +138,7 @@ mkComponent (CD_Video url) = return $ CVideo url
 mkComponent (CD_WeakAura title content) = do
     now <- liftIO getCurrentTime
     
-    liftIO $ createDirectoryIfMissing True weakauraDir
-    let fPath = mkWeakauraPath $ iso8601Show now
+    fPath <- mkWeakauraPath $ iso8601Show now
     liftIO $ TIO.writeFile fPath (unTextarea content)
 
     wId <- runDB $ insert $ WeakAura title now
@@ -208,11 +207,11 @@ createCompForm _ (CreateDivider maxis mvisible) = CD_Divider
                    ]
         visTip = "If visible then the divider will show as a line rather than just affecting the layout."
 
-mkWeakauraPath :: String -> FilePath
-mkWeakauraPath name = weakauraDir <> "/" <> name <> ".txt"
-
-weakauraDir :: FilePath
-weakauraDir = "weakauras"
+mkWeakauraPath :: String -> Handler FilePath
+mkWeakauraPath name = do
+    app <- getYesod
+    let weakauraDir = appWeakauraDir $ appSettings app
+    return $ weakauraDir <> "/" <> name <> ".txt"
 
 deleteComponent :: Component -> Handler ()
 deleteComponent (CMarkup markupId) = runDB $ delete markupId
@@ -226,7 +225,7 @@ deleteComponent (CImage _) = return ()
 deleteComponent (CVideo _) = return ()
 deleteComponent (CWeakAura wId) = do
     wa <- liftHandler $ runDB $ getJust wId
-    let fPath = mkWeakauraPath $ iso8601Show $ weakAuraCreated wa
+    fPath <- mkWeakauraPath $ iso8601Show $ weakAuraCreated wa
     liftIO $ removeFile fPath
     runDB $ delete wId
 deleteComponent (CDivider _ _) = return ()
@@ -332,7 +331,7 @@ displayComponent = displayComponent'
 
         displayComponent' (CWeakAura wId) = do
             wa <- liftHandler $ runDB $ getJust wId
-            let fPath = mkWeakauraPath $ iso8601Show $ weakAuraCreated wa
+            fPath <- liftHandler $ mkWeakauraPath $ iso8601Show $ weakAuraCreated wa
             waContent <- liftHandler $ liftIO $ TIO.readFile fPath
             waId <- newIdent
             $(widgetFile "components/weakaura")
