@@ -22,9 +22,9 @@ stanzas:
     args: []
 
     env:
-      YESOD_IMAGE_DIR: /opt/kalamazi/images
-      YESOD_WEAKAURA_DIR: /opt/kalamazi/weakauras
-      YESOD_SQLITE_DATABASE: /opt/kalamazi/kalamazi.sqlite3
+      YESOD_IMAGE_DIR: /opt/keter/kalamazi/images
+      YESOD_WEAKAURA_DIR: /opt/keter/kalamazi/weakauras
+      YESOD_SQLITE_DATABASE: /opt/keter/kalamazi/kalamazi.sqlite3
 
     # forward-env:
     #   - KALA_YOUTUBE_SECRET
