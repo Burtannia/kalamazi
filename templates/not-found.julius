@@ -13,7 +13,7 @@ const clips =
 
 function mkTwitchUrl(clip) {
     return "https://clips.twitch.tv/embed?clip="
-        + clip + "&parent=www.kalamazi.com&parent=localhost";
+        + clip + "&parent=www.kalamazi.net&parent=localhost";
 }
 
 $(function() {
