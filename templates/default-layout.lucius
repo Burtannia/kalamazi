@@ -210,3 +210,26 @@ footer p {
 .modal-content .nav {
     border-color: #333333 !important;
 }
+
+/* imageSelectField */
+
+.radioImageContainer img {
+    cursor: pointer;
+    display: block;
+    margin: auto;
+}
+
+.radioImageContainer p {
+    word-break: break-word;
+}
+
+.radioForImage { 
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.radioForImage:checked + img {
+    outline: 2px solid #a1232c;
+}
