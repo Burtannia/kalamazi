@@ -23,26 +23,27 @@
     text-decoration: none;
 }
 
+#homeGuideHeader {
+    margin-top: 15px;
+    margin-bottom: 0px;
+}
+
+@media (min-width: 768px) {
+    .homeGuideHeader {
+        display: none;
+    }
+}
+
+@media (max-width: 767px) {
+    .home-guide-wrapper {
+        margin-bottom: 10px;
+    }
+}
+
 /* Feature */
 
 #featureWrapper {
     position: relative;
-}
-
-#featureOverlay {
-    position: absolute;
-    top: 50%;
-    left: 0;
-    right: 0;
-    transform: translateY(-50%);
-    display: flex;
-    justify-content: space-between;
-    padding-left: 5rem;
-    padding-right: 5rem;
-}
-
-.feature-iframe {
-    width: 30%;
 }
 
 #featureOverlay .iframe-wrapper {
@@ -51,12 +52,51 @@
     box-shadow:0 0 20px rgba(171,5,5,0.5);
 }
 
-#featureSocialsWrapper {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 15%;
+@media (min-width: 768px) {
+    #featureOverlay {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        transform: translateY(-50%);
+        display: flex;
+        justify-content: space-between;
+        padding-left: 5rem;
+        padding-right: 5rem;
+    }
+
+    .feature-iframe {
+        width: 30%;
+    }
+
+    #featureWrapper h2 {
+        display: none;
+    }
 }
+
+@media (max-width: 767px) {
+    #featureWrapper img {
+        display: none;
+    }
+
+    .feature-iframe {
+        width: 90%;
+        margin-bottom: 20px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    #featureWrapper h2 {
+        margin-bottom: 20px;
+    }
+
+    #guidesAdminWrapper {
+        display: flex;
+        flex-direction: column-reverse;
+    }
+}
+
+/* Socials */
 
 #featureSocials {
     display: flex;
@@ -114,4 +154,20 @@
 
 .mail-link i {
     background-color: #a1232c;
+}
+
+@media (min-width: 768px) {
+    #featureSocialsWrapper {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 15%;
+    }
+}
+
+@media (max-width: 767px) {
+    #featureSocialsWrapper {
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
 }

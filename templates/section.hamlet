@@ -17,6 +17,9 @@
             <div :not rowIsDiv:.row :not rowIsDiv:.no-gutters>
                 $forall (compCol, colIsDiv) <- compRow
                     $with isDiv <- rowIsDiv || colIsDiv
-                        <div :not isDiv:.col :isDiv:.no-border>
+                        <div
+                            :isDiv:.no-border
+                            :not isDiv:.col-md
+                            :not isDiv:.col-12>
                             $forall comp <- compCol
                                 ^{comp}

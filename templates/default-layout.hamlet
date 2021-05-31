@@ -44,7 +44,7 @@ $else
 <div #privacyNotice .d-none>
     <div .container>
         <div .row .justify-content-center .align-items.center>
-            <p .mb-0>
+            <p>
                 We use cookies to analyse traffic to our site and to provide certain social media features.
                 We also share information about your use of this site with services such as Google Analytics.
                 <a href=@{PrivacyR}>Read our privacy policy.

@@ -1,23 +1,27 @@
-<div .w-100 .bg-darker>
-    <div #homeGuides .row>
-        $forall (gid, icon, title) <- guides
-            <div .col-lg .col-sm-3 .home-guide-wrapper .text-center>
-                <a href=@{GuideR gid} .text-white>
-                    <img .img-fluid src=@{ImagesR $ mkImageUrl icon} alt=#{title}>
-                    <h6>#{title}
+<div #guidesAdminWrapper>
+    <div .w-100 .bg-darker>
+        <h2 #homeGuideHeader .text-center .text-white>Featured Guides
+        <div #homeGuides .row>
+            $forall (gid, icon, title) <- guides
+                <div .col-lg .col-sm-3 .home-guide-wrapper .text-center>
+                    <a href=@{GuideR gid} .text-white>
+                        <img .img-fluid src=@{ImagesR $ mkImageUrl icon} alt=#{title}>
+                        <h6>#{title}
 
-$maybe adminTools <- madminTools
-    <div .container>
-        ^{adminTools}
+    $maybe adminTools <- madminTools
+        <div .container>
+            ^{adminTools}
 
 <div #featureWrapper>
     <img src=@{StaticR background_png} .img-fluid .w-100>
     <div #featureOverlay>
+        <h2 .text-center .text-white> Latest Video
         <div .feature-iframe>
             <div .iframe-wrapper>
                 <iframe #youtubeLatest
                     src=#{ytUrl ytVideo} title=#{ytTitle ytVideo}
                     frameborder="0" allowfullscreen="true" scrolling="no">
+        <h2 .text-center .text-white> Livestream
         <div .feature-iframe>
             <div .iframe-wrapper>
                 <div #twitchPlaceholder .iframe-placeholder .text-center .text-white>

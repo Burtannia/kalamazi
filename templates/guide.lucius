@@ -8,6 +8,7 @@
 
     .table-bordered, .table-bordered td {
         border-color: #222222;
+
     }
 
     table tr:nth-child(1) {
@@ -16,6 +17,21 @@
 
     table tr:nth-child(even) {
         background-color: #151515;
+    }
+}
+
+@media (max-width: 767px) {
+    table {
+        table-layout: fixed;
+    }
+
+    td:nth-child(1) {
+        width: 30%;
+    }
+
+    td {
+        width: 40%;
+        overflow-wrap: break-word;
     }
 }
 
@@ -137,9 +153,15 @@
     padding: 0.75rem;
 }
 
-@media (min-width: 767px) {
+@media (min-width: 768px) {
     .weakaura {
         width: 80%;
+    }
+}
+
+@media (max-width: 767px) {
+    .weakaura {
+        width: 100%;
     }
 }
 
@@ -326,4 +348,10 @@
 .div-col {
     margin-right: 1rem;
     margin-left: 1rem;
+}
+
+@media (max-width: 767px) {
+    .div-col, .div-row {
+        display: none;
+    }
 }

@@ -16,6 +16,12 @@
     margin-left: 5px;
 }
 
+@media (min-width: 768px) {
+    #privacyNotice p {
+        margin-bottom: 0px;
+    }
+}
+
 .close {
     margin-top: -0.15rem;
 }
