@@ -8,7 +8,7 @@
 
     .table-bordered, .table-bordered td {
         border-color: #222222;
-
+        margin-bottom: 0px;
     }
 
     table tr:nth-child(1) {
@@ -141,7 +141,11 @@
     color: #6c757d;
     font-style: italic;
     margin-bottom: 0;
-} 
+}
+
+.markup-wrapper > br:last-child {
+    display: none;
+}
 
 /* WeakAura */
 
