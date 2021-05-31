@@ -29,14 +29,14 @@
 }
 
 @media (min-width: 768px) {
-    .homeGuideHeader {
+    #homeGuideHeader {
         display: none;
     }
 }
 
 @media (max-width: 767px) {
     .home-guide-wrapper {
-        margin-bottom: 10px;
+        margin-bottom: 14px;
     }
 }
 
@@ -87,7 +87,7 @@
     }
 
     #featureWrapper h2 {
-        margin-bottom: 20px;
+        margin-bottom: 16px;
     }
 
     #guidesAdminWrapper {
