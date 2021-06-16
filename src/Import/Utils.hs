@@ -15,6 +15,13 @@ import qualified Data.List as L (init)
 import Control.Monad.Trans.State.Strict (State, evalState)
 import qualified Control.Monad.Trans.State.Strict as ST (get, put)
 
+trimWhitespace :: Text -> Text
+trimWhitespace = pack . reverse . go . reverse . go . unpack
+    where
+        go "" = ""
+        go (' ' : xs) = go xs
+        go xs = xs
+
 splitWhenKeep :: (a -> Bool) -> [a] -> [[a]]
 splitWhenKeep _ [] = []
 splitWhenKeep f (x:xs) =

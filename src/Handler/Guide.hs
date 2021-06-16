@@ -277,7 +277,8 @@ postGroupManager = do
     ((ggRes, ggFormWidget), ggEnctype) <- liftHandler $ runBs4FormIdentify ggFormIdent $ guideGroupForm
     liftHandler $ liftIO $ print ggRes
     case ggRes of
-        FormSuccess gg -> do
+        FormSuccess gg' -> do
+            let gg = gg' { guideGroupName = trimWhitespace $ guideGroupName gg' }
             mg <- liftHandler $ runDB $ getBy $ UniqueGuideGroupName $ guideGroupName gg
             numGroups <- liftHandler $ runDB $ count ([] :: [Filter GuideGroup])
             case mg of
