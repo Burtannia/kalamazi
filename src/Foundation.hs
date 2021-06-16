@@ -216,6 +216,8 @@ instance Yesod App where
         pc <- widgetToPageContent $ do
             for_ (appAnalytics $ appSettings master) $ \gaCode ->
                 toWidget $(juliusFile "templates/analytics.julius")
+            for_ (appAdsense $ appSettings master) $ \adsCode ->
+                toWidget $(juliusFile "templates/adsense.julius")
             $(widgetFile "default-layout")
 
         withUrlRenderer $(hamletFile "templates/default-layout-wrapper.hamlet")

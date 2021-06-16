@@ -33,6 +33,7 @@ function privacyAccept() {
     $('#privacyNotice').remove();
     loadAnalytics();
     loadTwitch();
+    loadAdsense();
 }
 
 function loadTwitch() {
