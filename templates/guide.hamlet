@@ -8,6 +8,8 @@ $maybe adminTools <- madminTools
         <div .controls .mb-3>
             ^{nsWidget}
             ^{guideEditWidget}
+            <button #copy-guide .btn .btn-dark type="button">
+                <i .lnir .lnir-copy>
             <button #delete-guide .btn .btn-danger type="button">
                 <i .lnir .lnir-trash-can>
 

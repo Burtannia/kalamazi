@@ -4,6 +4,25 @@ $(document).on("keydown", ":input:not(textarea)", function(event) {
     }
 });
 
+$('#copy-guide').click(function() {
+    var msg = "Are you sure you want to duplicate this guide?"
+        + " The new guide will automatically be marked as unpublished."
+    if(confirm(msg))
+        $.ajax({
+            type: "PUT",
+            contentType: "application/json",
+            url: "@{CopyGuideR guideId}"
+        })
+        .done(function (data, textStatus, jqXHR) {
+            var origin = window.location.origin;
+            window.location.replace(origin + "/" + data);
+        })
+        .fail(function (jqXHR, textStatus, errorThrown) {
+            console.log(errorThrown + ": " + jqXHR.responseText);
+            makeAlertDanger("Something went wrong");
+        });
+});
+
 $('#delete-guide').click(function() {
     if(confirm("Are you sure you want to delete this guide?"))
         $.ajax({

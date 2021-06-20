@@ -214,7 +214,11 @@ mkWeakauraPath name = do
     return $ weakauraDir <> "/" <> name <> ".txt"
 
 deleteComponent :: Component -> Handler ()
-deleteComponent (CMarkup markupId) = runDB $ delete markupId
+deleteComponent (CMarkup markupId) = do
+    uses <- mupInUse markupId
+    if (uses > 1)
+        then return ()
+        else runDB $ delete markupId
 deleteComponent (CToggle t) = case t of
     ToggleTexts _ toggles -> deleteToggles toggles
     ToggleImages toggles -> deleteToggles toggles
@@ -224,11 +228,45 @@ deleteComponent (CToggle t) = case t of
 deleteComponent (CImage _) = return ()
 deleteComponent (CVideo _) = return ()
 deleteComponent (CWeakAura wId) = do
-    wa <- liftHandler $ runDB $ getJust wId
-    fPath <- mkWeakauraPath $ iso8601Show $ weakAuraCreated wa
-    liftIO $ removeFile fPath
-    runDB $ delete wId
+    uses <- waInUse wId
+    if (uses > 1)
+        then return ()
+        else do
+            wa <- liftHandler $ runDB $ getJust wId
+            fPath <- mkWeakauraPath $ iso8601Show $ weakAuraCreated wa
+            liftIO $ removeFile fPath
+            runDB $ delete wId
 deleteComponent (CDivider _ _) = return ()
+
+mupInUse :: MarkupBlockId -> Handler Int
+mupInUse mupId = do
+    guides <- runDB $ selectList [] [Asc GuideModified]
+    xs <- mapM (helper . entityVal) guides
+    return $ sum xs
+    where
+        helper g = do
+            sections <- for (guideSections g) $ \sid ->
+                runDB $ getJust sid
+            let inUse = foldr (\c n -> n + usesMup c) 0 $
+                            concatMap sectionContent sections
+            return inUse
+        usesMup (CMarkup x) | x == mupId = 1
+        usesMup _ = 0
+
+waInUse :: WeakAuraId -> Handler Int
+waInUse waId = do
+    guides <- runDB $ selectList [] [Asc GuideModified]
+    xs <- mapM (helper . entityVal) guides
+    return $ sum xs
+    where
+        helper g = do
+            sections <- for (guideSections g) $ \sid ->
+                runDB $ getJust sid
+            let inUse = foldr (\c n -> n + usesWa c) 0 $
+                            concatMap sectionContent sections
+            return inUse
+        usesWa (CWeakAura x) | x == waId = 1
+        usesWa _ = 0
 
 getCompWidget :: [Entity Image] -> Bool -> SectionId -> Int -> Component -> Widget
 getCompWidget imgs isAdmin sectionId ix comp = do

@@ -136,6 +136,40 @@ postGuideR guideId = do
             timeAgo = diffUTCTime timeNow $ guideModified guide
         $(widgetFile "guide")
 
+putCopyGuideR :: GuideId -> Handler ()
+putCopyGuideR oldId = do
+    muser <- maybeAuth
+    oldGuide <- runDB $ get404 oldId
+    let isAdmin = maybe False (userIsAdmin . entityVal) muser
+        published = guideIsPublished oldGuide
+    when (not isAdmin && not published) notFound
+
+    now <- liftIO getCurrentTime
+
+    -- make new guide
+    let guide = oldGuide
+            { guideTitle = guideTitle oldGuide <> " Copy"
+            , guideUrl = guideUrl oldGuide <> "_copy"
+            , guideIsPublished = False
+            , guideModified = now
+            , guideSections = []
+            }
+    guideId <- liftHandler $ runDB $ insert400 guide
+
+    -- for each section, make new section
+    sids <- for (guideSections oldGuide) $ \sid -> do
+        old_section <- liftHandler $ runDB $ getJust sid
+        let section = old_section { sectionGuideId = guideId }
+        liftHandler $ runDB $ insert400 section
+
+    -- add sections to guide
+    liftHandler $ runDB $ update guideId [GuideSections =. sids]
+
+    -- redirect to new guide
+    let (pieces, _) = renderRoute $ GuideR guideId
+        url = foldr (\x y -> x <> "/" <> y) "" pieces
+    sendResponse (url :: Text)
+
 gFormIdent :: Text
 gFormIdent = "guide"
 
@@ -212,7 +246,7 @@ runNewGuide imgs = do
         FormMissing -> return ()
 
         FormFailure errs -> do
-            liftIO $ putStrLn "runNewGUide"
+            liftIO $ putStrLn "runNewGuide"
             print errs
 
     mkModal "New Guide" (formWidget, enctype)

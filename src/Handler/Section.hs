@@ -10,6 +10,7 @@ module Handler.Section where
 
 import Import
 import Data.Aeson.Types
+import qualified Data.List as L ((!!))
 import Handler.Component
 import Handler.Modal
 import qualified Data.List as L (delete)
@@ -142,6 +143,7 @@ patchSectionR sectionId = do
         case supdate of
             DeleteComp ix
                 | ix >= 0 && ix < length cs -> do
+                    deleteComponent $ cs L.!! ix
                     runDB $ update sectionId $
                         [ SectionContent =. cs -! ix ]
                     updateGuideModified $ sectionGuideId section

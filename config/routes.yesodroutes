@@ -14,6 +14,7 @@
 
 /guides/#GuideId GuideR GET POST DELETE
 /guidegroup/#GuideGroupId GuideGroupR PATCH DELETE
+/copyguide/#GuideId CopyGuideR PUT
 
 /section/#SectionId SectionR PATCH DELETE
 
