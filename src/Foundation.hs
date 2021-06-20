@@ -8,6 +8,7 @@
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE InstanceSigs #-}
 {-# LANGUAGE QuasiQuotes #-}
+{-# LANGUAGE FlexibleContexts #-}
 
 module Foundation where
 
@@ -57,7 +58,8 @@ data MenuItem = MenuItem
 
 data MenuTypes
     = NavLink MenuItem
-    | NavDrop Text Bool [MenuItem]
+    | NavGuide MenuItem [(Text, Text)]
+    | NavGroup Text Bool [MenuItem]
 
 homeGroupName :: Text
 homeGroupName = "Homepage Guides"
@@ -175,17 +177,28 @@ instance Yesod App where
         guideGroups <- fmap (map entityVal) $
             liftHandler $ runDB $ selectList [] [Asc GuideGroupPosition]
 
-        let mkGuideLink (guideId, guide) = MenuItem
-                (fromMaybe (guideTitle guide) $ guideShortTitle guide)
-                (GuideR guideId) (isAdmin || guideIsPublished guide)
+        let mkGuideLink (guideId, guide, sectionUrls) =
+                let mi = MenuItem
+                        (fromMaybe (guideTitle guide) $ guideShortTitle guide)
+                        (GuideR guideId) (isAdmin || guideIsPublished guide)
+                 in (mi, sectionUrls)
+                
             mkGroupNav gg = liftHandler $ do
-                guides <- mapM (sequence . (id &&& runDB . getJust)) $ guideGroupGuides gg
-                let guideLinks = filter menuItemAccessCallback $ map mkGuideLink guides
+                let getSections (guideId, g) = do
+                        sections <- mapM (runDB . getJust) $ guideSections g
+                        let urls = map (sectionUrl &&& sectionTitle) sections
+                        return (guideId, g, urls)
+
+                guides' <- mapM (sequence . (id &&& runDB . getJust)) $ guideGroupGuides gg
+                guides <- mapM getSections guides'
+
+                let guideLinks = filter (menuItemAccessCallback . fst) $ map mkGuideLink guides 
                     shouldShow = length guideLinks > 0
                 return $
                     case guideLinks of
-                        [x] -> NavLink $ x { menuItemLabel = guideGroupName gg }
-                        _  -> NavDrop (guideGroupName gg) shouldShow guideLinks
+                        [(mi, [])] -> NavLink (mi { menuItemLabel = guideGroupName gg })
+                        [(mi, secUrls)] -> NavGuide (mi { menuItemLabel = guideGroupName gg }) secUrls
+                        _  -> NavGroup (guideGroupName gg) shouldShow $ map fst guideLinks
 
         ggLinks <- mapM mkGroupNav guideGroups
 
@@ -198,10 +211,12 @@ instance Yesod App where
                 ]
 
             getCallback (NavLink mi) = menuItemAccessCallback mi
-            getCallback (NavDrop _ cb _) = cb
+            getCallback (NavGuide mi _) = menuItemAccessCallback mi
+            getCallback (NavGroup _ cb _) = cb
 
             getLabel (NavLink (MenuItem l _ _)) = l
-            getLabel (NavDrop l _ _) = l
+            getLabel (NavGuide (MenuItem l _ _) _) = l
+            getLabel (NavGroup l _ _) = l
 
             filteredMenuItems =
                 let xs = [x | x <- menuItems, getCallback x, getLabel x /= homeGroupName]

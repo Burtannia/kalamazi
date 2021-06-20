@@ -16,7 +16,15 @@
                         $of NavLink (MenuItem label route _)
                             <li .nav-item :Just route == mcurrentRoute:.active>
                                 <a .nav-link href="@{route}">#{label}
-                        $of NavDrop groupLabel _ mis
+                        $of NavGuide (MenuItem label route _) secUrls
+                            <li .nav-item .dropdown :Just route == mcurrentRoute:.active>
+                                <a .nav-link .dropdown-toggle #nav-drop-#{ix} href="#"
+                                    data-toggle="dropdown" aria-haspopup="true"
+                                    aria-expanded="false">#{label}
+                                <div .dropdown-menu .bg-black .border-red aria-labelledby="nav-drop-#{ix}">
+                                    $forall (url, name) <- secUrls
+                                        <a href=@{route}##{url} .dropdown-item .nav-highlight-red .text-white>#{name}
+                        $of NavGroup groupLabel _ mis
                             <li .nav-item .dropdown>
                                 <a .nav-link .dropdown-toggle #nav-drop-#{ix} href="#"
                                     data-toggle="dropdown" aria-haspopup="true"
