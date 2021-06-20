@@ -1,6 +1,8 @@
 /* Privacy */
 
 $(function() {
+    loadAdsense();
+
     var consent = Cookies.get('consent');
 
     if(consent == 'accept')
@@ -33,7 +35,6 @@ function privacyAccept() {
     $('#privacyNotice').remove();
     loadAnalytics();
     loadTwitch();
-    loadAdsense();
 }
 
 function loadTwitch() {

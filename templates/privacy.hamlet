@@ -19,21 +19,24 @@
         Note that until you accept, some features of this site will be unavailable.
     <button .btn .btn-success #privacyChangeAccept>Accept
 
-<h6 .text-white>Essential Cookies
+<h6 .text-white>Essential Cookies & Google AdSense
 <p>
     These cookies are necessary for the website to function and cannot be opted out of.
     They are usually set in response to actions made by you for example, remembering your
     privacy preferences, logging in or filling in forms. You can set your browser to block
-    these cookies, but this will cause some areas of the site to stop working.
+    these cookies, but this will cause some areas of the site to stop working. We also 
+    use Google Adsense to place ads on our site and earn revenue. Sometimes Google will use
+    cookies in order to show you more relevant ads although there are methods to prevent
+    this. You can find out more about how Google uses your data
+    <a href="https://policies.google.com/technologies/partner-sites">here</a>.
 
-<h6 .text-white>Google Analytics, AdSense & YouTube Embeds
+<h6 .text-white>Google Analytics & YouTube Embeds
 <p>
     We use Google Analytics to track activity on our site. Data collected includes
     information about how you interact with the site, the type of device used to
     access the site, the time the site is accessed and the location the site is
     accessed from. Embedded YouTube videos may also collect data according to the
-    same policy if you play them. We also use Google AdSense in order to place ads
-    on our website and earn revenue. You can find more about how Google uses your data
+    same policy if you play them. You can find more about how Google uses your data
     <a href="https://policies.google.com/technologies/partner-sites">here</a>.
 
 <h6 .text-white>Twitch Embeds
