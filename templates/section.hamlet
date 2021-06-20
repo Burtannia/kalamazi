@@ -1,6 +1,7 @@
 <div .section #section-#{toPathPiece sectionId}>
-    <h3 ##{secUrl} .mb-3 .text-center .section-title>#{sectionTitle section}
-        <i .lnir .lnir-share .section-link>
+    $if sectionTitle section /= "Banner"
+        <h3 ##{secUrl} .mb-3 .text-center .section-title>#{sectionTitle section}
+            <i .lnir .lnir-share .section-link>
     $if isAdmin
         <div .controls .mb-3>
             ^{ncWidget}
