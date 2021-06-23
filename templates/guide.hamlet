@@ -2,8 +2,8 @@ $maybe adminTools <- madminTools
     ^{adminTools}
 
 <div .guide>
-    <h2 .text-center .guide-title>#{guideTitle guide}
-    <p .text-muted .text-center>Last modified #{formatDiffTime timeAgo} ago
+    $# <h2 .text-center .guide-title>#{guideTitle guide}
+    $# <p .text-muted .text-center>Last modified #{formatDiffTime timeAgo} ago
     $if isAdmin
         <div .controls .mb-3>
             ^{nsWidget}
