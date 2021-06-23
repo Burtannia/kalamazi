@@ -38,7 +38,7 @@ function privacyAccept() {
 }
 
 function loadTwitch() {
-    var twitchSrc = "https://player.twitch.tv/?channel=kalamazi&parent=www.kalamazi.net&parent=localhost";
+    var twitchSrc = "https://player.twitch.tv/?channel=kalamazi&parent=www.kalamazi.gg&parent=localhost";
     $('#twitchPlayer').attr('src', twitchSrc);
     $('#twitchPlayer').removeClass('d-none');
     $('#twitchPlaceholder').remove();

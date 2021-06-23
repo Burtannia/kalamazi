@@ -188,7 +188,7 @@ guideForm imgs mg = Guide
                 [ ("class", "lg-checkbox") ]
             }
         shortTip = "Optional short title to be displayed in links on the homepage / navbar etc."
-        urlTip = "The guide will be at kalamazi.net/guides/<url>. Only letters, numbers, hyphens and underscores are permitted."
+        urlTip = "The guide will be at kalamazi.gg/guides/<url>. Only letters, numbers, hyphens and underscores are permitted."
         iconTip = "This image will be used as a thumbnail if the guide is displayed on the homepage."
 
 getShortTitle :: Guide -> Text
