@@ -19,7 +19,7 @@
         <div .feature-iframe>
             <div .iframe-wrapper>
                 <iframe #youtubeLatest
-                    src=#{ytUrl ytVideo} title=#{ytTitle ytVideo}
+                    src="" title=#{ytTitle ytVideo}
                     frameborder="0" allowfullscreen="true" scrolling="no">
         <h2 .text-center .text-white> Livestream
         <div .feature-iframe>
