@@ -186,7 +186,8 @@ instance Yesod App where
             mkGroupNav gg = liftHandler $ do
                 let getSections (guideId, g) = do
                         sections <- mapM (runDB . getJust) $ guideSections g
-                        let urls = map (sectionUrl &&& sectionTitle) sections
+                        let f (x,y) = if y == "Banner" then ("", "Full Guide") else (x,y)
+                            urls = map (f . (sectionUrl &&& sectionTitle)) sections
                         return (guideId, g, urls)
 
                 guides' <- mapM (sequence . (id &&& runDB . getJust)) $ guideGroupGuides gg
