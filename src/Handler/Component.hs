@@ -320,7 +320,7 @@ displayComponent = displayComponent'
             $(widgetFile "components/toggle")
         
         displayComponent' (CImage imgId) =
-            [whamlet|<img .img-fluid src=@{ImagesR $ mkImageUrl imgId}>|]
+            [whamlet|<img .img-fluid src=@{ImagesR $ mkImageUrl imgId} loading="lazy">|]
 
         displayComponent' (CVideo url) =
             [whamlet|
@@ -341,7 +341,7 @@ displayComponent = displayComponent'
         mkTextSnippet mu = [shamlet| <h6>#{mu} |]
 
         mkImageSnippet imgId = withUrlRenderer
-            [hamlet|<img src=@{ImagesR $ mkImageUrl imgId}>|]
+            [hamlet|<img src=@{ImagesR $ mkImageUrl imgId} loading="lazy">|]
 
         displayMarkup markup = $(widgetFile "components/markup")
 
