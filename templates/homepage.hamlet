@@ -27,7 +27,7 @@
                 <div #twitchPlaceholder .iframe-placeholder .text-center .text-white>
                     <p .mb-0>Please allow cookies to see this content.
                     <a href=@{PrivacyR}>Privacy Policy
-                <iframe #twitchPlayer .d-none
+                <iframe #twitchPlayer .d-none theme="dark"
                     frameborder="0" allowfullscreen="true" scrolling="no">
     <div #featureSocialsWrapper>
         <div #featureSocials>

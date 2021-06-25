@@ -42,6 +42,13 @@ function loadTwitch() {
     $('#twitchPlayer').attr('src', twitchSrc);
     $('#twitchPlayer').removeClass('d-none');
     $('#twitchPlaceholder').remove();
+
+    $('.twitch-player').each(function() {
+        $(this).attr('src', $(this).data('src'));
+        $(this).removeClass('d-none');
+        var phId = $(this).data('phId');
+        $('#' + phId).remove();
+    });
 }
 
 /* Messages & Alerts */

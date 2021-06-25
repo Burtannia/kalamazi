@@ -186,6 +186,7 @@ createCompForm _ (CreateVideo murl) = CD_Video
         checkNoCookie x
             | "youtube-nocookie" `isInfixOf` x = Right x
             | "youtube" `isInfixOf` x = Left "Please use \"youtube-nocookie.com\" instead of \"youtube.com\""
+            | "twitch" `isInfixOf` x = Right $ x <> "&parent=www.kalamazi.gg&parent=localhost"
             | otherwise = Right x
         ph = "https://youtube-nocookie.com/embed/<video-id>"
         vidTip = fromString $
@@ -322,11 +323,22 @@ displayComponent = displayComponent'
         displayComponent' (CImage imgId) =
             [whamlet|<img .img-fluid src=@{ImagesR $ mkImageUrl imgId} loading="lazy">|]
 
-        displayComponent' (CVideo url) =
+        displayComponent' (CVideo url) = do
+            phId <- newIdent
+            let isTwitch = "twitch" `isInfixOf` url
             [whamlet|
                 <div .video-comp>
                     <div .iframe-wrapper>
-                        <iframe src=#{url} frameborder="0" allowfullscreen="true" scrolling="no">
+                        $if isTwitch
+                            <div ##{phId} .iframe-placeholder .text-center .text-white>
+                                <p .mb-0>Please allow cookies to see this content.
+                                <a href=@{PrivacyR}>Privacy Policy
+                            <iframe .twitch-player .d-none
+                                src="" data-src=#{url} data-phId=#{phId}
+                                theme="dark" muted="true" autoplay="false"
+                                frameborder="0" allowfullscreen="true" scrolling="no">
+                        $else
+                            <iframe src=#{url} frameborder="0" allowfullscreen="true" scrolling="no">
             |]
 
         displayComponent' (CWeakAura wId) = do
