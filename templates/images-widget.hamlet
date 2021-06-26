@@ -3,8 +3,7 @@
     $forall i <- imgs
         <div .col-3 .searchable-image>
             <div .image-wrapper>
-                <img .image-thumbnail .img-fluid loading="lazy"
-                    src="" data-src=@{ImagesR $ mkImageUrl $ entityKey i}>
+                <img loading="lazy" .image-thumbnail .img-fluid src=@{ImagesR $ mkImageUrl $ entityKey i}>
                 <div .del-overlay>
                     <a href="#" .del-icon>
                         <i .lnir .lnir-trash-can data-img-url=@{ImageR $ entityKey i}>
