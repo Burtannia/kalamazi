@@ -246,6 +246,7 @@
 
 .toggle-headers {
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
     margin-bottom: 0.5rem;
 }
@@ -279,6 +280,7 @@
 .toggle-image {
     margin-left: 0.4rem;
     margin-right: 0.4rem;
+    margin-bottom: 0.4rem;
     opacity: 0.5;
 }
 

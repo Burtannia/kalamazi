@@ -3,7 +3,7 @@
         <h2 #homeGuideHeader .text-center .text-white>Featured Guides
         <div #homeGuides .row>
             $forall (gid, icon, title) <- guides
-                <div .col-lg .col-sm-3 .home-guide-wrapper .text-center>
+                <div .col-lg .col-sm-4 .home-guide-wrapper .text-center>
                     <a href=@{GuideR gid} .text-white>
                         <img .img-fluid src=@{ImagesR $ mkImageUrl icon} alt=#{title}>
                         <h6>#{title}
