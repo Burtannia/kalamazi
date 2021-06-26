@@ -241,7 +241,13 @@ function updateIx(el, newIx) {
 /* Functions used in imageSelectField */
 
 function toggleNext(e) {
-    $(e).next().collapse('toggle');
+    var x = $(e).next();
+    if (!$(x).get(0).hasAttribute('loaded'))
+    {
+        $(x).attr('loaded', true);
+        displayImages(x, true);
+    }
+    $(x).collapse('toggle');
 }
 
 function showImages(e) {

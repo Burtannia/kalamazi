@@ -218,7 +218,8 @@ imageSelectFieldHelper toggle images = selectFieldHelper outerView noneView othe
                         <div .radioImageContainer>
                             <input .radioForImage id=#{idAttr}-#{value} type=radio name=#{nameAttr} value=#{value} :isSel:checked *{attrs}>
                             $maybe imgId <- mimgId
-                                <img loading="lazy" .img-fluid src=@{ImagesR $ mkImageUrl imgId}>
+                                <img loading="lazy" .img-fluid :toggle:in-collapse
+                                    src="" data-src=@{ImagesR $ mkImageUrl imgId}>
                             <p .text-center>#{text}
             |]
         opts = mkImageOpts images

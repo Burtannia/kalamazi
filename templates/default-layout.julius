@@ -142,7 +142,7 @@ var summernoteSettings = {
     ]
 }
 
-// fix for modals in modals
+/* Fix for modals in modals */
 
 $(function() {
     $('.note-modal :button').click(function() {
@@ -162,6 +162,12 @@ function fixBody() {
         fixBody();
     }, 50); 
 }
+
+/* Modal Images */
+
+$('.modal').on('shown.bs.modal', function () {
+    displayImages(this, false);
+})
 
 /* Utility */
 
@@ -186,4 +192,16 @@ function takeUntil(str, char) {
     var breakAt = str.indexOf(char);
     var ix = breakAt == -1 ? str.length : breakAt;
     return str.substring(0, ix);
+}
+
+function displayImages(e, showInCollapse) {
+    $(e).find('img').each(function() {
+        var inCollapse = $(this).get(0).hasAttribute('in-collapse');
+        if ((inCollapse && showInCollapse) || !inCollapse)
+        {
+            var src = $(this).data('src');
+            if (src)
+                $(this).attr('src', src);
+        }
+    });
 }
