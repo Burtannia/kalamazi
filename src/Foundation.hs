@@ -125,7 +125,16 @@ instance Yesod App where
             sendResponseStatus
                 (mkStatus code brief)
                 $ RepPlain $ toContent $ T.append "Error: " full
-        defaultErrorHandler errorResponse
+                
+        case errorResponse of
+            NotFound -> fmap toTypedContent $ defaultLayout $ do
+                setTitle "Error 404 | Page Not Found"
+                $(widgetFile "not-found")
+            (PermissionDenied msg) -> fmap toTypedContent $ defaultLayout $ do
+                setTitle "Error 403 | Permission Denied"
+                $(widgetFile "permission-denied")
+            _ -> defaultErrorHandler errorResponse
+
         -- -- REMOVE
         -- muser <- maybeAuthPair
         -- let isAdmin = maybe False (userIsAdmin . snd) muser
@@ -272,6 +281,8 @@ instance Yesod App where
     isAuthorized (SectionR _) _ = isAuthenticated
 
     isAuthorized PrivacyR _ = return Authorized
+
+    isAuthorized OnlyFansR _ = return Authorized
 
     -- This function creates static content files in the static folder
     -- and names them based on a hash of their content. This allows

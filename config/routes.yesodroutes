@@ -20,3 +20,5 @@
 /privacy PrivacyR GET DELETE
 
 /login LoginRedirectR GET
+
+/onlyfans OnlyFansR GET
