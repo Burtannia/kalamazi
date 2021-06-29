@@ -1,5 +1,5 @@
 <!-- Navbar -->
-<nav .navbar .navbar-expand-lg .navbar-dark .bg-darker .sticky-top>
+<nav .navbar .navbar-expand-lg .navbar-dark .bg-darker>
     <div .container>
 
         <a .navbar-brand href="/">

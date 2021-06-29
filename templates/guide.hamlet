@@ -14,6 +14,3 @@ $maybe adminTools <- madminTools
     <div .sections-container>
         $forall sWidget <- sectionWidgets
             ^{sWidget}
-
-<a href="#" #scrollTop .btn .btn-dark .btn-lg role="button">
-    <i .lnir .lnir-chevron-up>

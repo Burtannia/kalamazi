@@ -1,5 +1,5 @@
 {-# LANGUAGE PackageImports #-}
-import "kalamazi" Application (develMain)
+import "kalamazi-australia" Application (develMain)
 import Prelude (IO)
 
 main :: IO ()

@@ -16,7 +16,7 @@ stanzas:
     # The path given is for Stack projects. If you're still using cabal, change
     # to
     # exec: ../dist/build/kalamazi/kalamazi
-    exec: ../dist/bin/kalamazi
+    exec: ../dist/bin/kalamazi-australia
 
     # Command line options passed to your application.
     args: []
@@ -35,28 +35,28 @@ stanzas:
       # You can specify one or more hostnames for your application to respond
       # to. The primary hostname will be used for generating your application
       # root.
-      - www.kalamazi.gg
+      - australia.kalamazi.gg
 
     # Enable to force Keter to redirect to https
     # Can be added to any stanza
     requires-secure: true
 
   # Static files.
-  - type: static-files
-    hosts:
-      - static.kalamazi.gg
-    root: ../static
+  # - type: static-files
+  #   hosts:
+  #     - static.kalamazi.gg
+  #   root: ../static
 
     # Uncomment to turn on directory listings.
     # directory-listing: true
 
   # Redirect plain domain name to www.
-  - type: redirect
+  # - type: redirect
 
-    hosts:
-      - kalamazi.gg
-    actions:
-      - host: www.kalamazi.gg
+  #   hosts:
+  #     - kalamazi.gg
+  #   actions:
+  #     - host: www.kalamazi.gg
         # secure: false
         # port: 80
 
