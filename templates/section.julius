@@ -48,7 +48,7 @@ $('##{rawJS sectionDownId}').click(function() {
 
 var #{rawJS sectionCopyId} = false;
 
-$('##{rawJS secUrl}').click(function() {
+$('##{rawJS secUrl}-header').click(function() {
     if (#{rawJS sectionCopyId})
         return;
     else
