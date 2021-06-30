@@ -69,7 +69,7 @@ library:
 
 # Runnable executable for our application
 executables:
-  kalamazi:
+  kalamazi-australia:
     main: main.hs
     source-dirs: app
     ghc-options:
@@ -77,19 +77,19 @@ executables:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - kalamazi
+    - kalamazi-australia
     when:
     - condition: flag(library-only)
       buildable: false
 
 # Test suite
 tests:
-  kalamazi-test:
+  kalamazi-australia-test:
     main: Spec.hs
     source-dirs: test
     ghc-options: -Wall
     dependencies:
-    - kalamazi
+    - kalamazi-australia
     - hspec >=2.0.0
     - yesod-test
     - microlens
