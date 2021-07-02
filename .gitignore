@@ -19,4 +19,5 @@ cabal.sandbox.config
 *.keter
 *~
 \#*
+kalamazi.cabal
 kalamazi-australia.cabal
