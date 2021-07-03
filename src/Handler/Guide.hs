@@ -18,7 +18,7 @@ import Handler.Section
 import Handler.Images
 import Handler.Modal
 import qualified Data.Text as T (foldr)
---import Data.Time.Clock (diffUTCTime)
+import Data.Time.Clock (diffUTCTime)
 import Yesod.Form.Bootstrap4 (bfs)
 
 getGuideR :: GuideId -> Handler Html
@@ -41,7 +41,7 @@ getGuideR guideId = do
     nsForm <- genBs4FormIdentify nsFormIdent $ sectionForm guideId Nothing
     let nsWidget = mkModalAdd "New Section" nsForm
 
-    --timeNow <- liftIO getCurrentTime
+    timeNow <- liftIO getCurrentTime
 
     defaultLayout $ do
         setTitle $ toHtml $ guideTitle guide
@@ -54,7 +54,7 @@ getGuideR guideId = do
                         (genNewGuide imgs)
                 else
                     Nothing
-            --timeAgo = diffUTCTime timeNow $ guideModified guide
+            timeAgo = diffUTCTime timeNow $ guideModified guide
         $(widgetFile "guide")
 
 postGuideR :: GuideId -> Handler Html
@@ -120,7 +120,7 @@ postGuideR guideId = do
             liftIO $ putStrLn "postGuideR nsResult"
             print errs
 
-    --timeNow <- liftIO getCurrentTime
+    timeNow <- liftIO getCurrentTime
 
     defaultLayout $ do
         setTitle $ toHtml $ guideTitle guide
@@ -133,7 +133,7 @@ postGuideR guideId = do
                         (runNewGuide imgs)
                 else
                     Nothing
-            --timeAgo = diffUTCTime timeNow $ guideModified guide
+            timeAgo = diffUTCTime timeNow $ guideModified guide
         $(widgetFile "guide")
 
 gFormIdent :: Text

@@ -3,7 +3,6 @@ $maybe adminTools <- madminTools
 
 <div .guide>
     $# <h2 .text-center .guide-title>#{guideTitle guide}
-    $# <p .text-muted .text-center>Last modified #{formatDiffTime timeAgo} ago
     $if isAdmin
         <div .controls .mb-3>
             ^{nsWidget}
@@ -12,8 +11,12 @@ $maybe adminTools <- madminTools
                 <i .lnir .lnir-trash-can>
 
     <div .sections-container>
-        $forall sWidget <- sectionWidgets
-            ^{sWidget}
+        $with (xs, ys) <- splitAt 1 sectionWidgets
+            $forall sWidget <- xs
+                ^{sWidget}
+            <p .text-muted .text-center>Last modified #{formatDiffTime timeAgo} ago
+            $forall sWidget <- ys
+                ^{sWidget}
 
 <a href="#" #scrollTop .btn .btn-dark .btn-lg role="button">
     <i .lnir .lnir-chevron-up>
