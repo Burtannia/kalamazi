@@ -45,6 +45,10 @@
     margin-top: 3rem;
 }
 
+#lastModified {
+    margin-top: -0.7rem;
+}
+
 .section-link,
 .section-copied {
     position: absolute;

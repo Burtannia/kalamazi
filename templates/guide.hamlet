@@ -14,7 +14,7 @@ $maybe adminTools <- madminTools
         $with (xs, ys) <- splitAt 1 sectionWidgets
             $forall sWidget <- xs
                 ^{sWidget}
-            <p .text-muted .text-center>Last modified #{formatDiffTime timeAgo} ago
+            <p #lastModified .text-muted .text-center>Last modified #{formatDiffTime timeAgo} ago
             $forall sWidget <- ys
                 ^{sWidget}
 
