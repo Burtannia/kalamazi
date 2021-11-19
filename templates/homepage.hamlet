@@ -31,13 +31,13 @@
                     frameborder="0" allowfullscreen="true" scrolling="no">
     <div #featureSocialsWrapper>
         <div #featureSocials>
-            <a href=#{twitterLink} .twitter-link>
+            <a href=#{twitterLink} .twitter-link target="_blank" rel="noopener noreferrer">
                 <i .lnir .lnir-twitter-original>
-            <a href=#{instagramLink} .instagram-link>
+            <a href=#{instagramLink} .instagram-link target="_blank" rel="noopener noreferrer">
                 <i .lnir .lnir-instagram-original>
-            <a href=#{discordLink} .discord-link>
+            <a href=#{discordLink} .discord-link target="_blank" rel="noopener noreferrer">
                 <i .lnir .lnir-discord>
-            <a href=#{patreonLink} .patreon-link>
+            <a href=#{patreonLink} .patreon-link target="_blank" rel="noopener noreferrer">
                 <i .lnir .lnir-patreon>
-            <a href=#{emailLink} .mail-link>
+            <a href=#{emailLink} .mail-link target="_blank" rel="noopener noreferrer">
                 <i .lnir .lnir-envelope>
