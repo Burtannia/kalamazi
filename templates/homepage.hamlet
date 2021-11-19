@@ -33,6 +33,8 @@
         <div #featureSocials>
             <a href=#{twitterLink} .twitter-link>
                 <i .lnir .lnir-twitter-original>
+            <a href=#{instagramLink} .instagram-link>
+                <i .lnir .lnir-instagram-original>
             <a href=#{discordLink} .discord-link>
                 <i .lnir .lnir-discord>
             <a href=#{patreonLink} .patreon-link>

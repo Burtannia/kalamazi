@@ -64,10 +64,11 @@ data MenuTypes
 homeGroupName :: Text
 homeGroupName = "Homepage Guides"
 
-youtubeLink, discordLink, twitterLink, patreonLink, twitchLink, wagoLink, emailLink :: Text
+youtubeLink, discordLink, twitterLink, instagramLink, patreonLink, twitchLink, wagoLink, emailLink :: Text
 youtubeLink = "https://www.youtube.com/kalamazigames"
 discordLink = "https://discord.gg/cyn6Zsv"
-twitterLink = "https://twitter.com/Kalamazing"
+twitterLink = "https://twitter.com/Kalamazii"
+instagramLink = "https://instagram.com/Kalamazii"
 patreonLink = "https://www.patreon.com/Kalamazi"
 twitchLink = "https://www.twitch.tv/kalamazi"
 wagoLink = "https://wago.io/p/kalamazi"
