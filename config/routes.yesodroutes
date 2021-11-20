@@ -9,6 +9,8 @@
 
 / HomeR GET POST
 
+/poke PokeR PATCH
+
 /images ImagesR Static appImages
 /image/#ImageId ImageR DELETE
 

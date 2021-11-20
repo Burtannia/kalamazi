@@ -17,3 +17,16 @@ $('#edit-mode').change(function() {
         $(this).addClass('highlight-comp');
     });
 });
+
+$('#pokeGuides').click(function() {
+    $.ajax({
+        type: "PATCH",
+        contentType: "application/json",
+        url: "@{PokeR}"
+    })
+    .done(() => makeAlertSuccess("Guides poked successfully"))
+    .fail(function (jqXHR, textStatus, errorThrown) {
+        console.log(errorThrown + ": " + jqXHR.responseText);
+        makeAlertDanger("Something went wrong");
+    });
+})

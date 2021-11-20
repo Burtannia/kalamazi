@@ -266,8 +266,6 @@ instance Yesod App where
     isAuthorized (StaticR _) _ = return Authorized
     isAuthorized LoginRedirectR _ = return Authorized
 
-    --isAuthorized _ _ = isAuthenticated
-
     isAuthorized HomeR False = return Authorized
     isAuthorized HomeR _ = isAuthenticated
 
@@ -284,6 +282,8 @@ instance Yesod App where
     isAuthorized PrivacyR _ = return Authorized
 
     isAuthorized OnlyFansR _ = return Authorized
+
+    isAuthorized PokeR _ = isAuthenticated
 
     -- This function creates static content files in the static folder
     -- and names them based on a hash of their content. This allows
