@@ -12,6 +12,7 @@ module Handler.Guide where
 
 import Import
 import Data.Aeson.Types
+import Data.Time.Format.ISO8601
 import Handler.AdminTools
 import Handler.Component
 import Handler.Section
@@ -45,10 +46,7 @@ getGuideR guideId = do
 
     defaultLayout $ do
         setTitle $ toHtml $ guideTitle guide
-        toWidgetHead
-            [hamlet|
-                <meta name=description content=#{guideDescription guide}>
-            |]
+        guideMeta guideId guide
         let madminTools =
                 if isAdmin then
                     Just $ mkAdminTools $ 
@@ -128,10 +126,7 @@ postGuideR guideId = do
 
     defaultLayout $ do
         setTitle $ toHtml $ guideTitle guide
-        toWidgetHead
-            [hamlet|
-                <meta name=description content=#{guideDescription guide}>
-            |]
+        guideMeta guideId guide
         let madminTools =
                 if isAdmin then
                     Just $ mkAdminTools $ 
@@ -143,6 +138,29 @@ postGuideR guideId = do
                     Nothing
             timeAgo = diffUTCTime timeNow $ guideModified guide
         $(widgetFile "guide")
+
+guideMeta :: GuideId -> Guide -> Widget
+guideMeta guideId guide = toWidgetHead
+    [hamlet|
+        <meta name=description content=#{guideDescription guide}>
+        <script type="application/ld+json">
+            {
+                "@context": "https://schema.org",
+                "@type": "Article",
+                "mainEntityOfPage": {
+                    "@type": "WebPage",
+                    "@id": @{GuideR guideId}
+                },
+                "headline": #{guideDescription guide},
+                "image": [@{ImagesR $ mkImageUrl $ guideIcon guide}],
+                "dateModified": #{iso8601Show $ guideModified guide},
+                "author": {
+                    "@type": "Person",
+                    "name": "Kalamazi",
+                    "url": "https://www.kalamazi.gg"
+                }
+            }
+    |]
 
 gFormIdent :: Text
 gFormIdent = "guide"
