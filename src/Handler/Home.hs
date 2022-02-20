@@ -94,4 +94,4 @@ pageMeta = do
 
 pageDescription :: Text
 pageDescription =
-    "Affliction, destruction and demonology warlock guides for raid and mythic plus in World of Warcraft Shadowlands. Includes gear, talents, rotations and more..."
+    "Affliction, Destruction and Demonology warlock guides for raid and mythic+ in World of Warcraft Shadowlands. Includes talents, rotations, gear and more..."
