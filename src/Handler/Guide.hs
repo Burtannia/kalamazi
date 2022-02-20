@@ -140,8 +140,10 @@ postGuideR guideId = do
         $(widgetFile "guide")
 
 guideMeta :: GuideId -> Guide -> Widget
-guideMeta guideId guide = toWidgetHead
-    [hamlet|
+guideMeta guideId guide = do
+    let desc = guideDescription guide
+        headline = if desc == "" then guideTitle guide else desc
+    toWidgetHead [hamlet|
         <meta name="og:image" content="@{ImagesR $ mkImageUrl $ guideIcon guide}">
         <meta name=description content=#{guideDescription guide}>
         <script type="application/ld+json">
@@ -152,7 +154,7 @@ guideMeta guideId guide = toWidgetHead
                     "@type": "WebPage",
                     "@id": "@{GuideR guideId}"
                 },
-                "headline": "#{guideDescription guide}",
+                "headline": "#{headline}",
                 "image": ["@{ImagesR $ mkImageUrl $ guideIcon guide}"],
                 "dateModified": "#{iso8601Show $ guideModified guide}",
                 "author": {
