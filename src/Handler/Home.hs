@@ -31,8 +31,7 @@ getHomeR = do
 
     defaultLayout $ do
         setTitle "Kalamazi | Warlock Guides for Raid and Mythic+ in World of Warcraft"
-        toWidgetHead
-            [hamlet| <meta name="description" content=#{pageDescription}> |]
+        pageMeta
         let madminTools =
                 if isAdmin then
                     Just $ mkAdminTools $ 
@@ -62,8 +61,7 @@ postHomeR = do
 
     defaultLayout $ do
         setTitle "Kalamazi | Warlock Guides for Raid and Mythic+ in World of Warcraft"
-        toWidgetHead
-            [hamlet|<meta name="description" content=#{pageDescription}> |]
+        pageMeta
         let madminTools =
                 if isAdmin then
                     Just $ mkAdminTools $ 
@@ -74,6 +72,20 @@ postHomeR = do
                 else
                     Nothing
         $(widgetFile "homepage")
+
+pageMeta :: Widget
+pageMeta = toWidgetHead
+    [hamlet|
+        <meta name="description" content=#{pageDescription}>
+        <script type="application/ld+json">
+            {
+                "@context": "https://schema.org",
+                "@type": "Person",
+                "url": "https://www.kalamazi.gg",
+                "image": "https://static.kalamazi.gg/logo_full.png"
+                "name": "Kalamazi",
+            }
+    |]
 
 pageDescription :: Text
 pageDescription =
