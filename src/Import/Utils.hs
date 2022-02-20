@@ -15,6 +15,11 @@ import qualified Data.List as L (init)
 import Control.Monad.Trans.State.Strict (State, evalState)
 import qualified Control.Monad.Trans.State.Strict as ST (get, put)
 
+setLogoMetaImage :: Widget
+setLogoMetaImage = toWidgetHead [hamlet|
+    <meta name="image" content=@{StaticR logo_full_png}>
+|]
+
 trimWhitespace :: Text -> Text
 trimWhitespace = pack . reverse . go . reverse . go . unpack
     where

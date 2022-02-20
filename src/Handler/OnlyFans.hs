@@ -11,4 +11,5 @@ getOnlyFansR :: Handler Html
 getOnlyFansR = do
     defaultLayout $ do
         setTitle "OnlyFans"
+        setLogoMetaImage
         $(widgetFile "onlyfans")

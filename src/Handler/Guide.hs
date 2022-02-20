@@ -142,6 +142,7 @@ postGuideR guideId = do
 guideMeta :: GuideId -> Guide -> Widget
 guideMeta guideId guide = toWidgetHead
     [hamlet|
+        <meta name="image" content="@{ImagesR $ mkImageUrl $ guideIcon guide}">
         <meta name=description content=#{guideDescription guide}>
         <script type="application/ld+json">
             {

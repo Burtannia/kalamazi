@@ -74,15 +74,16 @@ postHomeR = do
         $(widgetFile "homepage")
 
 pageMeta :: Widget
-pageMeta = toWidgetHead
-    [hamlet|
+pageMeta = do
+    setLogoMetaImage
+    toWidgetHead [hamlet|
         <meta name="description" content=#{pageDescription}>
         <script type="application/ld+json">
             {
                 "@context": "https://schema.org",
                 "@type": "Person",
                 "url": "https://www.kalamazi.gg",
-                "image": "https://static.kalamazi.gg/logo_full.png"
+                "image": @{StaticR logo_full_png}
                 "name": "Kalamazi",
             }
     |]

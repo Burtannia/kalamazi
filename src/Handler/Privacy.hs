@@ -13,6 +13,7 @@ getPrivacyR = do
     let loggedIn = isJust muser
     defaultLayout $ do
         setTitle "Privacy - GDPR"
+        setLogoMetaImage
         $(widgetFile "privacy")
 
 deletePrivacyR :: Handler ()
