@@ -20,7 +20,7 @@ getSectionWidget :: [Entity Image] -> Bool -> SectionId -> Widget
 getSectionWidget imgs isAdmin sectionId = do
     section <- liftHandler $ runDB $ getJust sectionId
     let guideId = sectionGuideId section
-        secUrl = sectionUrl section
+        secUrl = toLower $ sectionUrl section
     sForm <- liftHandler $ genBs4FormIdentify
                 (sFormIdent secUrl)
                 (sectionForm guideId $ Just section)
@@ -44,7 +44,7 @@ postSectionWidget :: [Entity Image] -> Bool -> SectionId -> Widget
 postSectionWidget imgs isAdmin sectionId = do
     section <- liftHandler $ runDB $ getJust sectionId
     let guideId = sectionGuideId section
-        secUrl = sectionUrl section
+        secUrl = toLower $ sectionUrl section
         content = sectionContent section
 
     ((sRes, sWidget), sEnctype) <- liftHandler $ runBs4FormIdentify
@@ -204,7 +204,7 @@ sectionForm guideId msection = Section
     <*> pure guideId
     <*> pure (maybe [] sectionContent msection)
     where
-        urlTip = Just "This will be used to link to the specific section within the guide. Only letters, numbers, hyphens and underscores are permitted."
+        urlTip = Just "This will be used to link to the specific section within the guide. Only lowercase letters, numbers, hyphens and underscores are permitted."
         fs label mtt = FieldSettings
             { fsLabel = label
             , fsTooltip = mtt
@@ -220,6 +220,6 @@ sectionForm guideId msection = Section
                 else Left err
             where
                 err :: Text
-                err = "Please enter a value containing only letters, numbers, hyphens and underscores)."
+                err = "Please enter a value containing only lowercase letters, numbers, hyphens and underscores."
                 isValid = T.foldr (\c b -> b && c `elem` validChars) True t
-                validChars = '-' : '_' : (['a'..'z'] ++ ['A'..'Z'] ++ ['0'..'9'])
+                validChars = '-' : '_' : (['a'..'z'] ++ ['0'..'9'])
