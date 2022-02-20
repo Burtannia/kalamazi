@@ -86,7 +86,7 @@ pageMeta = do
                 "@context": "https://schema.org",
                 "@type": "Person",
                 "url": "https://www.kalamazi.gg",
-                "image": "@{StaticR logo_full_png}"
+                "image": "@{StaticR logo_full_png}",
                 "name": "Kalamazi",
             }
     |]
