@@ -35,6 +35,6 @@ database:
   database: "_env:YESOD_SQLITE_DATABASE:kalamazi_dev.sqlite3"
   poolsize: "_env:YESOD_SQLITE_POOLSIZE:100"
 
-copyright: © 2020-2021 Kalamazi - All Rights Reserved
+copyright: © 2020-2022 Kalamazi - All Rights Reserved
 analytics: G-QMPBL4YEKN
 adsense: ca-pub-8227272400006456
