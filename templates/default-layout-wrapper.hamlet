@@ -47,6 +47,8 @@ $newline never
 
     <meta name="viewport" content="width=device-width,initial-scale=1">
 
+    <meta name="keywords" content=#{keywords}>
+
     ^{pageHead pc}
 
     \<!--[if lt IE 9]>
@@ -64,7 +66,6 @@ $newline never
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous">
     \<!-- Icons -->
     <link rel="stylesheet" href=@{StaticR css_LineIcons_css}>
-
 
     <script>
       /* The `defaultCsrfMiddleware` Middleware added in Foundation.hs adds a CSRF token to the request cookies. */

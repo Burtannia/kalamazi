@@ -63,7 +63,7 @@ postHomeR = do
     defaultLayout $ do
         setTitle "Kalamazi | Warlock Guides for Raid and Mythic+ in World of Warcraft"
         toWidgetHead
-            [hamlet| <meta name="description" content=#{pageDescription}> |]
+            [hamlet|<meta name="description" content=#{pageDescription}> |]
         let madminTools =
                 if isAdmin then
                     Just $ mkAdminTools $ 
@@ -76,4 +76,6 @@ postHomeR = do
         $(widgetFile "homepage")
 
 pageDescription :: Text
-pageDescription = ""
+pageDescription =
+    "The number one source of affliction, destruction and demonology warlock guides for both raid and mythic plus in World of Warcraft Shadowlands."
+    <> " Guides include talent builds, best in slot (BiS) gear, ability rotations, stat weights and more..."
