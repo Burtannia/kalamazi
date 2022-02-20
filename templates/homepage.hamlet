@@ -13,7 +13,7 @@
             ^{adminTools}
 
 <div #featureWrapper>
-    <img src=@{StaticR background_png} .img-fluid .w-100>
+    <img src=@{StaticR background_png} .img-fluid .w-100 alt="Background">
     <div #featureOverlay>
         <h2 .text-center .text-white> Latest Video
         <div .feature-iframe>

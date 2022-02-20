@@ -3,7 +3,7 @@
     <div .container>
 
         <a .navbar-brand href="/">
-            <img src=@{StaticR logo_png} .nav-logo alt="Kalamazi">
+            <img src=@{StaticR logo_png} .nav-logo alt="Kalamazi Logo">
 
         <button type="button" .navbar-toggler data-toggle="collapse" data-target="#navbar"
             aria-expanded="false" aria-controls="navbar" aria-label="Toggle navigation">

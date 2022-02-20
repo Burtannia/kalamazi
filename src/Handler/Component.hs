@@ -320,8 +320,11 @@ displayComponent = displayComponent'
             toggleId <- newIdent
             $(widgetFile "components/toggle")
         
-        displayComponent' (CImage imgId) =
-            [whamlet|<img .img-fluid src=@{ImagesR $ mkImageUrl imgId} loading="lazy">|]
+        displayComponent' (CImage imgId) = do
+            img <- liftHandler $ runDB $ getJust imgId
+            [whamlet|
+                <img .img-fluid src=@{ImagesR $ mkImageUrl imgId} loading="lazy" alt=#{imageName img}>
+            |]
 
         displayComponent' (CVideo url) = do
             phId <- newIdent
@@ -352,8 +355,10 @@ displayComponent = displayComponent'
 
         mkTextSnippet mu = [shamlet| <h6>#{mu} |]
 
-        mkImageSnippet imgId = withUrlRenderer
-            [hamlet|<img src=@{ImagesR $ mkImageUrl imgId} loading="lazy">|]
+        mkImageSnippet imgId = do
+            img <- runDB $ getJust imgId
+            withUrlRenderer
+                [hamlet|<img src=@{ImagesR $ mkImageUrl imgId} loading="lazy" alt=#{imageName img}>|]
 
         displayMarkup markup = $(widgetFile "components/markup")
 

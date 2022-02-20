@@ -1,5 +1,5 @@
 <div .row .error-page>
     <div .col-12 .text-white .text-center>
         <h2>Permission Denied
-        <img src=@{StaticR tyrant_png}>
+        <img src=@{StaticR tyrant_png} alt="Demonic tyrant">
         <p>#{msg}

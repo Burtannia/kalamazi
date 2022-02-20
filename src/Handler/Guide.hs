@@ -45,6 +45,10 @@ getGuideR guideId = do
 
     defaultLayout $ do
         setTitle $ toHtml $ guideTitle guide
+        toWidgetHead
+            [hamlet|
+                <meta name=description content=#{guideDescription guide}>
+            |]
         let madminTools =
                 if isAdmin then
                     Just $ mkAdminTools $ 
@@ -124,6 +128,10 @@ postGuideR guideId = do
 
     defaultLayout $ do
         setTitle $ toHtml $ guideTitle guide
+        toWidgetHead
+            [hamlet|
+                <meta name=description content=#{guideDescription guide}>
+            |]
         let madminTools =
                 if isAdmin then
                     Just $ mkAdminTools $ 
