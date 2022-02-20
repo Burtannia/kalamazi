@@ -21,3 +21,5 @@ cabal.sandbox.config
 \#*
 kalamazi.cabal
 kalamazi-australia.cabal
+images/
+weakauras/
