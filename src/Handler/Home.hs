@@ -87,7 +87,7 @@ pageMeta = do
                 "@type": "Person",
                 "url": "https://www.kalamazi.gg",
                 "image": "@{StaticR logo_full_png}",
-                "name": "Kalamazi",
+                "name": "Kalamazi"
             }
     |]
 
