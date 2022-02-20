@@ -1,4 +1,4 @@
-<div .section #section-#{toPathPiece sectionId}>
+<section .section #section-#{toPathPiece sectionId}>
     $if sectionTitle section /= "Banner"
         <h3 ##{secUrl}-header .mb-3 .text-center .section-title style="position: relative">#{sectionTitle section}
             <i .lnir .lnir-share .section-link>

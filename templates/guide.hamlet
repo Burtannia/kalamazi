@@ -1,8 +1,8 @@
 $maybe adminTools <- madminTools
     ^{adminTools}
 
-<div .guide>
-    $# <h2 .text-center .guide-title>#{guideTitle guide}
+<article .guide>
+    <h2 .d-none .text-center .guide-title>#{guideTitle guide}
     $if isAdmin
         <div .controls .mb-3>
             ^{nsWidget}
