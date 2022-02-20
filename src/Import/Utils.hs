@@ -17,7 +17,7 @@ import qualified Control.Monad.Trans.State.Strict as ST (get, put)
 
 setLogoMetaImage :: Widget
 setLogoMetaImage = toWidgetHead [hamlet|
-    <meta name="image" content=@{StaticR logo_full_png}>
+    <meta name="og:image" content=@{StaticR logo_full_png}>
 |]
 
 trimWhitespace :: Text -> Text
