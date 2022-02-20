@@ -30,7 +30,7 @@ getHomeR = do
                 return (gid, guideIcon guide, getShortTitle guide)
 
     defaultLayout $ do
-        setTitle "Kalamazi | Warlock Guides for Raid and Mythic+ in World of Warcraft"
+        setTitle homeTitle
         pageMeta
         let madminTools =
                 if isAdmin then
@@ -60,7 +60,7 @@ postHomeR = do
                 return (gid, guideIcon guide, getShortTitle guide)
 
     defaultLayout $ do
-        setTitle "Kalamazi | Warlock Guides for Raid and Mythic+ in World of Warcraft"
+        setTitle homeTitle
         pageMeta
         let madminTools =
                 if isAdmin then
@@ -72,6 +72,9 @@ postHomeR = do
                 else
                     Nothing
         $(widgetFile "homepage")
+
+homeTitle :: Html
+homeTitle = "Kalamazi | Warlock Guides for World of Warcraft"
 
 pageMeta :: Widget
 pageMeta = do
@@ -90,5 +93,4 @@ pageMeta = do
 
 pageDescription :: Text
 pageDescription =
-    "The number one source of affliction, destruction and demonology warlock guides for both raid and mythic plus in World of Warcraft Shadowlands."
-    <> " Guides include talent builds, best in slot (BiS) gear, ability rotations, stat weights and more..."
+    "Affliction, destruction and demonology warlock guides for raid and mythic plus in World of Warcraft Shadowlands. Includes gear, talents, rotations and more..."
