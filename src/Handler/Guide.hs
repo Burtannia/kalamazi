@@ -150,11 +150,11 @@ guideMeta guideId guide = toWidgetHead
                 "@type": "Article",
                 "mainEntityOfPage": {
                     "@type": "WebPage",
-                    "@id": @{GuideR guideId}
+                    "@id": "@{GuideR guideId}"
                 },
-                "headline": #{guideDescription guide},
-                "image": [@{ImagesR $ mkImageUrl $ guideIcon guide}],
-                "dateModified": #{iso8601Show $ guideModified guide},
+                "headline": "#{guideDescription guide}",
+                "image": ["@{ImagesR $ mkImageUrl $ guideIcon guide}"],
+                "dateModified": "#{iso8601Show $ guideModified guide}",
                 "author": {
                     "@type": "Person",
                     "name": "Kalamazi",
