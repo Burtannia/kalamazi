@@ -12,6 +12,7 @@ import Handler.Images
 import Handler.Guide
 import Handler.AdminTools
 import Handler.YouTube
+import Yesod.Auth.GoogleEmail2 (Organization(Organization))
        
 getHomeR :: Handler Html
 getHomeR = do
@@ -84,9 +85,9 @@ pageMeta = do
         <script type="application/ld+json">
             {
                 "@context": "https://schema.org",
-                "@type": "Person",
+                "@type": "Organization",
                 "url": "https://www.kalamazi.gg",
-                "image": "@{StaticR logo_full_png}",
+                "logo": "@{StaticR logo_full_png}",
                 "name": "Kalamazi"
             }
     |]
