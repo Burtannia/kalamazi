@@ -8,6 +8,7 @@ GuideGroup json
 Guide
     title Text
     shortTitle Text Maybe
+    description Text
     url Text
     isPublished Bool
     modified UTCTime

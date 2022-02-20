@@ -146,6 +146,7 @@ guideForm :: [Entity Image] -> Maybe Guide -> AForm Handler Guide
 guideForm imgs mg = Guide
     <$> areq textField titleSettings (guideTitle <$> mg)
     <*> aopt textField (withPlaceholder "My New Guide" $ fSettings "Short Title (Optional)" $ Just shortTip) (guideShortTitle <$> mg) 
+    <*> areq textField (withPlaceholder "Describe the guide..." $ fSettings "Description" $ Just descTip) (guideDescription <$> mg) 
     <*> areq gUrlField (withPlaceholder "my-new-guide" $ fSettings "Url" $ Just urlTip) (guideUrl <$> mg)
     <*> areq checkBoxField pubSettings (guideIsPublished <$> mg)
     <*> lift (liftIO getCurrentTime)
@@ -188,6 +189,7 @@ guideForm imgs mg = Guide
                 [ ("class", "lg-checkbox") ]
             }
         shortTip = "Optional short title to be displayed in links on the homepage / navbar etc."
+        descTip = "This will be used as the description for search engines like Google."
         urlTip = "The guide will be at kalamazi.gg/guides/<url>. Only letters, numbers, hyphens and underscores are permitted."
         iconTip = "This image will be used as a thumbnail if the guide is displayed on the homepage."
 
