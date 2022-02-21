@@ -22,6 +22,8 @@ import qualified Data.Text as T (foldr)
 import Data.Time.Clock (diffUTCTime)
 import Yesod.Form.Bootstrap4 (bfs)
 
+data GroupMod = Remove | UpdateTo GuideId
+
 getGuideR :: GuideId -> Handler Html
 getGuideR guideId = do
     muser <- maybeAuth
@@ -82,9 +84,10 @@ postGuideR guideId = do
             theId <-
                 if urlChanged then do
                     newId <- runDB $ insert400 newGuide
-                    runDB $ delete guideId
+                    modifyGroups guideId (UpdateTo newId)
                     flip mapM_ (guideSections newGuide) $
                         \sId -> runDB $ update sId [SectionGuideId =. newId]
+                    runDB $ delete guideId
                     return newId
                 else do
                     runDB $ replace guideId newGuide
@@ -259,18 +262,26 @@ deleteGuideR guideId = do
         mapM_ deleteComponent $ concatMap sectionContent sections
         mapM_ (runDB . delete) $ guideSections guide
         runDB $ delete guideId
-        removeFromGroups guideId
+        modifyGroups guideId Remove
         setMessage "Guide deleted successfully"
         sendResponse ("Guide deleted successfully" :: Text)
     sendResponseStatus status404 ("Guide does not exist" :: Text)
 
-removeFromGroups :: GuideId -> Handler ()
-removeFromGroups guideId = do
+modifyGroups :: GuideId -> GroupMod -> Handler ()
+modifyGroups guideId gm = do
     ggs <- runDB $ selectList [] [Asc GuideGroupPosition]
     flip mapM_ ggs $ \entgg -> do
         let ggGuides = guideGroupGuides $ entityVal entgg
+            newGuides = case gm of
+                Remove -> filter (/= guideId) ggGuides
+                (UpdateTo newId) -> [ if g == guideId then newId else g | g <- ggGuides ]
         when (guideId `elem` ggGuides) $
-            runDB $ update (entityKey entgg) [GuideGroupGuides =. ggGuides -=! guideId]
+            if null newGuides
+                then do
+                    let pos = guideGroupPosition $ entityVal entgg
+                    runDB $ delete $ entityKey entgg
+                    runDB $ updateWhere [GuideGroupPosition >. pos] [GuideGroupPosition -=. 1]
+                else runDB $ update (entityKey entgg) [GuideGroupGuides =. newGuides]
 
 guideGroupForm :: AForm Handler GuideGroup
 guideGroupForm = GuideGroup
