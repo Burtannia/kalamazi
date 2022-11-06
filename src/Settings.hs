@@ -23,6 +23,17 @@ import Yesod.Default.Config2       (applyEnvValue, configSettingsYml)
 import Yesod.Default.Util          (WidgetFileSettings, widgetFileNoReload,
                                     widgetFileReload)
 
+data BlizzardCreds = BlizzardCreds
+    { blizzClientId :: !Text
+    , blizzClientSecret :: !Text
+    } deriving Show
+
+instance FromJSON BlizzardCreds where
+    parseJSON = withObject "blizzard" $ \o -> do
+        blizzClientId     <- o .: "client_id"
+        blizzClientSecret <- o .: "client_secret"
+        return BlizzardCreds {..}
+
 -- | Runtime settings to configure this application. These settings can be
 -- loaded from various sources: defaults, environment variables, config files,
 -- theoretically even a database.
@@ -56,6 +67,8 @@ data AppSettings = AppSettings
     -- ^ Assume that files in the static dir may change after compilation
     , appSkipCombining          :: Bool
     -- ^ Perform no stylesheet/script combining
+
+    , appBlizzardCreds :: BlizzardCreds
 
     -- Example app-specific configuration values.
     , appCopyright              :: Text
@@ -92,6 +105,8 @@ instance FromJSON AppSettings where
         appReloadTemplates        <- o .:? "reload-templates" .!= dev
         appMutableStatic          <- o .:? "mutable-static"   .!= dev
         appSkipCombining          <- o .:? "skip-combining"   .!= dev
+
+        appBlizzardCreds          <- o .: "blizzard"
 
         appCopyright              <- o .:  "copyright"
         appAnalytics              <- o .:? "analytics"
