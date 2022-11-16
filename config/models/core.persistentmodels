@@ -22,3 +22,10 @@ Cache
     UniqueCacheId ident
     Primary ident
     deriving Show
+BlizzImage
+    uuid Text
+    name Text
+    created UTCTime
+    UniqueBlizzImageId uuid
+    Primary uuid
+    deriving Show

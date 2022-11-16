@@ -12,10 +12,12 @@ import Handler.Images
 import Handler.Guide
 import Handler.AdminTools
 import Handler.YouTube
+import qualified Handler.Blizzard as Blizz
 import Yesod.Auth.GoogleEmail2 (Organization(Organization))
        
 getHomeR :: Handler Html
 getHomeR = do
+    Blizz.getAccessToken
     muser <- maybeAuth
     let isAdmin = maybe False (userIsAdmin . entityVal) muser
 
