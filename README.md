@@ -1,1 +1,2 @@
 `stack exec -- yesod-tls devel --cert="/home/james/localhost.crt" --key="/home/james/localhost.key"`
+`stack exec -- yesod devel --cert="/Users/jburton/.localhost-ssl/localhost.crt" --key="/Users/jburton/.localhost-ssl/localhost.key"`
