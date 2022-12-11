@@ -1,27 +1,12 @@
 <div #guidesAdminWrapper>
     <div .w-100 .bg-darker>
         <h2 #homeGuideHeader .text-center .text-white>Featured Guides
-        <p #homeGuideNotice .text-center .text-white>
-            We're working hard to update the website for Dragonflight and will have things ready for raid release!
-            In the meantime please checkout the latest video guides for all three warlock specs in Dragonflight...
         <div #homeGuides .row>
-            <iframe
-                src="https://www.youtube.com/embed/Sr4RUTO3398"
-                title="10.0 Dragonflight Afflication Warlock DPS Guide"
-                frameborder="0" allowfullscreen="true" scrolling="no">
-            <iframe
-                src="https://www.youtube.com/embed/ECzaisCBTBA"
-                title="10.0 Dragonflight Demonology Warlock DPS Guide"
-                frameborder="0" allowfullscreen="true" scrolling="no">
-            <iframe
-                src="https://www.youtube.com/embed/KDMfaLEDQGw"
-                title="10.0 Dragonflight Destruction Warlock DPS Guide"
-                frameborder="0" allowfullscreen="true" scrolling="no">
-            $# $forall (gid, icon, title) <- guides
-            $#     <div .col-lg .col-sm-4 .home-guide-wrapper .text-center>
-            $#         <a href=@{GuideR gid} .text-white>
-            $#             <img .img-fluid src=@{ImagesR $ mkImageUrl icon} alt=#{title}>
-            $#             <h6>#{title}
+            $forall (gid, icon, title) <- guides
+                <div .col-lg .col-sm-4 .home-guide-wrapper .text-center>
+                    <a href=@{GuideR gid} .text-white>
+                        <img .img-fluid src=@{ImagesR $ mkImageUrl icon} alt=#{title}>
+                        <h6>#{title}
 
     $maybe adminTools <- madminTools
         <div .container>
