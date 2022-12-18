@@ -19,3 +19,6 @@ $if expand
                         frameborder="0">
                 <div .modal-footer>
                     <button type="button" .btn.btn-secondary data-dismiss="modal">Close
+
+<a href="" .wowhead-link-button :expand:.expandable-talents>
+    Talent Calculator
