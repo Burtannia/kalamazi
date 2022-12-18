@@ -1,0 +1,4 @@
+$('##{rawJS modalBtnIdent}').click(function() {
+    if ($(this).hasClass('has-expandable-iframe'))
+        $('##{rawJS modalIdent}').modal('show');
+});

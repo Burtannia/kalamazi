@@ -24,3 +24,5 @@
 /login LoginRedirectR GET
 
 /onlyfans OnlyFansR GET
+
+/discord DiscordR GET
