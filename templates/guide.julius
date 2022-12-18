@@ -4,6 +4,19 @@ $(document).on("keydown", ":input:not(textarea)", function(event) {
     }
 });
 
+$('.talent-iframe').each(function() {
+    if ($(this).parent().hasClass("modal-body"))
+        return
+
+    const expandable = $(this.hasClass('expandable-iframe'))
+
+    if ($(window).width() < 1200 && expandable) {
+        // replace with wowhead button
+    } else if ($(window).width() < 800) {
+        // replace with wowhead button
+    }
+})
+
 $('#delete-guide').click(function() {
     if(confirm("Are you sure you want to delete this guide?"))
         $.ajax({

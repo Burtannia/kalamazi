@@ -5,6 +5,7 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE RecordWildCards #-}
 
 module Handler.Component where
 
@@ -81,6 +82,7 @@ data CreateComponent
     | CreateVideo (Maybe Text)
     | CreateWeakAura (Maybe Text) (Maybe Textarea)
     | CreateDivider (Maybe Axis) (Maybe Bool)
+    | CreateTalents (Maybe TalentConfig)
 
 comps :: [(Text, Text, CreateComponent)]
 comps =
@@ -91,6 +93,7 @@ comps =
     , ("Video", "video", CreateVideo Nothing)
     , ("WeakAura", "weakaura", CreateWeakAura Nothing Nothing)
     , ("Divider", "divider", CreateDivider Nothing Nothing)
+    , ("Talent Tree", "talents", CreateTalents Nothing)
     ]
 
 toCreateComp :: Component -> Handler CreateComponent
@@ -110,6 +113,7 @@ toCreateComp (CWeakAura wId) = do
     waContent <- liftIO $ TIO.readFile fPath
     return $ CreateWeakAura (Just waTitle) (Just $ Textarea waContent)
 toCreateComp (CDivider axis visible) = return $ CreateDivider (Just axis) (Just visible)
+toCreateComp (CTalents tConfig) = return $ CreateTalents $ Just tConfig
 
 getMarkup :: (a, MarkupBlockId) -> Handler (a, Html)
 getMarkup = sequence . fmap (fmap markupBlockContent . runDB . getJust)
@@ -122,6 +126,7 @@ data ComponentData
     | CD_Video Text
     | CD_WeakAura Text Textarea
     | CD_Divider Axis Bool
+    | CD_Talents TalentConfig
 
 mkComponent :: ComponentData -> Handler Component
 mkComponent (CD_Markup m) = do
@@ -137,7 +142,7 @@ mkComponent (CD_Image imgId) = return $ CImage imgId
 mkComponent (CD_Video url) = return $ CVideo url
 mkComponent (CD_WeakAura title content) = do
     now <- liftIO getCurrentTime
-    
+
     fPath <- mkWeakauraPath $ iso8601Show now
     liftIO $ TIO.writeFile fPath (unTextarea content)
 
@@ -145,6 +150,7 @@ mkComponent (CD_WeakAura title content) = do
 
     return $ CWeakAura wId
 mkComponent (CD_Divider axis visible) = return $ CDivider axis visible
+mkComponent (CD_Talents tConfig) = return $ CTalents tConfig
 
 createCompForm :: [Entity Image] -> CreateComponent -> AForm Handler ComponentData
 createCompForm _ (CreateMarkup mhtml) = CD_Markup
@@ -208,6 +214,20 @@ createCompForm _ (CreateDivider maxis mvisible) = CD_Divider
                    ]
         visTip = "If visible then the divider will show as a line rather than just affecting the layout."
 
+createCompForm _ (CreateTalents mConfig) = CD_Talents . fixConfig <$> tConfig
+    where
+        tConfig :: AForm Handler TalentConfig
+        tConfig = TalentConfig
+            <$> areq textField (bfs ("Class" :: Text)) (talentClass <$> mConfig)
+            <*> areq textField (bfs ("Spec" :: Text)) (talentSpec <$> mConfig)
+            <*> areq textField (withTooltip codeTip $ bfs ("Code" :: Text)) (talentCode <$> mConfig)
+            <*> areq checkBoxField (withTooltip expTip $ withClass "lg-checkbox" "Expandable") (talentExpand <$> mConfig)
+        codeTip = "This is the string of random characters from the wowhead link."
+        expTip = "If selected the user will have to click the preview to expand the talent tree. \
+            \Only select this if there will be multiple talent trees in a single row."
+        fixConfig TalentConfig {..} = TalentConfig
+            (toLower talentClass) (toLower talentSpec) talentCode talentExpand
+
 mkWeakauraPath :: String -> Handler FilePath
 mkWeakauraPath name = do
     app <- getYesod
@@ -230,6 +250,7 @@ deleteComponent (CWeakAura wId) = do
     liftIO $ removeFile fPath
     runDB $ delete wId
 deleteComponent (CDivider _ _) = return ()
+deleteComponent (CTalents _) = return ()
 
 getCompWidget :: [Entity Image] -> Bool -> SectionId -> Int -> Component -> Widget
 getCompWidget imgs isAdmin sectionId ix comp = do
@@ -297,7 +318,7 @@ displayComponent = displayComponent'
         displayComponent' (CMarkup markupId) = do
             markup <- liftHandler $ runDB $ getJust markupId
             displayMarkup markup
-        
+
         displayComponent' (CToggle (ToggleTexts sc ts')) = do
             ts <- flip mapM ts' $ liftHandler
                                 . sequence
@@ -319,7 +340,7 @@ displayComponent = displayComponent'
                 mSpaceChar = Nothing :: Maybe Text
             toggleId <- newIdent
             $(widgetFile "components/toggle")
-        
+
         displayComponent' (CImage imgId) = do
             img <- liftHandler $ runDB $ getJust imgId
             [whamlet|
@@ -352,6 +373,20 @@ displayComponent = displayComponent'
             $(widgetFile "components/weakaura")
 
         displayComponent' (CDivider axis visible) = $(widgetFile "components/divider")
+        displayComponent' (CTalents tConfig) = do
+            let wowheadUrl = mkTalentTreeUrl tConfig
+                expand = talentExpand tConfig
+            modalIdent <- newIdent
+            modalBtnIdent <- newIdent
+            $(widgetFile "components/talents")
+
+        mkTalentTreeUrl TalentConfig {..} =
+            "https://www.wowhead.com/talent-calc/embed/"
+            <> talentClass
+            <> "/"
+            <> talentSpec
+            <> "/"
+            <> talentCode
 
         mkTextSnippet mu = [shamlet| <h6>#{mu} |]
 

@@ -28,7 +28,15 @@ data Component
     | CVideo Text
     | CWeakAura WeakAuraId
     | CDivider Axis Bool
+    | CTalents TalentConfig
     deriving (Show, Read)
+
+data TalentConfig = TalentConfig
+    { talentClass :: Text
+    , talentSpec :: Text
+    , talentCode :: Text
+    , talentExpand :: Bool
+    } deriving (Show, Read, Eq)
 
 data SpaceChar = SpaceLine | SpaceChev
     deriving (Show, Read, Eq)
@@ -48,5 +56,6 @@ derivePersistField "Axis"
 derivePersistField "SpaceChar"
 derivePersistField "ToggleGroup"
 derivePersistField "Component"
+derivePersistField "TalentConfig"
 
 share [mkPersist sqlSettings] $(persistFileWith lowerCaseSettings "config/models/guide.persistentmodels")

@@ -1,0 +1,16 @@
+div:has(> .expandable-iframe):hover {
+    cursor: pointer;
+    opacity: 70%;
+}
+
+.expandable-iframe {
+    pointer-events: none;
+}
+
+.talent-iframe {
+    padding: 2rem;
+}
+
+.modal-body > .talent-iframe {
+    padding-bottom: 6.6%;
+}

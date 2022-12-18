@@ -1,0 +1,21 @@
+<div ##{modalBtnIdent} .embed-responsive .embed-responsive-4by3 :expand:.has-expandable-iframe>
+    <iframe src=#{wowheadUrl}
+        .talent-iframe
+        .embed-responsive-item
+        :expand:.expandable-iframe
+        frameborder="0">
+    $if expand
+        <p .text-muted .text-center style="margin-top: -5%; position: relative">(Click to expand)
+
+$if expand
+    <div .modal.fade ##{modalIdent} tabindex="-1" role="dialog" aria-labelledby="iframeModalLabel" aria-hidden="true">
+        <div .modal-dialog.modal-xl role="document">
+            <div .modal-content>
+                <div .modal-body .embed-responsive .embed-responsive-4by3>
+                    <iframe src=#{wowheadUrl}
+                        .d-block .mx-auto .embed-responsive-item
+                        .talent-iframe
+                        scrolling="no"
+                        frameborder="0">
+                <div .modal-footer>
+                    <button type="button" .btn.btn-secondary data-dismiss="modal">Close
