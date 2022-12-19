@@ -1,10 +1,21 @@
-div:has(> .expandable-iframe):hover {
+.talents-preview:hover {
     cursor: pointer;
-    opacity: 70%;
 }
 
-.expandable-iframe {
-    pointer-events: none;
+.talents-preview > img {
+    opacity: 50%;
+}
+
+.talents-preview:hover > img {
+    opacity: 30%;
+}
+
+.talents-preview > p {
+    font-weight: 600;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .talent-iframe {
@@ -57,20 +68,14 @@ div:has(> .expandable-iframe):hover {
     display: none;
 }
 
-@media (max-width: 1200px) {
-    .wowhead-link-button.expandable-talents {
-        display: block;
-    }
-    .has-expandable-iframe {
-        display: none !important;
-    }
-}
-
 @media (max-width: 992px) {
     .wowhead-link-button {
         display: block;
     }
-    div:has(> .talent-iframe) {
+    .talents-preview {
         display: none;
+    }
+    .talents-iframe-wrapper {
+        display: none !important;
     }
 }

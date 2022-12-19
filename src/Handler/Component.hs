@@ -214,7 +214,7 @@ createCompForm _ (CreateDivider maxis mvisible) = CD_Divider
                    ]
         visTip = "If visible then the divider will show as a line rather than just affecting the layout."
 
-createCompForm _ (CreateTalents mConfig) = CD_Talents . fixConfig <$> tConfig
+createCompForm imgs (CreateTalents mConfig) = CD_Talents . fixConfig <$> tConfig
     where
         tConfig :: AForm Handler TalentConfig
         tConfig = TalentConfig
@@ -222,11 +222,12 @@ createCompForm _ (CreateTalents mConfig) = CD_Talents . fixConfig <$> tConfig
             <*> areq textField (bfs ("Spec" :: Text)) (talentSpec <$> mConfig)
             <*> areq textField (withTooltip codeTip $ bfs ("Code" :: Text)) (talentCode <$> mConfig)
             <*> areq checkBoxField (withTooltip expTip $ withClass "lg-checkbox" "Expandable") (talentExpand <$> mConfig)
+            <*> areq (imageSelectField imgs) (bfs ("Preview Image" :: Text)) (talentPreview <$> mConfig)
         codeTip = "This is the string of random characters from the wowhead link."
-        expTip = "If selected the user will have to click the preview to expand the talent tree. \
+        expTip = "If selected the user will have to click the preview image to expand the talent tree. \
             \Only select this if there will be multiple talent trees in a single row."
         fixConfig TalentConfig {..} = TalentConfig
-            (toLower talentClass) (toLower talentSpec) talentCode talentExpand
+            (toLower talentClass) (toLower talentSpec) talentCode talentExpand talentPreview
 
 mkWeakauraPath :: String -> Handler FilePath
 mkWeakauraPath name = do
@@ -374,19 +375,20 @@ displayComponent = displayComponent'
 
         displayComponent' (CDivider axis visible) = $(widgetFile "components/divider")
         displayComponent' (CTalents tConfig) = do
-            let wowheadUrl = mkTalentTreeUrl tConfig
+            let wowheadEmbedUrl = mkTalentEmbedUrl tConfig
+                wowheadUrl = mkTalentUrl tConfig
                 expand = talentExpand tConfig
+                previewId = talentPreview tConfig
             modalIdent <- newIdent
             modalBtnIdent <- newIdent
             $(widgetFile "components/talents")
 
-        mkTalentTreeUrl TalentConfig {..} =
-            "https://www.wowhead.com/talent-calc/embed/"
-            <> talentClass
-            <> "/"
-            <> talentSpec
-            <> "/"
-            <> talentCode
+        mkTalentEmbedUrl tc = "https://www.wowhead.com/talent-calc/embed/" <> mkTalentUrlSuffix tc
+
+        mkTalentUrl tc = "https://www.wowhead.com/talent-calc/" <> mkTalentUrlSuffix tc
+
+        mkTalentUrlSuffix TalentConfig {..} =
+            talentClass <> "/" <> talentSpec <> "/" <> talentCode
 
         mkTextSnippet mu = [shamlet| <h6>#{mu} |]
 

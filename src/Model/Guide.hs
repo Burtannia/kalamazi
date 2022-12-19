@@ -36,6 +36,7 @@ data TalentConfig = TalentConfig
     , talentSpec :: Text
     , talentCode :: Text
     , talentExpand :: Bool
+    , talentPreview :: ImageId
     } deriving (Show, Read, Eq)
 
 data SpaceChar = SpaceLine | SpaceChev

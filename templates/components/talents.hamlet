@@ -1,18 +1,17 @@
-<div ##{modalBtnIdent} .embed-responsive .embed-responsive-4by3 :expand:.has-expandable-iframe>
-    <iframe src=#{wowheadUrl}
-        .talent-iframe
-        .embed-responsive-item
-        :expand:.expandable-iframe
-        frameborder="0">
-    $if expand
-        <p .text-muted .text-center style="margin-top: -5%; position: relative">(Click to expand)
+$if expand
+    <div ##{modalBtnIdent} .talents-preview>
+        <img src=@{ImagesR $ mkImageUrl previewId} .img-fluid loading="lazy" alt="Talent tree preview">
+        <p .text-white .text-center>Click to Expand
+$else
+    <div .talents-iframe-wrapper .embed-responsive .embed-responsive-4by3>
+        <iframe src=#{wowheadEmbedUrl} .talent-iframe .embed-responsive-item frameborder="0">
 
 $if expand
     <div .modal.fade ##{modalIdent} tabindex="-1" role="dialog" aria-labelledby="iframeModalLabel" aria-hidden="true">
         <div .modal-dialog.modal-xl role="document">
             <div .modal-content>
                 <div .modal-body .embed-responsive .embed-responsive-4by3>
-                    <iframe src=#{wowheadUrl}
+                    <iframe src=#{wowheadEmbedUrl}
                         .d-block .mx-auto .embed-responsive-item
                         .talent-iframe
                         scrolling="no"
@@ -20,5 +19,5 @@ $if expand
                 <div .modal-footer>
                     <button type="button" .btn.btn-secondary data-dismiss="modal">Close
 
-<a href="" .wowhead-link-button :expand:.expandable-talents>
+<a href=#{wowheadUrl} .wowhead-link-button :expand:.expandable-talents>
     Talent Calculator

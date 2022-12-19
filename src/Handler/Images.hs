@@ -113,6 +113,8 @@ sectionUsesImg imgId s = or $
 componentUsesImg :: ImageId -> Component -> Bool
 componentUsesImg imgId (CToggle (ToggleImages ts)) =
     or $ map (\x -> imgId == fst x) ts
+componentUsesImg imgId (CTalents tConfig) =
+    talentPreview tConfig == imgId
 componentUsesImg _ _ = False
 
 getAllImages :: DB [Entity Image]
