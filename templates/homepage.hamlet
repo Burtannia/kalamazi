@@ -12,15 +12,6 @@
         <div .container>
             ^{adminTools}
 
-<div .w-100 style="display: flex; flex-direction: column; align-items: center;">
-    <div>
-        <p .text-white style="max-width: 800px;">
-            Hey folks, I've been ill recently so haven't been able to update #
-            the website for 10.2. In the meantime, please use the spreadsheet #
-            which can be found <a href="https://docs.google.com/spreadsheets/d/12qPcFIxBCETRDOXrr-BksDrUpBDPZPVN2cpUXEk54eQ/edit?usp=sharing">here</a>.
-
-        <p style="max-width: 800px; color: #a1232c;"> - Kalamazi
-
 <div #featureWrapper>
     <img src=@{StaticR background_png} .img-fluid .w-100 alt="Background">
     <div #featureOverlay>
