@@ -12,14 +12,14 @@
         <div .container>
             ^{adminTools}
 
-<div .w-100 style="display: flex; flex-direction: column; align-items: center; margin-top: 10px;">
-    <div>
-        <h2 .text-white>10.2.5 WeakAura Issue
-        <p .text-white style="max-width: 800px;">
-            To fix your WeakAuras:<br>
-                - Log on a NON-WARLOCK ALT<br>
-                - Delete ANY SOUL SHARD BAR<br>
-                - Import either standalone fix: <a href="https://wago.io/p2pkBXlOs">NOT's Fix</a> or <a href="https://wago.io/0pqYN_jEH">Kalamazi's Fix</a>
+$# <div .w-100 style="display: flex; flex-direction: column; align-items: center; margin-top: 10px;">
+$#     <div>
+$#         <h2 .text-white>10.2.5 WeakAura Issue
+$#         <p .text-white style="max-width: 800px;">
+$#             To fix your WeakAuras:<br>
+$#                 - Log on a NON-WARLOCK ALT<br>
+$#                 - Delete ANY SOUL SHARD BAR<br>
+$#                 - Import either standalone fix: <a href="https://wago.io/p2pkBXlOs">NOT's Fix</a> or <a href="https://wago.io/0pqYN_jEH">Kalamazi's Fix</a>
 
 <div #featureWrapper>
     <img src=@{StaticR background_png} .img-fluid .w-100 alt="Background">
