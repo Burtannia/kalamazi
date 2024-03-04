@@ -258,14 +258,10 @@ getCompWidget imgs isAdmin sectionId ix comp = do
     compId <- newIdent
     cc <- liftHandler $ toCreateComp comp
 
-    -- generate edit form
-    form <- liftHandler
-        $ genBs4FormIdentify (mkEditCompId sectionId $ tshow ix)
-        $ createCompForm imgs cc
-
     -- generate controls and display widget
     let canMove = compCanMove comp
-        controls = compControls sectionId compId canMove form
+        editFormId = mkEditCompId sectionId $ tshow ix
+        controls = compControls sectionId ix editFormId compId canMove
         compWidget = displayComponent comp
         isCol = isDivCol comp
         isRow = isDivRow comp
@@ -277,11 +273,15 @@ postCompWidget :: [Entity Image] -> Bool -> SectionId -> Int -> Component
 postCompWidget imgs isAdmin sectionId ix comp = do
     compId <- newIdent
     cc <- toCreateComp comp
+
+    let editFormId = mkEditCompId sectionId $ tshow ix
+
     ((formRes, formWidget), enctype) <- liftHandler
-        $ runBs4FormIdentify (mkEditCompId sectionId $ tshow ix)
+        $ runBs4FormIdentify editFormId
         $ createCompForm imgs cc
+
     let canMove = compCanMove comp
-        controls = compControls sectionId compId canMove (formWidget, enctype)
+        controls = compControls sectionId ix editFormId compId canMove
         compWidget = displayComponent comp
         isCol = isDivCol comp
         isRow = isDivRow comp
@@ -305,12 +305,12 @@ postCompWidget imgs isAdmin sectionId ix comp = do
 compCanMove :: Component -> Bool
 compCanMove x = not $ isDivCol x || isDivRow x
 
-compControls :: SectionId -> Text -> Bool -> (Widget, Enctype) -> Widget
-compControls sectionId compId canMove f = do
+compControls :: SectionId -> Int -> Text -> Text -> Bool -> Widget
+compControls sectionId compIx editFormId compId canMove = do
     delId <- newIdent
     upId <- newIdent
     downId <- newIdent
-    let editWidget = mkModalEdit "Edit Component" f
+    let editWidget = mkModalEditHtmx "Edit Component" sectionId compIx editFormId
     $(widgetFile "components/controls")
 
 displayComponent :: Component -> Widget

@@ -19,6 +19,8 @@
 
 /section/#SectionId SectionR PATCH DELETE
 
+/component-edit/#SectionId/#Int/#Text ComponentEditR GET
+
 /privacy PrivacyR GET DELETE
 
 /login LoginRedirectR GET

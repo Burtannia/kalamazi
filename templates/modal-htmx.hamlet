@@ -1,0 +1,18 @@
+<button type="button" .#{msButtonClass}
+    hx-get="@{ComponentEditR sectionId compIx compFormId}"
+    hx-target="##{contentId}"
+    hx-trigger="click"
+    data-toggle="modal" data-target="##{modalId}">#{msButtonInner}
+
+<div .modal .fade ##{modalId} tabindex="-1">
+    <div .modal-dialog .modal-lg>
+        <div .modal-content>
+            <div .modal-header>
+                <h5 .modal-title>#{modalTitle}
+                <button type="button" .close data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;
+            <div ##{contentId} .modal-body>
+
+            <div .modal-footer>
+                <button type="button" .btn .btn-secondary data-dismiss="modal">Close
+                <button type="submit" .btn .btn-primary form=#{compFormId}>Save

@@ -173,7 +173,7 @@ instance Yesod App where
             sendResponseStatus
                 (mkStatus code brief)
                 $ RepPlain $ toContent $ T.append "Error: " full
-                
+
         case errorResponse of
             NotFound -> fmap toTypedContent $ defaultLayout $ do
                 setTitle "Error 404 | Page Not Found"
@@ -198,7 +198,7 @@ instance Yesod App where
         --         _ -> defaultErrorHandler errorResponse
         -- else
         --     selectRep $ provideRep $ return ("Not Found" :: Html)
-        
+
     maximumContentLength :: App -> Maybe (Route App) -> Maybe Word64
     maximumContentLength _ _ = Just $ 5 * 1024 * 1024 -- 5 megabytes
 
@@ -230,7 +230,7 @@ instance Yesod App where
         mcurrentRoute <- getCurrentRoute
 
         let isAdmin = maybe False (userIsAdmin . snd) muser
-        
+
         guideGroups <- fmap (map entityVal) $
             liftHandler $ runDB $ selectList [] [Asc GuideGroupPosition]
 
@@ -239,7 +239,7 @@ instance Yesod App where
                         (fromMaybe (guideTitle guide) $ guideShortTitle guide)
                         (GuideR guideId) (isAdmin || guideIsPublished guide)
                  in (mi, sectionUrls)
-                
+
             mkGroupNav gg = liftHandler $ do
                 let getSections (guideId, g) = do
                         sections <- mapM (runDB . getJust) $ guideSections g
@@ -250,7 +250,7 @@ instance Yesod App where
                 guides' <- mapM (sequence . (id &&& runDB . getJust)) $ guideGroupGuides gg
                 guides <- mapM getSections guides'
 
-                let guideLinks = filter (menuItemAccessCallback . fst) $ map mkGuideLink guides 
+                let guideLinks = filter (menuItemAccessCallback . fst) $ map mkGuideLink guides
                     shouldShow = length guideLinks > 0
                 return $
                     case guideLinks of
@@ -321,10 +321,12 @@ instance Yesod App where
 
     isAuthorized (GuideR _) False = return Authorized
     isAuthorized (GuideR _) True = isAuthenticated
-    
+
     isAuthorized (GuideGroupR _) _ = isAuthenticated
 
     isAuthorized (SectionR _) _ = isAuthenticated
+
+    isAuthorized ComponentEditR {} _ = isAuthenticated
 
     isAuthorized PrivacyR _ = return Authorized
 
