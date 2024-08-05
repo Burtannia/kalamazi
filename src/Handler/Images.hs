@@ -188,7 +188,7 @@ imageSelectFieldToggle :: [Entity Image] -> Field Handler ImageId
 imageSelectFieldToggle = imageSelectFieldHelper True
 
 imageSelectFieldHelper :: Bool -> [Entity Image] -> Field Handler ImageId
-imageSelectFieldHelper toggle images = selectFieldHelper outerView noneView otherView (return opts)
+imageSelectFieldHelper toggle images = selectFieldHelper outerView noneView otherView Nothing (return opts)
     where
         outerView = \idAttr _ _ inside -> do
             [whamlet|

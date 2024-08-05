@@ -81,7 +81,7 @@ pageMeta :: Widget
 pageMeta = do
     setLogoMetaImage
     toWidgetHead [hamlet|
-        <meta name="description" content=#{pageDescription}>
+        <meta name="description" content=#{description}>
         <script type="application/ld+json">
             {
                 "@context": "https://schema.org",
@@ -92,6 +92,6 @@ pageMeta = do
             }
     |]
 
-pageDescription :: Text
-pageDescription =
+description :: Text
+description =
     "Affliction, Destruction and Demonology warlock guides for raid and mythic+ in World of Warcraft Shadowlands. Includes talents, rotations, gear and more..."

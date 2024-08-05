@@ -11,7 +11,7 @@
 module Handler.Guide where
 
 import Import
-import Data.Aeson.Types
+import Data.Aeson.Types hiding (Key)
 import Data.Time.Format.ISO8601
 import Handler.AdminTools
 import Handler.Component
