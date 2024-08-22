@@ -39,6 +39,8 @@ import System.Log.FastLogger                (defaultBufSize, newStdoutLoggerSet,
                                              toLogStr)
 import System.Directory                     (createDirectoryIfMissing)
 import System.Environment                                         
+import Configuration.Dotenv (loadFile, defaultConfig)
+
 
 -- Import all relevant handler modules here.
 -- Don't forget to add new modules to your cabal file!
@@ -77,6 +79,8 @@ makeFoundation appSettings = do
     appImages <- static (appImageDir appSettings)
 
     createDirectoryIfMissing True (appWeakauraDir appSettings)
+
+    loadFile defaultConfig -- .env
 
     appGoogleAuthId <- fmap pack $ getEnv "KALA_GOOGLE_OAUTH_ID"
     appGoogleAuthKey <- fmap pack $ getEnv "KALA_GOOGLE_OAUTH_SECRET"

@@ -31,8 +31,6 @@ getSectionWidget imgs isAdmin sectionId = do
             $ withIndexes3 $ layoutComps $ sectionContent section
         compWidgets = markDivs compWidgets'
 
-    liftIO $ print $ layoutComps $ sectionContent section
-
     sectionUpId <- newIdent
     sectionDownId <- newIdent
     sectionDelId <- newIdent
@@ -52,9 +50,9 @@ postSectionWidget imgs isAdmin sectionId = do
                                         (sectionForm guideId $ Just section)
 
     let sectionModal = mkModalEdit "Edit" (sWidget, sEnctype)
-    
+
     (ncWidget, mcomp) <- liftHandler $ runNewComponent imgs sectionId
-    
+   
     (compWidgets', mcomps) <- liftHandler
         $ fmap (map3 fst &&& map3 snd)
         $ mapM3 (uncurry $ postCompWidget imgs isAdmin sectionId)
@@ -65,7 +63,7 @@ postSectionWidget imgs isAdmin sectionId = do
             liftHandler $ updateGuideModified $ sectionGuideId section
             setMessage msg
             redirect $ GuideR guideId
-        
+
     for_ (listToMaybe $ catMaybes $ concat $ concat mcomps) $ \c@(_, ix) -> do
         when (ix < 0 || ix >= length content) $ do
             setMessage "Error updating component: index out of bounds"
@@ -73,7 +71,7 @@ postSectionWidget imgs isAdmin sectionId = do
         liftHandler $ runDB $ update sectionId
             [ SectionContent =. content /! c ]
         onSuccess "Component updated"
-
+    
     for_ mcomp $ \comp -> do
         liftHandler $ runDB $ update sectionId
             [ SectionContent =. content ++ [comp] ]

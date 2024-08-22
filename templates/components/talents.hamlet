@@ -3,8 +3,8 @@ $if expand
         <img src=@{ImagesR $ mkImageUrl previewId} .img-fluid loading="lazy" alt="Talent tree preview">
         <p .text-white .text-center>Click to Expand
 $else
-    <div .talents-iframe-wrapper .embed-responsive .embed-responsive-4by3>
-        <iframe src=#{wowheadEmbedUrl} .talent-iframe .embed-responsive-item frameborder="0">
+    <div .talents-iframe-wrapper>
+        <iframe src=#{wowheadEmbedUrl} .talent-iframe frameborder="0" scrolling="no">
 
 $if expand
     <div .modal.fade ##{modalIdent} tabindex="-1" role="dialog" aria-labelledby="iframeModalLabel" aria-hidden="true">
