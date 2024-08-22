@@ -301,6 +301,7 @@ instance Yesod App where
     isAuthorized (AuthR _) _ = return Authorized
     isAuthorized FaviconR _ = return Authorized
     isAuthorized RobotsR _ = return Authorized
+    isAuthorized AdsR _ = return Authorized
     isAuthorized (StaticR _) _ = return Authorized
     isAuthorized LoginRedirectR _ = return Authorized
 

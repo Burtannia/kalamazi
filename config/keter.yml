@@ -16,7 +16,7 @@ stanzas:
     # The path given is for Stack projects. If you're still using cabal, change
     # to
     # exec: ../dist/build/kalamazi/kalamazi
-    exec: ../dist/bin/kalamazi
+    exec: ../result/bin/kalamazi
 
     # Command line options passed to your application.
     args: []
