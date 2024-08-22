@@ -18,8 +18,16 @@
     transform: translate(-50%, -50%);
 }
 
+.talents-iframe-wrapper {
+    width: 100%;
+}
+
 .talent-iframe {
     padding: 2rem;
+    width: 130%;
+    aspect-ratio: 16 / 9;
+    transform: translateX(-11.5%);
+    overflow: hidden;
 }
 
 .modal-body > .talent-iframe {

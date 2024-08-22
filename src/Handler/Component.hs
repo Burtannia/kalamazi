@@ -6,10 +6,11 @@
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE DuplicateRecordFields #-}
 
 module Handler.Component where
 
-import Import
+import Import hiding (TalentConfig (..))
 import Handler.Images
 import Handler.Modal
 import Summernote
@@ -82,7 +83,7 @@ data CreateComponent
     | CreateVideo (Maybe Text)
     | CreateWeakAura (Maybe Text) (Maybe Textarea)
     | CreateDivider (Maybe Axis) (Maybe Bool)
-    | CreateTalents (Maybe TalentConfig)
+    | CreateTalents (Maybe HeroTalentConfig)
 
 comps :: [(Text, Text, CreateComponent)]
 comps =
@@ -113,7 +114,8 @@ toCreateComp (CWeakAura wId) = do
     waContent <- liftIO $ TIO.readFile fPath
     return $ CreateWeakAura (Just waTitle) (Just $ Textarea waContent)
 toCreateComp (CDivider axis visible) = return $ CreateDivider (Just axis) (Just visible)
-toCreateComp (CTalents tConfig) = return $ CreateTalents $ Just tConfig
+toCreateComp (CTalents tConfig) = return $ CreateTalents $ Just (toHeroTalents tConfig)
+toCreateComp (CHeroTalents tConfig) = return $ CreateTalents $ Just tConfig
 
 getMarkup :: (a, MarkupBlockId) -> Handler (a, Html)
 getMarkup = sequence . fmap (fmap markupBlockContent . runDB . getJust)
@@ -126,7 +128,7 @@ data ComponentData
     | CD_Video Text
     | CD_WeakAura Text Textarea
     | CD_Divider Axis Bool
-    | CD_Talents TalentConfig
+    | CD_Talents HeroTalentConfig
 
 mkComponent :: ComponentData -> Handler Component
 mkComponent (CD_Markup m) = do
@@ -150,7 +152,7 @@ mkComponent (CD_WeakAura title content) = do
 
     return $ CWeakAura wId
 mkComponent (CD_Divider axis visible) = return $ CDivider axis visible
-mkComponent (CD_Talents tConfig) = return $ CTalents tConfig
+mkComponent (CD_Talents tConfig) = return $ CHeroTalents tConfig
 
 createCompForm :: [Entity Image] -> CreateComponent -> AForm Handler ComponentData
 createCompForm _ (CreateMarkup mhtml) = CD_Markup
@@ -216,18 +218,19 @@ createCompForm _ (CreateDivider maxis mvisible) = CD_Divider
 
 createCompForm imgs (CreateTalents mConfig) = CD_Talents . fixConfig <$> tConfig
     where
-        tConfig :: AForm Handler TalentConfig
-        tConfig = TalentConfig
+        tConfig :: AForm Handler HeroTalentConfig
+        tConfig = HeroTalentConfig
             <$> areq textField (bfs ("Class" :: Text)) (talentClass <$> mConfig)
             <*> areq textField (bfs ("Spec" :: Text)) (talentSpec <$> mConfig)
+            <*> areq textField (bfs ("Hero" :: Text)) (talentHero <$> mConfig)
             <*> areq textField (withTooltip codeTip $ bfs ("Code" :: Text)) (talentCode <$> mConfig)
             <*> areq checkBoxField (withTooltip expTip $ withClass "lg-checkbox" "Expandable") (talentExpand <$> mConfig)
             <*> areq (imageSelectField imgs) (bfs ("Preview Image" :: Text)) (talentPreview <$> mConfig)
         codeTip = "This is the string of random characters from the wowhead link."
         expTip = "If selected the user will have to click the preview image to expand the talent tree. \
             \Only select this if there will be multiple talent trees in a single row."
-        fixConfig TalentConfig {..} = TalentConfig
-            (toLower talentClass) (toLower talentSpec) talentCode talentExpand talentPreview
+        fixConfig HeroTalentConfig {..} = HeroTalentConfig
+            (toLower talentClass) (toLower talentSpec) (toLower talentHero) talentCode talentExpand talentPreview
 
 mkWeakauraPath :: String -> Handler FilePath
 mkWeakauraPath name = do
@@ -252,6 +255,7 @@ deleteComponent (CWeakAura wId) = do
     runDB $ delete wId
 deleteComponent (CDivider _ _) = return ()
 deleteComponent (CTalents _) = return ()
+deleteComponent (CHeroTalents _) = return ()
 
 getCompWidget :: [Entity Image] -> Bool -> SectionId -> Int -> Component -> Widget
 getCompWidget imgs isAdmin sectionId ix comp = do
@@ -374,7 +378,7 @@ displayComponent = displayComponent'
             $(widgetFile "components/weakaura")
 
         displayComponent' (CDivider axis visible) = $(widgetFile "components/divider")
-        displayComponent' (CTalents tConfig) = do
+        displayComponent' (CHeroTalents tConfig) = do
             let wowheadEmbedUrl = mkTalentEmbedUrl tConfig
                 wowheadUrl = mkTalentUrl tConfig
                 expand = talentExpand tConfig
@@ -382,13 +386,15 @@ displayComponent = displayComponent'
             modalIdent <- newIdent
             modalBtnIdent <- newIdent
             $(widgetFile "components/talents")
+        displayComponent' (CTalents tConfig) = displayComponent' (CHeroTalents $ toHeroTalents tConfig)
 
         mkTalentEmbedUrl tc = "https://www.wowhead.com/talent-calc/embed/" <> mkTalentUrlSuffix tc
 
         mkTalentUrl tc = "https://www.wowhead.com/talent-calc/" <> mkTalentUrlSuffix tc
 
-        mkTalentUrlSuffix TalentConfig {..} =
-            talentClass <> "/" <> talentSpec <> "/" <> talentCode
+        mkTalentUrlSuffix HeroTalentConfig {..} =
+            talentClass <> "/" <> talentSpec <> hero <> "/" <> talentCode
+            where hero = if talentHero == "" then "" else "/" <> talentHero
 
         mkTextSnippet mu = [shamlet| <h6>#{mu} |]
 

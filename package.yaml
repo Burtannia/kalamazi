@@ -48,6 +48,7 @@ dependencies:
 - yesod-form-multi
 - yesod-form-bootstrap4
 - transformers
+- dotenv
 
 # The library contains all of our application code. The executable
 # defined below is just a thin wrapper.

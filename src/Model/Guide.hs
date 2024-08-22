@@ -11,6 +11,8 @@
 {-# LANGUAGE DerivingStrategies #-}
 {-# LANGUAGE StandaloneDeriving #-}
 {-# LANGUAGE UndecidableInstances #-}
+{-# LANGUAGE DuplicateRecordFields #-}
+{-# LANGUAGE OverloadedRecordDot #-}
 
 module Model.Guide where
 
@@ -30,7 +32,17 @@ data Component
     | CWeakAura WeakAuraId
     | CDivider Axis Bool
     | CTalents TalentConfig
+    | CHeroTalents HeroTalentConfig
     deriving (Show, Read)
+
+data HeroTalentConfig = HeroTalentConfig 
+    { talentClass :: Text
+    , talentSpec :: Text
+    , talentHero :: Text
+    , talentCode :: Text
+    , talentExpand :: Bool
+    , talentPreview :: ImageId
+    } deriving (Show, Read, Eq)
 
 data TalentConfig = TalentConfig
     { talentClass :: Text
@@ -54,10 +66,14 @@ type Grid = [Row]
 type Row = [Column]
 type Column = [Component]
 
+toHeroTalents :: TalentConfig -> HeroTalentConfig
+toHeroTalents tc = HeroTalentConfig tc.talentClass tc.talentSpec "" tc.talentCode tc.talentExpand tc.talentPreview
+
 derivePersistField "Axis"
 derivePersistField "SpaceChar"
 derivePersistField "ToggleGroup"
-derivePersistField "Component"
 derivePersistField "TalentConfig"
+derivePersistField "HeroTalentConfig"
+derivePersistField "Component"
 
 share [mkPersist sqlSettings] $(persistFileWith lowerCaseSettings "config/models/guide.persistentmodels")
