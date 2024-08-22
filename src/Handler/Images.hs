@@ -1,38 +1,42 @@
-{-# LANGUAGE NoImplicitPrelude #-}
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE TemplateHaskell #-}
-{-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE TypeFamilies #-}
-{-# LANGUAGE QuasiQuotes #-}
-{-# LANGUAGE OverloadedRecordDot #-}
 {-# LANGUAGE DuplicateRecordFields #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE NamedFieldPuns #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE QuasiQuotes #-}
+{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE NoImplicitPrelude #-}
 
 module Handler.Images where
 
-import Import
-import Yesod.Form.Bootstrap4
-import System.Directory (removeFile, doesFileExist)
 import Data.Time.Format.ISO8601
+import Import
+import System.Directory (doesFileExist, removeFile)
 import Yesod.Core.Types (HandlerContents (..))
-    
+import Yesod.Form.Bootstrap4
+
 getImageManager :: Widget
 getImageManager = do
-    (formWidget, enctype) <- liftHandler $
-        genBs4FormIdentify' BootstrapInlineForm imageFormId uploadForm
+    (formWidget, enctype) <-
+        liftHandler $
+            genBs4FormIdentify' BootstrapInlineForm imageFormId uploadForm
 
-    (massFormWidget, massEnctype) <- liftHandler $
-        genBs4FormIdentify' BootstrapInlineForm massImageFormId massImageForm
+    (massFormWidget, massEnctype) <-
+        liftHandler $
+            genBs4FormIdentify' BootstrapInlineForm massImageFormId massImageForm
 
     modalId <- newIdent
     $(widgetFile "image-manager")
 
 postImageManager :: Widget
 postImageManager = do
-    ((result, formWidget), enctype) <- liftHandler $
-        runBs4FormIdentify' BootstrapInlineForm imageFormId uploadForm
+    ((result, formWidget), enctype) <-
+        liftHandler $
+            runBs4FormIdentify' BootstrapInlineForm imageFormId uploadForm
 
-    ((massFormResult, massFormWidget), massEnctype) <- liftHandler $
-        runBs4FormIdentify' BootstrapInlineForm massImageFormId massImageForm
+    ((massFormResult, massFormWidget), massEnctype) <-
+        liftHandler $
+            runBs4FormIdentify' BootstrapInlineForm massImageFormId massImageForm
 
     modalId <- newIdent
 
@@ -40,19 +44,16 @@ postImageManager = do
         FormSuccess iu -> liftHandler $ do
             _ <- uploadImage (Just $ iuName iu) (iuFile iu)
             msgRedirect "Image uploaded successfully"
-
         FormMissing -> return ()
-        
         FormFailure errs -> do
             liftIO $ putStrLn "postImageManager: Image Upload"
             print errs
-    
-    case massFormResult of
-        FormSuccess _ -> liftHandler $
-            msgRedirect "Images uploaded successfully"
-        
-        FormMissing -> return ()
 
+    case massFormResult of
+        FormSuccess _ ->
+            liftHandler $
+                msgRedirect "Images uploaded successfully"
+        FormMissing -> return ()
         FormFailure errs -> do
             liftIO $ putStrLn "postImageManager: Mass Image Upload"
             print errs
@@ -79,8 +80,9 @@ deleteImageR imgId = do
         Just img -> do
             minUseBy <- imageInUse imgId
             case minUseBy of
-                Just name -> sendResponseStatus status403 $
-                    "Image in use by " <> name
+                Just name ->
+                    sendResponseStatus status403 $
+                        "Image in use by " <> name
                 Nothing -> do
                     app <- getYesod
                     let imgPath = mkImagePath (appImageDir $ appSettings app) img
@@ -88,17 +90,18 @@ deleteImageR imgId = do
                     stillExists <- liftIO $ doesFileExist imgPath
                     unless stillExists $ do
                         runDB $ delete imgId
-                        sendResponse ("Image Deleted" :: Text)   
+                        sendResponse ("Image Deleted" :: Text)
 
 imageInUse :: ImageId -> Handler (Maybe Text)
 imageInUse imgId = do
     guides <- runDB $ selectList [] [Asc GuideModified]
     uses <- mapM (helper . entityVal) guides
     return $ listToMaybe $ catMaybes uses
-    where
-        helper g = do
-            inUse <- guideUsesImg imgId g
-            return $ if inUse
+  where
+    helper g = do
+        inUse <- guideUsesImg imgId g
+        return $
+            if inUse
                 then Just $ guideTitle g
                 else Nothing
 
@@ -109,16 +112,17 @@ guideUsesImg imgId g = do
     return $ or $ isIcon : map (sectionUsesImg imgId) sections
 
 sectionUsesImg :: ImageId -> Section -> Bool
-sectionUsesImg imgId s = or $
-    map (componentUsesImg imgId) (sectionContent s)
+sectionUsesImg imgId s =
+    or $
+        map (componentUsesImg imgId) (sectionContent s)
 
 componentUsesImg :: ImageId -> Component -> Bool
 componentUsesImg imgId (CToggle (ToggleImages ts)) =
     or $ map (\x -> imgId == fst x) ts
-componentUsesImg imgId (CTalents tConfig) =
-    tConfig.talentPreview == imgId
-componentUsesImg imgId (CHeroTalents tConfig) =
-    tConfig.talentPreview == imgId
+componentUsesImg imgId (CTalents (TalentConfig{talentPreview})) =
+    talentPreview == imgId
+componentUsesImg imgId (CHeroTalents (HeroTalentConfig{talentPreview})) =
+    talentPreview == imgId
 componentUsesImg _ _ = False
 
 getAllImages :: DB [Entity Image]
@@ -143,7 +147,7 @@ uploadImage mName file = do
 
     let mExt = parseExt $ fileContentType file
         dir = appImageDir $ appSettings app
-    
+
     case mExt of
         Nothing -> liftIO $ throwIO $ HCError $ InvalidArgs ["Unsupported file type"]
         Just ext -> do
@@ -155,10 +159,13 @@ uploadImage mName file = do
             return imgId
 
 uploadForm :: AForm Handler ImageUpload
-uploadForm = ImageUpload
-    <$> fileAFormReq fileSettings
-    <*> areq textField nameSettings Nothing
-    where fileSettings = FieldSettings
+uploadForm =
+    ImageUpload
+        <$> fileAFormReq fileSettings
+        <*> areq textField nameSettings Nothing
+  where
+    fileSettings =
+        FieldSettings
             { fsLabel = ""
             , fsTooltip = Nothing
             , fsId = Nothing
@@ -168,7 +175,8 @@ uploadForm = ImageUpload
                 , ("class", "form-control-file mr-sm-2 mb-ltsmall")
                 ]
             }
-          nameSettings = FieldSettings
+    nameSettings =
+        FieldSettings
             { fsLabel = ""
             , fsTooltip = Nothing
             , fsId = Nothing
@@ -193,9 +201,9 @@ imageSelectFieldToggle = imageSelectFieldHelper True
 
 imageSelectFieldHelper :: Bool -> [Entity Image] -> Field Handler ImageId
 imageSelectFieldHelper toggle images = selectFieldHelper outerView noneView otherView (return opts)
-    where
-        outerView = \idAttr _ _ inside -> do
-            [whamlet|
+  where
+    outerView = \idAttr _ _ inside -> do
+        [whamlet|
                 $newline never
                 $if toggle
                     <button .btn .btn-dark .btn-block .ml-0 .mb-3
@@ -206,8 +214,8 @@ imageSelectFieldHelper toggle images = selectFieldHelper outerView noneView othe
                         onkeyup="searchImages(this)" onchange="showImages(this)">
                     <div ##{idAttr} .row .image-list .max-h-60 .mt-3 style="padding-top: 3px">^{inside}
             |]
-        noneView = \idAttr nameAttr isSel ->
-            [whamlet|
+    noneView = \idAttr nameAttr isSel ->
+        [whamlet|
                 $newline never
                 <div .col-3>
                     <label .radio .mb-0 for=#{idAttr}-none>
@@ -215,9 +223,9 @@ imageSelectFieldHelper toggle images = selectFieldHelper outerView noneView othe
                             <input id=#{idAttr}-none type=radio name=#{nameAttr} value=none :isSel:checked>
                             _{MsgSelectNone}
             |]
-        otherView = \idAttr nameAttr attrs value isSel text -> do
-            let mimgId = (olReadExternal opts) value
-            [whamlet|
+    otherView = \idAttr nameAttr attrs value isSel text -> do
+        let mimgId = (olReadExternal opts) value
+        [whamlet|
                 $newline never
                 <div .col-3>
                     <label .radio .mb-0 for=#{idAttr}-#{value}>
@@ -227,17 +235,18 @@ imageSelectFieldHelper toggle images = selectFieldHelper outerView noneView othe
                                 <img loading="lazy" .img-fluid src=@{ImagesR $ mkImageUrl imgId}>
                             <p .text-center>#{text}
             |]
-        opts = mkImageOpts images
+    opts = mkImageOpts images
 
 mkImageOpts :: [Entity Image] -> OptionList ImageId
 mkImageOpts images = mkOptions "image" imageList
-    where
-        imageList = map (imageName . entityVal &&& entityKey) images
+  where
+    imageList = map (imageName . entityVal &&& entityKey) images
 
 massImageForm :: AForm Handler [ImageId]
 massImageForm = areq multiImageField fs Nothing
-    where
-        fs = FieldSettings
+  where
+    fs =
+        FieldSettings
             { fsLabel = ""
             , fsTooltip = Nothing
             , fsId = Nothing
@@ -249,16 +258,17 @@ massImageForm = areq multiImageField fs Nothing
             }
 
 multiImageField :: Field Handler [ImageId]
-multiImageField = Field
-    { fieldParse = \_ files ->
-        if null files
-            then return $ Right Nothing
-            else do
-                imgs <- mapM (uploadImage Nothing) files
-                return $ Right $ Just imgs
-    , fieldView = \id' name attrs _ isReq ->
-        [whamlet|
+multiImageField =
+    Field
+        { fieldParse = \_ files ->
+            if null files
+                then return $ Right Nothing
+                else do
+                    imgs <- mapM (uploadImage Nothing) files
+                    return $ Right $ Just imgs
+        , fieldView = \id' name attrs _ isReq ->
+            [whamlet|
             <input ##{id'} name=#{name} *{attrs} type=file :isReq:required multiple>
         |]
-    , fieldEnctype = Multipart
-    }
+        , fieldEnctype = Multipart
+        }

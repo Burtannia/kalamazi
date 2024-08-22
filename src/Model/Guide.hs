@@ -1,17 +1,17 @@
-{-# LANGUAGE EmptyDataDecls             #-}
-{-# LANGUAGE FlexibleInstances          #-}
-{-# LANGUAGE GADTs                      #-}
-{-# LANGUAGE GeneralizedNewtypeDeriving #-}
-{-# LANGUAGE MultiParamTypeClasses      #-}
-{-# LANGUAGE NoImplicitPrelude          #-}
-{-# LANGUAGE OverloadedStrings          #-}
-{-# LANGUAGE TemplateHaskell            #-}
-{-# LANGUAGE TypeFamilies               #-}
 {-# LANGUAGE DerivingStrategies #-}
-{-# LANGUAGE StandaloneDeriving #-}
-{-# LANGUAGE UndecidableInstances #-}
 {-# LANGUAGE DuplicateRecordFields #-}
-{-# LANGUAGE OverloadedRecordDot #-}
+{-# LANGUAGE EmptyDataDecls #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE GADTs #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE NamedFieldPuns #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE StandaloneDeriving #-}
+{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE UndecidableInstances #-}
+{-# LANGUAGE NoImplicitPrelude #-}
 
 module Model.Guide where
 
@@ -34,14 +34,15 @@ data Component
     | CHeroTalents HeroTalentConfig
     deriving (Show, Read)
 
-data HeroTalentConfig = HeroTalentConfig 
+data HeroTalentConfig = HeroTalentConfig
     { talentClass :: Text
     , talentSpec :: Text
     , talentHero :: Text
     , talentCode :: Text
     , talentExpand :: Bool
     , talentPreview :: ImageId
-    } deriving (Show, Read, Eq)
+    }
+    deriving (Show, Read, Eq)
 
 data TalentConfig = TalentConfig
     { talentClass :: Text
@@ -49,7 +50,8 @@ data TalentConfig = TalentConfig
     , talentCode :: Text
     , talentExpand :: Bool
     , talentPreview :: ImageId
-    } deriving (Show, Read, Eq)
+    }
+    deriving (Show, Read, Eq)
 
 data SpaceChar = SpaceLine | SpaceChev
     deriving (Show, Read, Eq)
@@ -66,7 +68,8 @@ type Row = [Column]
 type Column = [Component]
 
 toHeroTalents :: TalentConfig -> HeroTalentConfig
-toHeroTalents tc = HeroTalentConfig tc.talentClass tc.talentSpec "" tc.talentCode tc.talentExpand tc.talentPreview
+toHeroTalents TalentConfig{talentClass, talentSpec, talentCode, talentExpand, talentPreview} =
+    HeroTalentConfig talentClass talentSpec "" talentCode talentExpand talentPreview
 
 derivePersistField "Axis"
 derivePersistField "SpaceChar"

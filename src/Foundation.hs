@@ -1,23 +1,23 @@
-{-# LANGUAGE NoImplicitPrelude #-}
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE ExplicitForAll #-}
+{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE InstanceSigs #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE QuasiQuotes #-}
+{-# LANGUAGE RankNTypes #-}
+{-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE ViewPatterns #-}
-{-# LANGUAGE ExplicitForAll #-}
-{-# LANGUAGE RankNTypes #-}
-{-# LANGUAGE InstanceSigs #-}
-{-# LANGUAGE QuasiQuotes #-}
-{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE NoImplicitPrelude #-}
 
 module Foundation where
 
-import Import.NoFoundation
-import Database.Persist.Sql (ConnectionPool, runSqlPool)
-import Text.Hamlet          (hamletFile)
-import Text.Jasmine         (minifym)
-import Text.Julius          (juliusFile)
 import Control.Monad.Logger (LogSource)
+import Database.Persist.Sql (ConnectionPool, runSqlPool)
+import Import.NoFoundation
+import Text.Hamlet (hamletFile)
+import Text.Jasmine (minifym)
+import Text.Julius (juliusFile)
 
 -- Used only when in "auth-dummy-login" setting is enabled.
 import Yesod.Auth.Dummy
@@ -25,26 +25,30 @@ import Yesod.Auth.Dummy
 import Yesod.Auth.OAuth2 (oauth2Url)
 import Yesod.Auth.OAuth2.Google (oauth2GoogleScoped)
 
-import Yesod.Default.Util   (addStaticContentExternal)
-import Yesod.Core.Types     (Logger)
-import qualified Yesod.Core.Unsafe as Unsafe
 import qualified Data.CaseInsensitive as CI
 import qualified Data.Text.Encoding as TE
+import Yesod.Core.Types (Logger)
+import qualified Yesod.Core.Unsafe as Unsafe
+import Yesod.Default.Util (addStaticContentExternal)
 
 import qualified Data.Text as T (append)
 import qualified Network.Wai as Wai (requestHeaders)
 
--- | The foundation datatype for your application. This can be a good place to
--- keep settings and values requiring initialization before your application
--- starts running, such as database connections. Every handler will have
--- access to the data present here.
+{- | The foundation datatype for your application. This can be a good place to
+ keep settings and values requiring initialization before your application
+ starts running, such as database connections. Every handler will have
+ access to the data present here.
+-}
 data App = App
-    { appSettings    :: AppSettings
-    , appStatic      :: Static -- ^ Settings for static file serving.
-    , appImages      :: Static -- ^ Settings for user uploaded files.
-    , appConnPool    :: ConnectionPool -- ^ Database connection pool.
+    { appSettings :: AppSettings
+    , -- | Settings for static file serving.
+      appStatic :: Static
+    , -- | Settings for user uploaded files.
+      appImages :: Static
+    , -- | Database connection pool.
+      appConnPool :: ConnectionPool
     , appHttpManager :: Manager
-    , appLogger      :: Logger
+    , appLogger :: Logger
     , appGoogleAuthId :: Text
     , appGoogleAuthKey :: Text
     , appYouTubeKey :: Text
@@ -75,40 +79,42 @@ wagoLink = "https://wago.io/p/kalamazi"
 emailLink = "mailto:kalamazing98@gmail.com"
 
 keywords :: Text
-keywords = intercalate ","
-    [ "Kalamazi"
-    , "warlock"
-    , "warlock guide"
-    , "affliction"
-    , "destruction"
-    , "demonology"
-    , "affliction warlock"
-    , "destruction warlock"
-    , "demonology warlock"
-    , "guide"
-    , "world of warcraft"
-    , "WoW"
-    , "The War Within"
-    , "War Within"
-    , "Nerub-ar Palace"
-    , "Nerubar Palace"
-    , "11.0"
-    , "raid"
-    , "mythic+"
-    , "mythic plus"
-    , "dungeons"
-    , "build"
-    , "talents"
-    , "gear"
-    , "best in slot"
-    , "BiS"
-    , "rotation"
-    , "abilities"
-    , "stat weights"
-    , "weakauras"
-    , "addons"
-    , "pve"
-    ]
+keywords =
+    intercalate
+        ","
+        [ "Kalamazi"
+        , "warlock"
+        , "warlock guide"
+        , "affliction"
+        , "destruction"
+        , "demonology"
+        , "affliction warlock"
+        , "destruction warlock"
+        , "demonology warlock"
+        , "guide"
+        , "world of warcraft"
+        , "WoW"
+        , "The War Within"
+        , "War Within"
+        , "Nerub-ar Palace"
+        , "Nerubar Palace"
+        , "11.0"
+        , "raid"
+        , "mythic+"
+        , "mythic plus"
+        , "dungeons"
+        , "build"
+        , "talents"
+        , "gear"
+        , "best in slot"
+        , "BiS"
+        , "rotation"
+        , "abilities"
+        , "stat weights"
+        , "weakauras"
+        , "addons"
+        , "pve"
+        ]
 
 -- This is where we define all of the routes in our application. For a full
 -- explanation of the syntax, please see:
@@ -128,8 +134,10 @@ mkYesodData "App" $(parseRoutesFile "config/routes.yesodroutes")
 type Form x = Html -> MForm (HandlerFor App) (FormResult x, Widget)
 
 -- | A convenient synonym for database access functions.
-type DB a = forall (m :: * -> *).
-    (MonadUnliftIO m) => ReaderT SqlBackend m a
+type DB a =
+    forall (m :: * -> *).
+    (MonadUnliftIO m) =>
+    ReaderT SqlBackend m a
 
 -- Please see the documentation for the Yesod typeclass. There are a number
 -- of settings which can be configured by overriding methods here.
@@ -144,17 +152,21 @@ instance Yesod App where
 
     errorHandler :: ErrorResponse -> Handler TypedContent
     errorHandler errorResponse = do
-
-        $(logWarn) (T.append "Error Response: "
-                            $ pack (show errorResponse))
+        $(logWarn)
+            ( T.append "Error Response: " $
+                pack (show errorResponse)
+            )
         req <- waiRequest
         let reqwith = lookup "X-Requested-With" $ Wai.requestHeaders req
             errorText NotFound = (404, "Not Found", "Sorry, not found")
             errorText (InternalError msg) = (400, "Bad Request", msg)
             errorText (InvalidArgs m) = (400, "Bad Request", unwords m)
             errorText (PermissionDenied msg) = (403, "Forbidden", msg)
-            errorText (BadMethod _) = (405, "Method Not Allowed",
-                                            "Method not supported")
+            errorText (BadMethod _) =
+                ( 405
+                , "Method Not Allowed"
+                , "Method not supported"
+                )
             errorText NotAuthenticated = (401, "Unauthorized", "Unauthorized")
 
         when (maybe False (== "XMLHttpRequest") reqwith) $ do
@@ -162,42 +174,46 @@ instance Yesod App where
             sendResponseStatus
                 (mkStatus code brief)
                 $ RepPlain $ toContent $ T.append "Error: " full
-                
+
         case errorResponse of
-            NotFound -> fmap toTypedContent $ defaultLayout $ do
-                setTitle "Error 404 | Page Not Found"
-                $(widgetFile "not-found")
-            (PermissionDenied msg) -> fmap toTypedContent $ defaultLayout $ do
-                setTitle "Error 403 | Permission Denied"
-                $(widgetFile "permission-denied")
+            NotFound -> fmap toTypedContent $
+                defaultLayout $ do
+                    setTitle "Error 404 | Page Not Found"
+                    $(widgetFile "not-found")
+            (PermissionDenied msg) -> fmap toTypedContent $
+                defaultLayout $ do
+                    setTitle "Error 403 | Permission Denied"
+                    $(widgetFile "permission-denied")
             _ -> defaultErrorHandler errorResponse
 
-        -- -- REMOVE
-        -- muser <- maybeAuthPair
-        -- let isAdmin = maybe False (userIsAdmin . snd) muser
+    -- -- REMOVE
+    -- muser <- maybeAuthPair
+    -- let isAdmin = maybe False (userIsAdmin . snd) muser
 
-        -- if isAdmin then
-        --     case errorResponse of
-        --         NotFound -> fmap toTypedContent $ defaultLayout $ do
-        --             setTitle "Error 404 | Page Not Found"
-        --             $(widgetFile "not-found")
-        --         (PermissionDenied msg) -> fmap toTypedContent $ defaultLayout $ do
-        --             setTitle "Error 403 | Permission Denied"
-        --             $(widgetFile "permission-denied")
-        --         _ -> defaultErrorHandler errorResponse
-        -- else
-        --     selectRep $ provideRep $ return ("Not Found" :: Html)
-        
+    -- if isAdmin then
+    --     case errorResponse of
+    --         NotFound -> fmap toTypedContent $ defaultLayout $ do
+    --             setTitle "Error 404 | Page Not Found"
+    --             $(widgetFile "not-found")
+    --         (PermissionDenied msg) -> fmap toTypedContent $ defaultLayout $ do
+    --             setTitle "Error 403 | Permission Denied"
+    --             $(widgetFile "permission-denied")
+    --         _ -> defaultErrorHandler errorResponse
+    -- else
+    --     selectRep $ provideRep $ return ("Not Found" :: Html)
+
     maximumContentLength :: App -> Maybe (Route App) -> Maybe Word64
     maximumContentLength _ _ = Just $ 5 * 1024 * 1024 -- 5 megabytes
 
     -- Store session data on the client in encrypted cookies,
     -- default session idle timeout is 120 minutes
     makeSessionBackend :: App -> IO (Maybe SessionBackend)
-    makeSessionBackend _ = sslOnlySessions $
-        Just <$> defaultClientSessionBackend
-        720    -- timeout in minutes
-        "config/client_session_key.aes"
+    makeSessionBackend _ =
+        sslOnlySessions $
+            Just
+                <$> defaultClientSessionBackend
+                    720 -- timeout in minutes
+                    "config/client_session_key.aes"
 
     -- Yesod Middleware allows you to run code before and after each handler function.
     -- The defaultYesodMiddleware adds the response header "Vary: Accept, Accept-Language" and performs authorization checks.
@@ -219,45 +235,49 @@ instance Yesod App where
         mcurrentRoute <- getCurrentRoute
 
         let isAdmin = maybe False (userIsAdmin . snd) muser
-        
-        guideGroups <- fmap (map entityVal) $
-            liftHandler $ runDB $ selectList [] [Asc GuideGroupPosition]
+
+        guideGroups <-
+            fmap (map entityVal) $
+                liftHandler $ runDB $ selectList [] [Asc GuideGroupPosition]
 
         let mkGuideLink (guideId, guide, sectionUrls) =
-                let mi = MenuItem
-                        (fromMaybe (guideTitle guide) $ guideShortTitle guide)
-                        (GuideR guideId) (isAdmin || guideIsPublished guide)
+                let mi =
+                        MenuItem
+                            (fromMaybe (guideTitle guide) $ guideShortTitle guide)
+                            (GuideR guideId)
+                            (isAdmin || guideIsPublished guide)
                  in (mi, sectionUrls)
-                
+
             mkGroupNav gg = liftHandler $ do
                 let getSections (guideId, g) = do
                         sections <- mapM (runDB . getJust) $ guideSections g
-                        let f (x,y) = if y == "Banner" then ("", "Full Guide") else (x,y)
+                        let f (x, y) = if y == "Banner" then ("", "Full Guide") else (x, y)
                             urls = map (f . (sectionUrl &&& sectionTitle)) sections
                         return (guideId, g, urls)
 
                 guides' <- mapM (sequence . (id &&& runDB . getJust)) $ guideGroupGuides gg
                 guides <- mapM getSections guides'
 
-                let guideLinks = filter (menuItemAccessCallback . fst) $ map mkGuideLink guides 
+                let guideLinks = filter (menuItemAccessCallback . fst) $ map mkGuideLink guides
                     shouldShow = length guideLinks > 0
                 return $
                     case guideLinks of
-                        [(mi, [])] -> NavLink (mi { menuItemLabel = guideGroupName gg })
-                        [(mi, [_])] -> NavLink (mi { menuItemLabel = guideGroupName gg })
-                        [(mi, secUrls)] -> NavGuide (mi { menuItemLabel = guideGroupName gg }) secUrls
-                        _  -> NavGroup (guideGroupName gg) shouldShow $ map fst guideLinks
+                        [(mi, [])] -> NavLink (mi{menuItemLabel = guideGroupName gg})
+                        [(mi, [_])] -> NavLink (mi{menuItemLabel = guideGroupName gg})
+                        [(mi, secUrls)] -> NavGuide (mi{menuItemLabel = guideGroupName gg}) secUrls
+                        _ -> NavGroup (guideGroupName gg) shouldShow $ map fst guideLinks
 
         ggLinks <- mapM mkGroupNav guideGroups
 
         -- Define the menu items of the header.
         let menuItems =
-                (NavLink $ MenuItem "Home" HomeR True)
-                : ggLinks ++
-                -- [ NavLink $ MenuItem "Login" (AuthR LoginR) (isNothing muser)
-                -- , NavLink $ MenuItem "Logout" (AuthR LogoutR) (isJust muser)
-                -- ]
-                [NavLink $ MenuItem "Logout" (AuthR LogoutR) (isJust muser)]
+                (NavLink $ MenuItem "Home" HomeR True) :
+                ggLinks
+                    ++
+                    -- [ NavLink $ MenuItem "Login" (AuthR LoginR) (isNothing muser)
+                    -- , NavLink $ MenuItem "Logout" (AuthR LogoutR) (isJust muser)
+                    -- ]
+                    [NavLink $ MenuItem "Logout" (AuthR LogoutR) (isJust muser)]
 
             getCallback (NavLink mi) = menuItemAccessCallback mi
             getCallback (NavGuide mi _) = menuItemAccessCallback mi
@@ -269,7 +289,7 @@ instance Yesod App where
 
             filteredMenuItems =
                 let xs = [x | x <- menuItems, getCallback x, getLabel x /= homeGroupName]
-                in zip [0..length xs - 1] xs
+                 in zip [0 .. length xs - 1] xs
 
         -- We break up the default layout into two components:
         -- default-layout is the contents of the body tag, and
@@ -287,51 +307,48 @@ instance Yesod App where
         withUrlRenderer $(hamletFile "templates/default-layout-wrapper.hamlet")
 
     -- The page to be redirected to when authentication is required.
-    authRoute
-        :: App
-        -> Maybe (Route App)
+    authRoute ::
+        App ->
+        Maybe (Route App)
     authRoute _ = Just $ AuthR $ oauth2Url "google"
 
-    isAuthorized
-        :: Route App  -- ^ The route the user is visiting.
-        -> Bool       -- ^ Whether or not this is a "write" request.
-        -> Handler AuthResult
+    isAuthorized ::
+        -- | The route the user is visiting.
+        Route App ->
+        -- | Whether or not this is a "write" request.
+        Bool ->
+        Handler AuthResult
     isAuthorized (AuthR _) _ = return Authorized
     isAuthorized FaviconR _ = return Authorized
     isAuthorized RobotsR _ = return Authorized
+    isAuthorized AdsR _ = return Authorized
     isAuthorized (StaticR _) _ = return Authorized
     isAuthorized LoginRedirectR _ = return Authorized
-
     isAuthorized HomeR False = return Authorized
     isAuthorized HomeR _ = isAuthenticated
-
     isAuthorized (ImagesR _) _ = return Authorized
     isAuthorized (ImageR _) _ = isAuthenticated
-
     isAuthorized (GuideR _) False = return Authorized
     isAuthorized (GuideR _) True = isAuthenticated
-    
     isAuthorized (GuideGroupR _) _ = isAuthenticated
-
     isAuthorized (SectionR _) _ = isAuthenticated
-
     isAuthorized PrivacyR _ = return Authorized
-
     isAuthorized OnlyFansR _ = return Authorized
-
     isAuthorized PokeR _ = isAuthenticated
-
     isAuthorized DiscordR _ = return Authorized
 
     -- This function creates static content files in the static folder
     -- and names them based on a hash of their content. This allows
     -- expiration dates to be set far in the future without worry of
     -- users receiving stale content.
-    addStaticContent
-        :: Text  -- ^ The file extension
-        -> Text -- ^ The MIME content type
-        -> LByteString -- ^ The contents of the file
-        -> Handler (Maybe (Either Text (Route App, [(Text, Text)])))
+    addStaticContent ::
+        -- | The file extension
+        Text ->
+        -- | The MIME content type
+        Text ->
+        -- | The contents of the file
+        LByteString ->
+        Handler (Maybe (Either Text (Route App, [(Text, Text)])))
     addStaticContent ext mime content = do
         master <- getYesod
         let staticDir = appStaticDir $ appSettings master
@@ -352,9 +369,9 @@ instance Yesod App where
     shouldLogIO :: App -> LogSource -> LogLevel -> IO Bool
     shouldLogIO app _source level =
         return $
-        appShouldLogAll (appSettings app)
-            || level == LevelWarn
-            || level == LevelError
+            appShouldLogAll (appSettings app)
+                || level == LevelWarn
+                || level == LevelError
 
     makeLogger :: App -> IO Logger
     makeLogger = return . appLogger
@@ -364,12 +381,13 @@ instance YesodBreadcrumbs App where
     -- Takes the route that the user is currently on, and returns a tuple
     -- of the 'Text' that you want the label to display, and a previous
     -- breadcrumb route.
-    breadcrumb
-        :: Route App  -- ^ The route the user is visiting currently.
-        -> Handler (Text, Maybe (Route App))
+    breadcrumb ::
+        -- | The route the user is visiting currently.
+        Route App ->
+        Handler (Text, Maybe (Route App))
     breadcrumb HomeR = return ("Home", Nothing)
     breadcrumb (AuthR _) = return ("Login", Just HomeR)
-    breadcrumb  _ = return ("home", Nothing)
+    breadcrumb _ = return ("home", Nothing)
 
 -- How to run database actions.
 instance YesodPersist App where
@@ -389,9 +407,11 @@ instance YesodAuth App where
     -- Where to send a user after successful login
     loginDest :: App -> Route App
     loginDest _ = HomeR
+
     -- Where to send a user after logout
     logoutDest :: App -> Route App
     logoutDest _ = HomeR
+
     -- Override the above two destinations when a Referer: header is present
     redirectToReferer :: App -> Bool
     redirectToReferer _ = True
@@ -403,24 +423,35 @@ instance YesodAuth App where
             redirect HomeR
         redirect $ AuthR $ oauth2Url "google"
 
-    authenticate :: (MonadHandler m, HandlerSite m ~ App)
-                 => Creds App -> m (AuthenticationResult App)
-    authenticate creds = liftHandler $ runDB $ do
-        x <- getBy $ UniqueIdent $ credsIdent creds
-        case x of
-            Just (Entity uid _) -> return $ Authenticated uid
-            Nothing -> Authenticated <$> insert User
-                { userIdent = credsIdent creds
-                , userIsAdmin = False
-                }
+    authenticate ::
+        (MonadHandler m, HandlerSite m ~ App) =>
+        Creds App ->
+        m (AuthenticationResult App)
+    authenticate creds = liftHandler $
+        runDB $ do
+            x <- getBy $ UniqueIdent $ credsIdent creds
+            case x of
+                Just (Entity uid _) -> return $ Authenticated uid
+                Nothing ->
+                    Authenticated
+                        <$> insert
+                            User
+                                { userIdent = credsIdent creds
+                                , userIsAdmin = False
+                                }
 
     -- You can add other plugins like Google Email, email or OAuth here
     authPlugins :: App -> [AuthPlugin App]
-    authPlugins app = [ oauth2GoogleScoped ["email", "profile"]
-        (appGoogleAuthId app) (appGoogleAuthKey app) ]
-        ++ extraAuthPlugins
+    authPlugins app =
+        [ oauth2GoogleScoped
+            ["email", "profile"]
+            (appGoogleAuthId app)
+            (appGoogleAuthKey app)
+        ]
+            ++ extraAuthPlugins
+      where
         -- Enable authDummy login if enabled.
-        where extraAuthPlugins = [authDummy | appAuthDummyLogin $ appSettings app]
+        extraAuthPlugins = [authDummy | appAuthDummyLogin $ appSettings app]
 
 -- | Access function to determine if a user is logged in and is an admin.
 isAuthenticated :: Handler AuthResult
