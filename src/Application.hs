@@ -105,6 +105,11 @@ makeFoundation appSettings = do
     appGoogleAuthId <- fmap pack $ getEnv "KALA_GOOGLE_OAUTH_ID"
     appGoogleAuthKey <- fmap pack $ getEnv "KALA_GOOGLE_OAUTH_SECRET"
     appYouTubeKey <- fmap pack $ getEnv "KALA_YOUTUBE_SECRET"
+    appTwitchToken <- newIORef Nothing
+
+    twitchClientId <- fmap pack $ getEnv "KALA_TWITCH_CLIENT_ID"
+    twitchClientSecret <- fmap pack $ getEnv "KALA_TWITCH_CLIENT_SECRET"
+    let appTwitchCreds = TwitchCreds {..}
 
     -- We need a log function to create a connection pool. We need a connection
     -- pool to create our foundation. And we need our foundation to get a
