@@ -1,3 +1,9 @@
 $(function() {
     $('#youtubeLatest').attr('src', #{ytUrl ytVideo});
 });
+
+function loadTwitchHome() {
+    $('#twitchPlayer').attr('src', #{twitchUrl});
+    $('#twitchPlayer').removeClass('d-none');
+    $('#twitchPlaceholder').remove();
+}

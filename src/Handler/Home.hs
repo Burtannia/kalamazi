@@ -12,6 +12,7 @@ import Handler.Images
 import Handler.Guide
 import Handler.AdminTools
 import Handler.YouTube
+import qualified Twitch
 import Yesod.Auth.GoogleEmail2 (Organization(Organization))
        
 getHomeR :: Handler Html
@@ -21,6 +22,7 @@ getHomeR = do
 
     imgs <- runDB getAllImages
     ytVideo <- getLatestVideo
+    twitchUrl <- getTwitchUrl
 
     mGroup <- runDB $ getBy $ UniqueGuideGroupName homeGroupName
     guides <- case mGroup of
@@ -51,6 +53,7 @@ postHomeR = do
 
     imgs <- runDB getAllImages
     ytVideo <- getLatestVideo
+    twitchUrl <- getTwitchUrl
 
     mGroup <- runDB $ getBy $ UniqueGuideGroupName homeGroupName
     guides <- case mGroup of
@@ -95,3 +98,12 @@ pageMeta = do
 description :: Text
 description =
     "Affliction, Destruction and Demonology warlock guides for raid and mythic+ in World of Warcraft: The War Within. Includes talents, rotations, gear and more..."
+
+getTwitchUrl :: Handler Text
+getTwitchUrl = do
+    isLive <- Twitch.mainIsLive
+    let channel = if isLive then "kalamazi" else "kalamazi_247"
+    pure $
+        "https://player.twitch.tv/?channel="
+            <> channel
+            <> "&parent=www.kalamazi.gg&parent=localhost"
