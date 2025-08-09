@@ -34,11 +34,20 @@ import Yesod.Default.Util (addStaticContentExternal)
 import qualified Data.Text as T (append)
 import qualified Network.Wai as Wai (requestHeaders)
 
-{- | The foundation datatype for your application. This can be a good place to
- keep settings and values requiring initialization before your application
- starts running, such as database connections. Every handler will have
- access to the data present here.
--}
+data TwitchCreds = TwitchCreds
+    { twitchClientId :: !Text
+    , twitchClientSecret :: !Text
+    } deriving Show
+
+data TwitchToken = TwitchToken
+    { token :: !Text
+    , expires :: !Day
+    } deriving (Show)
+
+-- | The foundation datatype for your application. This can be a good place to
+-- keep settings and values requiring initialization before your application
+-- starts running, such as database connections. Every handler will have
+-- access to the data present here.
 data App = App
     { appSettings :: AppSettings
     , -- | Settings for static file serving.
@@ -52,6 +61,8 @@ data App = App
     , appGoogleAuthId :: Text
     , appGoogleAuthKey :: Text
     , appYouTubeKey :: Text
+    , appTwitchToken :: IORef (Maybe TwitchToken)
+    , appTwitchCreds :: TwitchCreds
     }
 
 data MenuItem = MenuItem
