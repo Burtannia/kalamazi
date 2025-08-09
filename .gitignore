@@ -24,3 +24,5 @@ kalamazi-australia.cabal
 images/
 weakauras/
 .env
+result/
+tags
