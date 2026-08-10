@@ -108,6 +108,8 @@ keywords =
         , "Midnight"
         , "Curse of Ulatek"
         , "The Curse of Ula'tek"
+        , "The Venemous Abyss"
+        , "Venemous Abyss"
         , "12.1"
         , "raid"
         , "mythic+"
