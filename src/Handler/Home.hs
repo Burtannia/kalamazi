@@ -97,7 +97,7 @@ pageMeta = do
 
 pageDescription :: Text
 pageDescription =
-    "Affliction, Destruction and Demonology warlock guides for raid and mythic+ in World of Warcraft: The War Within. Includes talents, rotations, gear and more..."
+    "Affliction, Destruction and Demonology warlock guides for raid and mythic+ in World of Warcraft: Midnight, The Curse of Ula'tek. Includes talents, rotations, gear and more..."
 
 getTwitchUrl :: Handler Text
 getTwitchUrl = do
